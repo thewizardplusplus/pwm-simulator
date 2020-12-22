@@ -6,6 +6,7 @@ local Plot = require("luaplot.plot")
 require("compat52")
 
 local plot = nil -- luaplot.Plot
+local total_dt = 0
 
 function love.load()
   math.randomseed(os.time())
@@ -27,6 +28,16 @@ function love.draw()
   end
 
   love.graphics.line(points)
+end
+
+function love.update(dt)
+  total_dt = total_dt + dt
+  if total_dt > 0.1 then
+    plot:shift()
+    plot:push_with_random_factor(0.2)
+
+    total_dt = 0
+  end
 end
 
 function love.keypressed(key)
