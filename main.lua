@@ -17,8 +17,24 @@ local boundary_size = 0
 local boundary_step = 0
 local total_dt = 0
 
+local function _enter_fullscreen()
+  local is_mobile_os = love.system.getOS() == "Android"
+    or love.system.getOS() == "iOS"
+  if not is_mobile_os then
+    return true
+  end
+
+  local ok = love.window.setFullscreen(true, "desktop")
+  if not ok then
+    return false, "unable to enter fullscreen"
+  end
+
+  return true
+end
+
 function love.load()
   math.randomseed(os.time())
+  assert(_enter_fullscreen())
 
   plot = Plot:new(0)
   for _ = 1, 16 do
