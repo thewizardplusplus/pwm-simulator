@@ -34,6 +34,7 @@ end
 
 function love.load()
   math.randomseed(os.time())
+  love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
   plot = Plot:new(0)
