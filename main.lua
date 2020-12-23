@@ -5,6 +5,8 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local Plot = require("luaplot.plot")
 require("compat52")
 
+local UPDATE_DELAY = 0.1
+
 local plot = nil -- luaplot.Plot
 local plot_width = 0
 local horizontal_step = 0
@@ -61,11 +63,11 @@ end
 
 function love.update(dt)
   total_dt = total_dt + dt
-  if total_dt > 0.1 then
+  if total_dt > UPDATE_DELAY then
     plot:shift()
     plot:push_with_random_factor(0.2)
 
-    total_dt = 0
+    total_dt = total_dt - UPDATE_DELAY
   end
 end
 
