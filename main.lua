@@ -114,7 +114,6 @@ function love.draw()
   end
 
   love.graphics.setColor(0, 0.66, 0)
-  love.graphics.setLineJoin("miter")
   love.graphics.setLineWidth(plot_line_width)
   love.graphics.line(custom_plot_points)
 end
