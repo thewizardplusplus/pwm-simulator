@@ -86,7 +86,8 @@ function love.draw()
     table.insert(random_plot_points, y)
   end
 
-  love.graphics.setColor(0, 0, 1)
+  love.graphics.setColor(0, 0, 0.5)
+  love.graphics.setLineJoin("bevel")
   love.graphics.setLineWidth(plot_line_width)
   love.graphics.line(random_plot_points)
 
@@ -100,7 +101,6 @@ function love.draw()
   end
 
   love.graphics.setColor(0, 0.33, 0)
-  love.graphics.setLineJoin("bevel")
   love.graphics.setLineWidth(plot_line_width / 2)
   love.graphics.line(custom_source_plot_points)
 
