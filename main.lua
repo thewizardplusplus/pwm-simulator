@@ -5,6 +5,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local Plot = require("luaplot.plot")
 require("compat52")
 
+local HORIZONTAL_STEP_COUNT = 50
 local UPDATE_DELAY = 0.1
 local CUSTOM_PLOT_FACTOR_DOWN = 0.05
 local CUSTOM_PLOT_FACTOR_UP = -0.1
@@ -42,18 +43,18 @@ function love.load()
   assert(_enter_fullscreen())
 
   random_plot = Plot:new(0)
-  for _ = 1, 16 do
+  for _ = 1, HORIZONTAL_STEP_COUNT * 0.75 + 1 do
     random_plot:push(0.5)
   end
 
   custom_plot = Plot:new(0)
-  for _ = 1, 11 do
+  for _ = 1, HORIZONTAL_STEP_COUNT * 0.5 + 1 do
     custom_plot:push(0.5)
   end
 
   local x, y, width, height = love.window.getSafeArea()
   plot_line_width = height / 80
-  horizontal_step = width / 20
+  horizontal_step = width / HORIZONTAL_STEP_COUNT
   horizontal_offset = x
   vertical_size = height / 1.5
   vertical_offset = y + (height - vertical_size) / 2
