@@ -9,6 +9,7 @@ local UPDATE_DELAY = 0.1
 
 local random_plot = nil -- luaplot.Plot
 local custom_plot = nil -- luaplot.Plot
+local custom_plot_factor = 0.4
 local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
@@ -101,6 +102,9 @@ function love.update(dt)
   if total_dt > UPDATE_DELAY then
     random_plot:shift()
     random_plot:push_with_random_factor(0.2)
+
+    custom_plot:shift()
+    custom_plot:push_with_factor(custom_plot_factor)
 
     total_dt = total_dt - UPDATE_DELAY
   end
