@@ -128,6 +128,10 @@ function love.update(dt)
     custom_plot:shift()
     custom_plot:push_with_factor(custom_plot_factor)
 
+    local is_custom_plot_factor_up = custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
+    custom_source_plot:shift()
+    custom_source_plot:push(is_custom_plot_factor_up and 0 or 1)
+
     total_dt = total_dt - UPDATE_DELAY
   end
 end
