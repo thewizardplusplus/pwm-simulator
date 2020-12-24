@@ -7,8 +7,8 @@ require("compat52")
 
 local UPDATE_DELAY = 0.1
 
-local plot = nil -- luaplot.Plot
-local plot_width = 0
+local random_plot = nil -- luaplot.Plot
+local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
 local vertical_size = 0
@@ -37,13 +37,13 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  plot = Plot:new(0)
+  random_plot = Plot:new(0)
   for _ = 1, 16 do
-    plot:push_with_random_factor(0.2)
+    random_plot:push_with_random_factor(0.2)
   end
 
   local x, y, width, height = love.window.getSafeArea()
-  plot_width = height / 80
+  plot_line_width = height / 80
   horizontal_step = width / 20
   horizontal_offset = x
   vertical_size = height / 1.5
@@ -54,7 +54,7 @@ end
 
 function love.draw()
   love.graphics.setColor(0.5, 0.5, 0.5)
-  love.graphics.setLineWidth(plot_width / 4)
+  love.graphics.setLineWidth(plot_line_width / 4)
   for x = 0, boundary_size, 1.5 * boundary_step do
     for _, y in ipairs({0, vertical_size}) do
       love.graphics.line(
@@ -64,25 +64,25 @@ function love.draw()
     end
   end
 
-  local points = {}
-  for x, y in ipairs(plot) do
+  local random_plot_points = {}
+  for x, y in ipairs(random_plot) do
     x = (x - 1) * horizontal_step + horizontal_offset
-    table.insert(points, x)
+    table.insert(random_plot_points, x)
 
     y = y * vertical_size + vertical_offset
-    table.insert(points, y)
+    table.insert(random_plot_points, y)
   end
 
   love.graphics.setColor(0, 0, 1)
-  love.graphics.setLineWidth(plot_width)
-  love.graphics.line(points)
+  love.graphics.setLineWidth(plot_line_width)
+  love.graphics.line(random_plot_points)
 end
 
 function love.update(dt)
   total_dt = total_dt + dt
   if total_dt > UPDATE_DELAY then
-    plot:shift()
-    plot:push_with_random_factor(0.2)
+    random_plot:shift()
+    random_plot:push_with_random_factor(0.2)
 
     total_dt = total_dt - UPDATE_DELAY
   end
