@@ -8,6 +8,7 @@ require("compat52")
 local UPDATE_DELAY = 0.1
 
 local random_plot = nil -- luaplot.Plot
+local custom_plot = nil -- luaplot.Plot
 local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
@@ -40,6 +41,11 @@ function love.load()
   random_plot = Plot:new(0)
   for _ = 1, 16 do
     random_plot:push(0.5)
+  end
+
+  custom_plot = Plot:new(0)
+  for _ = 1, 11 do
+    custom_plot:push(0.5)
   end
 
   local x, y, width, height = love.window.getSafeArea()
@@ -76,6 +82,18 @@ function love.draw()
   love.graphics.setColor(0, 0, 1)
   love.graphics.setLineWidth(plot_line_width)
   love.graphics.line(random_plot_points)
+
+  local custom_plot_points = {}
+  for x, y in ipairs(custom_plot) do
+    x = (x - 1) * horizontal_step + horizontal_offset
+    table.insert(custom_plot_points, x)
+
+    y = y * vertical_size + vertical_offset
+    table.insert(custom_plot_points, y)
+  end
+
+  love.graphics.setColor(0, 0.66, 0)
+  love.graphics.line(custom_plot_points)
 end
 
 function love.update(dt)
