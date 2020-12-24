@@ -39,7 +39,7 @@ function love.load()
 
   random_plot = Plot:new(0)
   for _ = 1, 16 do
-    random_plot:push_with_random_factor(0.2)
+    random_plot:push(0.5)
   end
 
   local x, y, width, height = love.window.getSafeArea()
