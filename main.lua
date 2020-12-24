@@ -6,10 +6,12 @@ local Plot = require("luaplot.plot")
 require("compat52")
 
 local UPDATE_DELAY = 0.1
+local CUSTOM_PLOT_FACTOR_DOWN = 0.05
+local CUSTOM_PLOT_FACTOR_UP = -0.1
 
 local random_plot = nil -- luaplot.Plot
 local custom_plot = nil -- luaplot.Plot
-local custom_plot_factor = 0.4
+local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
@@ -114,4 +116,12 @@ function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
   end
+end
+
+function love.mousepressed()
+  custom_plot_factor = CUSTOM_PLOT_FACTOR_UP
+end
+
+function love.mousereleased()
+  custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 end
