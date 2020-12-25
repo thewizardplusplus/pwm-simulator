@@ -5,8 +5,9 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local Plot = require("luaplot.plot")
 require("compat52")
 
+local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
-local UPDATE_DELAY = 0.1
+local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local CUSTOM_PLOT_FACTOR_DOWN = 0.05
 local CUSTOM_PLOT_FACTOR_UP = -0.1
 
