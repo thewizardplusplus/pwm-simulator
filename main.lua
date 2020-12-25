@@ -8,8 +8,9 @@ require("compat52")
 local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
-local CUSTOM_PLOT_FACTOR_DOWN = 0.05
-local CUSTOM_PLOT_FACTOR_UP = -0.1
+local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
+local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
+local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 
 local random_plot = nil -- luaplot.Plot
 local custom_plot = nil -- luaplot.Plot
@@ -123,7 +124,7 @@ function love.update(dt)
   total_dt = total_dt + dt
   if total_dt > UPDATE_DELAY then
     random_plot:shift()
-    random_plot:push_with_random_factor(0.2)
+    random_plot:push_with_random_factor(RANDOM_PLOT_FACTOR)
 
     custom_plot:shift()
     custom_plot:push_with_factor(custom_plot_factor)
