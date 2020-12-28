@@ -45,17 +45,9 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  random_plot = Plot:new(0)
-  for _ = 1, HORIZONTAL_STEP_COUNT * 0.75 + 1 do
-    random_plot:push(0.5)
-  end
-
-  custom_plot = Plot:new(0)
-  custom_source_plot = Plot:new(0)
-  for _ = 1, HORIZONTAL_STEP_COUNT * 0.5 + 1 do
-    custom_plot:push(0.5)
-    custom_source_plot:push(0.5)
-  end
+  random_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.75 + 1, 0.5)
+  custom_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
+  custom_source_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
 
   local x, y, width, height = love.window.getSafeArea()
   plot_line_width = height / 80
