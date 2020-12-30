@@ -2,7 +2,7 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
-local Plot = require("luaplot.plot")
+local Oscillogram = require("luaplot.oscillogram")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -12,10 +12,10 @@ local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 
-local random_plot = nil -- luaplot.Plot
-local custom_plot = nil -- luaplot.Plot
+local random_plot = nil -- luaplot.Oscillogram
+local custom_plot = nil -- luaplot.Oscillogram
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
-local custom_source_plot = nil -- luaplot.Plot
+local custom_source_plot = nil -- luaplot.Oscillogram
 local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
@@ -45,9 +45,10 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  random_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.75 + 1, 0.5)
-  custom_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
-  custom_source_plot = Plot:new(HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
+  random_plot = Oscillogram:new("random", HORIZONTAL_STEP_COUNT * 0.75 + 1, 0.5)
+  custom_plot = Oscillogram:new("linear", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
+  custom_source_plot =
+    Oscillogram:new("custom", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
 
   local x, y, width, height = love.window.getSafeArea()
   plot_line_width = height / 80
@@ -115,15 +116,10 @@ end
 function love.update(dt)
   total_dt = total_dt + dt
   if total_dt > UPDATE_DELAY then
-    random_plot:shift()
-    random_plot:push_with_random_factor(RANDOM_PLOT_FACTOR)
-
-    custom_plot:shift()
-    custom_plot:push_with_factor(custom_plot_factor)
-
     local is_custom_plot_factor_up = custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
-    custom_source_plot:shift()
-    custom_source_plot:push(is_custom_plot_factor_up and 0 or 1)
+    random_plot:update(RANDOM_PLOT_FACTOR)
+    custom_plot:update(custom_plot_factor)
+    custom_source_plot:update(is_custom_plot_factor_up and 0 or 1)
 
     total_dt = total_dt - UPDATE_DELAY
   end
