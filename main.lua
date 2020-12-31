@@ -2,7 +2,9 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
+local types = require("luaplot.types")
 local Oscillogram = require("luaplot.oscillogram")
+local PlotIterator = require("luaplot.plotiterator")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -40,6 +42,16 @@ local function _enter_fullscreen()
   return true
 end
 
+local function _transform_point(index, point)
+  assert(types.is_number_with_limits(index, 1))
+  assert(types.is_number_with_limits(point))
+
+  return {
+    x = (index - 1) * horizontal_step + horizontal_offset,
+    y = point * vertical_size + vertical_offset,
+  }
+end
+
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
@@ -73,12 +85,10 @@ function love.draw()
   end
 
   local random_plot_points = {}
-  for x, y in ipairs(random_plot) do
-    x = (x - 1) * horizontal_step + horizontal_offset
-    table.insert(random_plot_points, x)
-
-    y = y * vertical_size + vertical_offset
-    table.insert(random_plot_points, y)
+  local random_iterator = PlotIterator:new(random_plot, _transform_point)
+  for _, point in ipairs(random_iterator) do
+    table.insert(random_plot_points, point.x)
+    table.insert(random_plot_points, point.y)
   end
 
   love.graphics.setColor(0, 0, 0.5)
@@ -87,12 +97,11 @@ function love.draw()
   love.graphics.line(random_plot_points)
 
   local custom_source_plot_points = {}
-  for x, y in ipairs(custom_source_plot) do
-    x = (x - 1) * horizontal_step + horizontal_offset
-    table.insert(custom_source_plot_points, x)
-
-    y = y * vertical_size + vertical_offset
-    table.insert(custom_source_plot_points, y)
+  local custom_source_iterator =
+    PlotIterator:new(custom_source_plot, _transform_point)
+  for _, point in ipairs(custom_source_iterator) do
+    table.insert(custom_source_plot_points, point.x)
+    table.insert(custom_source_plot_points, point.y)
   end
 
   love.graphics.setColor(0, 0.33, 0)
@@ -100,12 +109,10 @@ function love.draw()
   love.graphics.line(custom_source_plot_points)
 
   local custom_plot_points = {}
-  for x, y in ipairs(custom_plot) do
-    x = (x - 1) * horizontal_step + horizontal_offset
-    table.insert(custom_plot_points, x)
-
-    y = y * vertical_size + vertical_offset
-    table.insert(custom_plot_points, y)
+  local custom_iterator = PlotIterator:new(custom_plot, _transform_point)
+  for _, point in ipairs(custom_iterator) do
+    table.insert(custom_plot_points, point.x)
+    table.insert(custom_plot_points, point.y)
   end
 
   love.graphics.setColor(0, 0.66, 0)
