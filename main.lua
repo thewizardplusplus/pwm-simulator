@@ -4,7 +4,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local types = require("luaplot.types")
 local Oscillogram = require("luaplot.oscillogram")
-local PlotIterator = require("luaplot.plotiterator")
+local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -42,16 +42,6 @@ local function _enter_fullscreen()
   return true
 end
 
-local function _transform_point(index, point)
-  assert(types.is_number_with_limits(index, 1))
-  assert(types.is_number_with_limits(point))
-
-  return {
-    x = (index - 1) * horizontal_step + horizontal_offset,
-    y = point * vertical_size + vertical_offset,
-  }
-end
-
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
@@ -84,9 +74,18 @@ function love.draw()
     end
   end
 
+  local iterator = PlotIteratorFactory:new(function(index, point)
+    assert(types.is_number_with_limits(index, 1))
+    assert(types.is_number_with_limits(point))
+
+    return {
+      x = (index - 1) * horizontal_step + horizontal_offset,
+      y = point * vertical_size + vertical_offset,
+    }
+  end)
+
   local random_plot_points = {}
-  local random_iterator = PlotIterator:new(random_plot, _transform_point)
-  for _, point in ipairs(random_iterator) do
+  for _, point in ipairs(iterator:with(random_plot)) do
     table.insert(random_plot_points, point.x)
     table.insert(random_plot_points, point.y)
   end
@@ -97,9 +96,7 @@ function love.draw()
   love.graphics.line(random_plot_points)
 
   local custom_source_plot_points = {}
-  local custom_source_iterator =
-    PlotIterator:new(custom_source_plot, _transform_point)
-  for _, point in ipairs(custom_source_iterator) do
+  for _, point in ipairs(iterator:with(custom_source_plot)) do
     table.insert(custom_source_plot_points, point.x)
     table.insert(custom_source_plot_points, point.y)
   end
@@ -109,8 +106,7 @@ function love.draw()
   love.graphics.line(custom_source_plot_points)
 
   local custom_plot_points = {}
-  local custom_iterator = PlotIterator:new(custom_plot, _transform_point)
-  for _, point in ipairs(custom_iterator) do
+  for _, point in ipairs(iterator:with(custom_plot)) do
     table.insert(custom_plot_points, point.x)
     table.insert(custom_plot_points, point.y)
   end
