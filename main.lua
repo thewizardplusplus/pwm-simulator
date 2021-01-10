@@ -71,10 +71,13 @@ function love.draw()
   local x = 0
   for _ = 1, DISTANCE_SAMPLING_RATE do
     x = x + distance_sampling_step
+    local index = x / horizontal_step + 1
+    local point = random_plot[index] * vertical_size + vertical_offset
     love.graphics.line(
       x + horizontal_offset, vertical_offset,
       x + horizontal_offset, vertical_size + vertical_offset
     )
+    love.graphics.circle("fill", x, point, 5)
   end
 
   love.graphics.setColor(0.5, 0.5, 0.5)
