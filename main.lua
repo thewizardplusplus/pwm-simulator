@@ -69,7 +69,6 @@ function love.load()
 end
 
 function love.draw()
-  love.graphics.setLineWidth(3)
   local x = 0
   for _ = 1, DISTANCE_SAMPLING_RATE do
     x = x + distance_sampling_step
@@ -84,10 +83,10 @@ function love.draw()
       love.graphics.setColor(1, 0, 0, 0.25)
     end
 
-    local scaled_distance = distance * vertical_size + vertical_offset
-    love.graphics.line(
-      x + horizontal_offset, vertical_size + vertical_offset - scaled_distance,
-      x + horizontal_offset, vertical_size + vertical_offset
+    love.graphics.rectangle(
+      "fill",
+      x - distance_sampling_step + horizontal_offset, vertical_offset,
+      distance_sampling_step, vertical_size
     )
   end
 
