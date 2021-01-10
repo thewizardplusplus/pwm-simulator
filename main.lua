@@ -3,6 +3,7 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local types = require("luaplot.types")
+local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 require("compat52")
@@ -72,12 +73,12 @@ function love.draw()
   for _ = 1, DISTANCE_SAMPLING_RATE do
     x = x + distance_sampling_step
     local index = x / horizontal_step + 1
-    local point = random_plot[index] * vertical_size + vertical_offset
+    local distance = iterators.difference(random_plot, custom_plot, index, true)
+    local scaled_distance = distance * vertical_size + vertical_offset
     love.graphics.line(
-      x + horizontal_offset, vertical_offset,
+      x + horizontal_offset, vertical_size + vertical_offset - scaled_distance,
       x + horizontal_offset, vertical_size + vertical_offset
     )
-    love.graphics.circle("fill", x, point, 5)
   end
 
   love.graphics.setColor(0.5, 0.5, 0.5)
