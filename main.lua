@@ -9,6 +9,7 @@ require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
+local DISTANCE_SAMPLING_RATE = 50
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -25,6 +26,7 @@ local vertical_size = 0
 local vertical_offset = 0
 local boundary_size = 0
 local boundary_step = 0
+local distance_sampling_step = 0
 local total_dt = 0
 
 local function _enter_fullscreen()
@@ -60,9 +62,21 @@ function love.load()
   vertical_offset = y + (height - vertical_size) / 2
   boundary_size = width
   boundary_step = boundary_size / 40
+  distance_sampling_step = (width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
+  love.graphics.setColor(0.25, 0.25, 0.25)
+  love.graphics.setLineWidth(1)
+  local x = 0
+  for _ = 1, DISTANCE_SAMPLING_RATE do
+    x = x + distance_sampling_step
+    love.graphics.line(
+      x + horizontal_offset, vertical_offset,
+      x + horizontal_offset, vertical_size + vertical_offset
+    )
+  end
+
   love.graphics.setColor(0.5, 0.5, 0.5)
   love.graphics.setLineWidth(plot_line_width / 4)
   for x = 0, boundary_size, 1.5 * boundary_step do
