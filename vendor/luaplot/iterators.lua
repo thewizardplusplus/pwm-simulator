@@ -26,4 +26,26 @@ function iterators.inext(items, index)
   return next_index, next_item
 end
 
+---
+-- @tparam tab indexable_one
+-- @tparam tab indexable_two
+-- @tparam number index [1, ∞)
+-- @tparam[opt=false] bool modulo
+-- @treturn number
+function iterators.difference(indexable_one, indexable_two, index, modulo)
+  assert(types.is_indexable(indexable_one))
+  assert(types.is_indexable(indexable_two))
+  assert(types.is_number_with_limits(index, 1))
+  assert(modulo == nil or type(modulo) == "boolean")
+
+  local item_one = indexable_one[index]
+  local item_two = indexable_two[index]
+  local difference = item_one - item_two
+  if modulo then
+    difference = math.abs(difference)
+  end
+
+  return difference
+end
+
 return iterators

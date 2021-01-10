@@ -4,7 +4,7 @@
 local middleclass = require("middleclass")
 local types = require("luaplot.types")
 local maths = require("luaplot.maths")
-local iterators = require("luaplot.iterators")
+local Iterable = require("luaplot.iterable")
 
 ---
 -- @table instance
@@ -14,6 +14,7 @@ local iterators = require("luaplot.iterators")
 -- @tfield number _maximum
 
 local Plot = middleclass("Plot")
+Plot:include(Iterable)
 
 ---
 -- @function new
@@ -48,17 +49,34 @@ end
 function Plot:__index(index)
   assert(types.is_number_with_limits(index, 1))
 
-  return self._points[index]
+  local left_point_index = math.floor(index)
+  local left_point = self._points[left_point_index]
+
+  local progress = index - left_point_index
+  if progress == 0 then
+    return left_point
+  end
+
+  local right_point_index = math.floor(index + 1)
+  local right_point = self._points[right_point_index]
+  if not right_point then
+    return nil
+  end
+
+  if right_point < left_point then
+    left_point, right_point = right_point, left_point
+    progress = 1 - progress
+  end
+
+  return maths.lerp(left_point, right_point, progress)
 end
 
 ---
 -- It is used for iterating over plot points in Lua 5.2.
+-- @function __ipairs
 -- @treturn iterators.inext iterator function
--- @treturn {number,...} self._points
+-- @treturn Plot self
 -- @treturn number always zero
-function Plot:__ipairs()
-  return iterators.inext, self._points, 0
-end
 
 ---
 -- @tparam number point
