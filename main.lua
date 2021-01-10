@@ -11,6 +11,8 @@ require("compat52")
 local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
 local DISTANCE_SAMPLING_RATE = 50
+local SOFT_DISTANCE_LIMIT = 0.33
+local HARD_DISTANCE_LIMIT = 0.66
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -67,13 +69,21 @@ function love.load()
 end
 
 function love.draw()
-  love.graphics.setColor(0.25, 0.25, 0.25)
-  love.graphics.setLineWidth(1)
+  love.graphics.setLineWidth(3)
   local x = 0
   for _ = 1, DISTANCE_SAMPLING_RATE do
     x = x + distance_sampling_step
+
     local index = x / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
+    if distance < SOFT_DISTANCE_LIMIT then
+      love.graphics.setColor(0, 1, 0, 0.25)
+    elseif distance < HARD_DISTANCE_LIMIT then
+      love.graphics.setColor(1, 1, 0, 0.25)
+    else
+      love.graphics.setColor(1, 0, 0, 0.25)
+    end
+
     local scaled_distance = distance * vertical_size + vertical_offset
     love.graphics.line(
       x + horizontal_offset, vertical_size + vertical_offset - scaled_distance,
