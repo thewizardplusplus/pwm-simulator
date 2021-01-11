@@ -2,6 +2,7 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
+local suit = require("suit")
 local types = require("luaplot.types")
 local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
@@ -13,6 +14,9 @@ local HORIZONTAL_STEP_COUNT = 50
 local DISTANCE_SAMPLING_RATE = 50
 local SOFT_DISTANCE_LIMIT = 0.33
 local HARD_DISTANCE_LIMIT = 0.66
+local NORMAL_DISTANCE_COLOR = {0, 1, 0, 0.25}
+local SOFT_DISTANCE_LIMIT_COLOR = {1, 1, 0, 0.25}
+local HARD_DISTANCE_LIMIT_COLOR = {1, 0, 0, 0.25}
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -47,6 +51,17 @@ local function _enter_fullscreen()
   return true
 end
 
+local function _create_label_options(color, align)
+  assert(type(color) == "table")
+  assert(align == "left" or align == "right")
+
+  return {
+    color = {normal = {fg = color}},
+    align = align,
+    valign = "top",
+  }
+end
+
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
@@ -76,11 +91,11 @@ function love.draw()
     local index = x / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
     if distance < SOFT_DISTANCE_LIMIT then
-      love.graphics.setColor(0, 1, 0, 0.25)
+      love.graphics.setColor(NORMAL_DISTANCE_COLOR)
     elseif distance < HARD_DISTANCE_LIMIT then
-      love.graphics.setColor(1, 1, 0, 0.25)
+      love.graphics.setColor(SOFT_DISTANCE_LIMIT_COLOR)
     else
-      love.graphics.setColor(1, 0, 0, 0.25)
+      love.graphics.setColor(HARD_DISTANCE_LIMIT_COLOR)
     end
 
     love.graphics.rectangle(
@@ -141,6 +156,12 @@ function love.draw()
   love.graphics.setColor(0, 0.66, 0)
   love.graphics.setLineWidth(plot_line_width)
   love.graphics.line(custom_plot_points)
+
+  local _, _, _, height = love.window.getSafeArea()
+  local font_size = height / 20
+  love.graphics.setFont(love.graphics.newFont(font_size))
+
+  suit.draw()
 end
 
 function love.update(dt)
@@ -153,6 +174,54 @@ function love.update(dt)
 
     total_dt = total_dt - UPDATE_DELAY
   end
+
+  local _, _, _, height = love.window.getSafeArea()
+  local grid_step = height / 12
+  local padding = grid_step / 2
+
+  suit.layout:reset(
+    horizontal_offset + grid_step / 2,
+    vertical_offset - grid_step
+  )
+
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(NORMAL_DISTANCE_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", 99.5),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(2.5 * grid_step, grid_step)
+  )
+
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", 99.5),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(2.5 * grid_step, grid_step)
+  )
+
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", 99.5),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(2.5 * grid_step, grid_step)
+  )
 end
 
 function love.keypressed(key)
