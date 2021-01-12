@@ -35,6 +35,9 @@ local boundary_size = 0
 local boundary_step = 0
 local distance_sampling_step = 0
 local total_dt = 0
+local normal_time = 0
+local soft_limit_time = 0
+local hard_limit_time = 0
 
 local function _enter_fullscreen()
   local is_mobile_os = love.system.getOS() == "Android"
@@ -175,6 +178,19 @@ function love.update(dt)
     total_dt = total_dt - UPDATE_DELAY
   end
 
+  local index =
+    DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
+  local distance = iterators.difference(random_plot, custom_plot, index, true)
+  if distance < SOFT_DISTANCE_LIMIT then
+    normal_time = normal_time + dt
+  elseif distance < HARD_DISTANCE_LIMIT then
+    soft_limit_time = soft_limit_time + dt
+  else
+    hard_limit_time = hard_limit_time + dt
+  end
+
+  local total_time = normal_time + soft_limit_time + hard_limit_time
+
   local _, _, _, height = love.window.getSafeArea()
   local grid_step = height / 12
   local padding = grid_step / 2
@@ -192,7 +208,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", 99.5),
+    string.format("%.2f%%", normal_time / total_time * 100),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
     suit.layout:col(2.5 * grid_step, grid_step)
   )
@@ -205,7 +221,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", 99.5),
+    string.format("%.2f%%", soft_limit_time / total_time * 100),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
     suit.layout:col(2.5 * grid_step, grid_step)
   )
@@ -218,7 +234,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", 99.5),
+    string.format("%.2f%%", hard_limit_time / total_time * 100),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
     suit.layout:col(2.5 * grid_step, grid_step)
   )
