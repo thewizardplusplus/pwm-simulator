@@ -193,6 +193,21 @@ function love.update(dt)
   end
 
   local total_time = normal_time + soft_limit_time + hard_limit_time
+  local best_total_time =
+    best_normal_time + best_soft_limit_time + best_hard_limit_time
+  if
+    (best_total_time == 0 and normal_time ~= total_time)
+    or normal_time / total_time > best_normal_time / best_total_time
+    or (normal_time / total_time == best_normal_time / best_total_time
+      and soft_limit_time / total_time > best_soft_limit_time / best_total_time)
+  then
+    best_normal_time = normal_time
+    best_soft_limit_time = soft_limit_time
+    best_hard_limit_time = hard_limit_time
+  end
+  if best_total_time == 0 then
+    best_total_time = 1
+  end
 
   local _, _, _, height = love.window.getSafeArea()
   local grid_step = height / 12
@@ -208,7 +223,7 @@ function love.update(dt)
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
-  local best_normal_result = best_normal_time / total_time * 100
+  local best_normal_result = best_normal_time / best_total_time * 100
   local best_normal_label_width
   if best_normal_result >= 100 then
     best_normal_label_width = 2.75 * grid_step
@@ -230,7 +245,7 @@ function love.update(dt)
     suit.layout:col(best_normal_label_width, grid_step)
   )
 
-  local best_soft_limit_result = best_soft_limit_time / total_time * 100
+  local best_soft_limit_result = best_soft_limit_time / best_total_time * 100
   local best_soft_limit_label_width
   if best_soft_limit_result >= 100 then
     best_soft_limit_label_width = 2.75 * grid_step
@@ -252,7 +267,7 @@ function love.update(dt)
     suit.layout:col(best_soft_limit_label_width, grid_step)
   )
 
-  local best_hard_limit_result = best_hard_limit_time / total_time * 100
+  local best_hard_limit_result = best_hard_limit_time / best_total_time * 100
   local best_hard_limit_label_width
   if best_hard_limit_result >= 100 then
     best_hard_limit_label_width = 2.75 * grid_step
