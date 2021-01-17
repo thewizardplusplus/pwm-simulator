@@ -200,6 +200,15 @@ function love.update(dt)
     vertical_offset - grid_step
   )
 
+  local normal_result = normal_time / total_time * 100
+  local normal_label_width
+  if normal_result >= 100 then
+    normal_label_width = 2.75 * grid_step
+  elseif normal_result >= 10 then
+    normal_label_width = 2.4 * grid_step
+  else
+    normal_label_width = 2 * grid_step
+  end
   suit.layout:padding(padding)
   suit.Label(
     "#",
@@ -208,11 +217,20 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", normal_time / total_time * 100),
+    string.format("%.2f%%", normal_result),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
-    suit.layout:col(2.5 * grid_step, grid_step)
+    suit.layout:col(normal_label_width, grid_step)
   )
 
+  local soft_limit_result = soft_limit_time / total_time * 100
+  local soft_limit_label_width
+  if soft_limit_result >= 100 then
+    soft_limit_label_width = 2.75 * grid_step
+  elseif soft_limit_result >= 10 then
+    soft_limit_label_width = 2.4 * grid_step
+  else
+    soft_limit_label_width = 2 * grid_step
+  end
   suit.layout:padding(padding)
   suit.Label(
     "#",
@@ -221,11 +239,20 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", soft_limit_time / total_time * 100),
+    string.format("%.2f%%", soft_limit_result),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
-    suit.layout:col(2.5 * grid_step, grid_step)
+    suit.layout:col(soft_limit_label_width, grid_step)
   )
 
+  local hard_limit_result = hard_limit_time / total_time * 100
+  local hard_limit_label_width
+  if hard_limit_result >= 100 then
+    hard_limit_label_width = 2.75 * grid_step
+  elseif hard_limit_result >= 10 then
+    hard_limit_label_width = 2.4 * grid_step
+  else
+    hard_limit_label_width = 2 * grid_step
+  end
   suit.layout:padding(padding)
   suit.Label(
     "#",
@@ -234,9 +261,9 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", hard_limit_time / total_time * 100),
+    string.format("%.2f%%", hard_limit_result),
     _create_label_options({0.5, 0.5, 0.5}, "right"),
-    suit.layout:col(2.5 * grid_step, grid_step)
+    suit.layout:col(hard_limit_label_width, grid_step)
   )
 end
 
