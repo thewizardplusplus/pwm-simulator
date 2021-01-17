@@ -200,6 +200,12 @@ function love.update(dt)
     vertical_offset - grid_step
   )
 
+  suit.Label(
+    "Now:",
+    _create_label_options({0.5, 0.5, 0.5}, "left"),
+    suit.layout:col(1.55 * grid_step, grid_step)
+  )
+
   local normal_result = normal_time / total_time * 100
   local normal_label_width
   if normal_result >= 100 then
