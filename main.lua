@@ -197,13 +197,88 @@ function love.update(dt)
 
   suit.layout:reset(
     horizontal_offset + grid_step / 2,
-    vertical_offset - grid_step
+    vertical_offset - 1.75 * grid_step
+  )
+  suit.Label(
+    "Best:",
+    _create_label_options({0.5, 0.5, 0.5}, "left"),
+    suit.layout:col(1.7 * grid_step, grid_step)
   )
 
+  local normal_result = normal_time / total_time * 100
+  local normal_label_width
+  if normal_result >= 100 then
+    normal_label_width = 2.75 * grid_step
+  elseif normal_result >= 10 then
+    normal_label_width = 2.4 * grid_step
+  else
+    normal_label_width = 2 * grid_step
+  end
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(NORMAL_DISTANCE_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", normal_result),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(normal_label_width, grid_step)
+  )
+
+  local soft_limit_result = soft_limit_time / total_time * 100
+  local soft_limit_label_width
+  if soft_limit_result >= 100 then
+    soft_limit_label_width = 2.75 * grid_step
+  elseif soft_limit_result >= 10 then
+    soft_limit_label_width = 2.4 * grid_step
+  else
+    soft_limit_label_width = 2 * grid_step
+  end
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", soft_limit_result),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(soft_limit_label_width, grid_step)
+  )
+
+  local hard_limit_result = hard_limit_time / total_time * 100
+  local hard_limit_label_width
+  if hard_limit_result >= 100 then
+    hard_limit_label_width = 2.75 * grid_step
+  elseif hard_limit_result >= 10 then
+    hard_limit_label_width = 2.4 * grid_step
+  else
+    hard_limit_label_width = 2 * grid_step
+  end
+  suit.layout:padding(padding)
+  suit.Label(
+    "#",
+    _create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
+    suit.layout:col(0.75 * grid_step, grid_step)
+  )
+  suit.layout:padding(0)
+  suit.Label(
+    string.format("%.2f%%", hard_limit_result),
+    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    suit.layout:col(hard_limit_label_width, grid_step)
+  )
+
+  suit.layout:reset(
+    horizontal_offset + grid_step / 2,
+    vertical_offset - grid_step
+  )
   suit.Label(
     "Now:",
     _create_label_options({0.5, 0.5, 0.5}, "left"),
-    suit.layout:col(1.55 * grid_step, grid_step)
+    suit.layout:col(1.7 * grid_step, grid_step)
   )
 
   local normal_result = normal_time / total_time * 100
