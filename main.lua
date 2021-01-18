@@ -35,6 +35,7 @@ local boundary_size = 0
 local boundary_step = 0
 local distance_sampling_step = 0
 local total_dt = 0
+local update_counter = 0
 local normal_time = 0
 local soft_limit_time = 0
 local hard_limit_time = 0
@@ -179,6 +180,9 @@ function love.update(dt)
     custom_source_plot:update(is_custom_plot_factor_up and 0 or 1)
 
     total_dt = total_dt - UPDATE_DELAY
+    if update_counter < HORIZONTAL_STEP_COUNT / 2 then
+      update_counter = update_counter + 1
+    end
   end
 
   local index =
@@ -196,7 +200,7 @@ function love.update(dt)
   local best_total_time =
     best_normal_time + best_soft_limit_time + best_hard_limit_time
   if
-    (best_total_time == 0 and normal_time ~= total_time)
+    (best_total_time == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
     or normal_time / total_time > best_normal_time / best_total_time
     or (normal_time / total_time == best_normal_time / best_total_time
       and soft_limit_time / total_time > best_soft_limit_time / best_total_time)
