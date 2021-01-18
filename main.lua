@@ -232,7 +232,7 @@ function love.update(dt)
   local maximal_normal_result = math.max(normal_result, best_normal_result)
   local normal_label_width
   if maximal_normal_result >= 100 then
-    normal_label_width = 2.75 * grid_step
+    normal_label_width = 2.76 * grid_step
   elseif maximal_normal_result >= 10 then
     normal_label_width = 2.4 * grid_step
   else
@@ -257,7 +257,7 @@ function love.update(dt)
     math.max(soft_limit_result, best_soft_limit_result)
   local soft_limit_label_width
   if maximal_soft_limit_result >= 100 then
-    soft_limit_label_width = 2.75 * grid_step
+    soft_limit_label_width = 2.76 * grid_step
   elseif maximal_soft_limit_result >= 10 then
     soft_limit_label_width = 2.4 * grid_step
   else
@@ -282,7 +282,7 @@ function love.update(dt)
     math.max(hard_limit_result, best_hard_limit_result)
   local hard_limit_label_width
   if maximal_hard_limit_result >= 100 then
-    hard_limit_label_width = 2.75 * grid_step
+    hard_limit_label_width = 2.76 * grid_step
   elseif maximal_hard_limit_result >= 10 then
     hard_limit_label_width = 2.4 * grid_step
   else
