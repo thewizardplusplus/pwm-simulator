@@ -1,5 +1,7 @@
 # Change Log
 
+## [v1.3](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.3) (2021-02-06)
+
 ## [v1.2](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.2) (2021-01-18)
 
 ## [v1.1](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.1) (2021-01-10)
