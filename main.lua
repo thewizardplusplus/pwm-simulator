@@ -165,9 +165,14 @@ function love.draw()
   love.graphics.setLineWidth(plot_line_width)
   love.graphics.line(custom_plot_points)
 
-  local _, _, _, height = love.window.getSafeArea()
+  local x, y, width, height = love.window.getSafeArea()
   local font_size = height / 20
   love.graphics.setFont(love.graphics.newFont(font_size))
+
+  if pause_mode then
+    love.graphics.setColor(0, 0, 0, 0.75)
+    love.graphics.rectangle("fill", x, y, width, height)
+  end
 
   suit.draw()
 end
