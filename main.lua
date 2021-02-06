@@ -173,28 +173,31 @@ function love.draw()
 end
 
 function love.update(dt)
-  total_dt = total_dt + dt
-  if total_dt > UPDATE_DELAY then
-    local is_custom_plot_factor_up = custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
-    random_plot:update(RANDOM_PLOT_FACTOR)
-    custom_plot:update(custom_plot_factor)
-    custom_source_plot:update(is_custom_plot_factor_up and 0 or 1)
+  if not pause_mode then
+    total_dt = total_dt + dt
+    if total_dt > UPDATE_DELAY then
+      local is_custom_plot_factor_up =
+        custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
+      random_plot:update(RANDOM_PLOT_FACTOR)
+      custom_plot:update(custom_plot_factor)
+      custom_source_plot:update(is_custom_plot_factor_up and 0 or 1)
 
-    total_dt = total_dt - UPDATE_DELAY
-    if update_counter < HORIZONTAL_STEP_COUNT / 2 then
-      update_counter = update_counter + 1
+      total_dt = total_dt - UPDATE_DELAY
+      if update_counter < HORIZONTAL_STEP_COUNT / 2 then
+        update_counter = update_counter + 1
+      end
     end
-  end
 
-  local index =
-    DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
-  local distance = iterators.difference(random_plot, custom_plot, index, true)
-  if distance < SOFT_DISTANCE_LIMIT then
-    normal_time = normal_time + dt
-  elseif distance < HARD_DISTANCE_LIMIT then
-    soft_limit_time = soft_limit_time + dt
-  else
-    hard_limit_time = hard_limit_time + dt
+    local index =
+      DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
+    local distance = iterators.difference(random_plot, custom_plot, index, true)
+    if distance < SOFT_DISTANCE_LIMIT then
+      normal_time = normal_time + dt
+    elseif distance < HARD_DISTANCE_LIMIT then
+      soft_limit_time = soft_limit_time + dt
+    else
+      hard_limit_time = hard_limit_time + dt
+    end
   end
 
   local total_time = normal_time + soft_limit_time + hard_limit_time
