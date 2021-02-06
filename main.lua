@@ -42,6 +42,7 @@ local hard_limit_time = 0
 local best_normal_time = 0
 local best_soft_limit_time = 0
 local best_hard_limit_time = 0
+local pause_mode = false
 
 local function _enter_fullscreen()
   local is_mobile_os = love.system.getOS() == "Android"
@@ -213,7 +214,7 @@ function love.update(dt)
     best_total_time = 1
   end
 
-  local _, _, _, height = love.window.getSafeArea()
+  local _, _, width, height = love.window.getSafeArea()
   local grid_step = height / 12
   local padding = grid_step / 2
 
@@ -349,6 +350,20 @@ function love.update(dt)
     _create_label_options({0.5, 0.5, 0.5}, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
+
+  suit.layout:reset(
+    horizontal_offset + width - 1.5 * grid_step,
+    vertical_offset - 1.5 * grid_step
+  )
+
+  local pause_button_text = pause_mode and "|>" or "||"
+  local pause_button = suit.Button(
+    pause_button_text,
+    suit.layout:row(grid_step, grid_step)
+  )
+  if pause_button.hit then
+    pause_mode = not pause_mode
+  end
 end
 
 function love.keypressed(key)
