@@ -8,6 +8,7 @@ local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Rectangle = require("models.rectangle")
+local Color = require("models.color")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -15,9 +16,10 @@ local HORIZONTAL_STEP_COUNT = 50
 local DISTANCE_SAMPLING_RATE = 50
 local SOFT_DISTANCE_LIMIT = 0.33
 local HARD_DISTANCE_LIMIT = 0.66
-local NORMAL_DISTANCE_COLOR = {0, 1, 0, 0.25}
-local SOFT_DISTANCE_LIMIT_COLOR = {1, 1, 0, 0.25}
-local HARD_DISTANCE_LIMIT_COLOR = {1, 0, 0, 0.25}
+local NORMAL_TEXT_COLOR = Color:new(0.5, 0.5, 0.5, 1)
+local NORMAL_DISTANCE_COLOR = Color:new(0, 1, 0, 0.25)
+local SOFT_DISTANCE_LIMIT_COLOR = Color:new(1, 1, 0, 0.25)
+local HARD_DISTANCE_LIMIT_COLOR = Color:new(1, 0, 0, 0.25)
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -67,11 +69,11 @@ local function _make_screen()
 end
 
 local function _create_label_options(color, align)
-  assert(type(color) == "table")
+  assert(types.is_instance(color, Color))
   assert(align == "left" or align == "right")
 
   return {
-    color = {normal = {fg = color}},
+    color = {normal = {fg = color:channels()}},
     align = align,
     valign = "top",
   }
@@ -107,11 +109,11 @@ function love.draw()
     local index = x / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
     if distance < SOFT_DISTANCE_LIMIT then
-      love.graphics.setColor(NORMAL_DISTANCE_COLOR)
+      love.graphics.setColor(NORMAL_DISTANCE_COLOR:channels())
     elseif distance < HARD_DISTANCE_LIMIT then
-      love.graphics.setColor(SOFT_DISTANCE_LIMIT_COLOR)
+      love.graphics.setColor(SOFT_DISTANCE_LIMIT_COLOR:channels())
     else
-      love.graphics.setColor(HARD_DISTANCE_LIMIT_COLOR)
+      love.graphics.setColor(HARD_DISTANCE_LIMIT_COLOR:channels())
     end
 
     love.graphics.rectangle(
@@ -240,7 +242,7 @@ function love.update(dt)
   )
   suit.Label(
     "Best:",
-    _create_label_options({0.5, 0.5, 0.5}, "left"),
+    _create_label_options(NORMAL_TEXT_COLOR, "left"),
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
@@ -264,7 +266,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_normal_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
 
@@ -289,7 +291,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_soft_limit_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
@@ -314,7 +316,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_hard_limit_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
 
@@ -324,7 +326,7 @@ function love.update(dt)
   )
   suit.Label(
     "Now:",
-    _create_label_options({0.5, 0.5, 0.5}, "left"),
+    _create_label_options(NORMAL_TEXT_COLOR, "left"),
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
@@ -337,7 +339,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", normal_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
 
@@ -350,7 +352,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", soft_limit_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
@@ -363,7 +365,7 @@ function love.update(dt)
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", hard_limit_result),
-    _create_label_options({0.5, 0.5, 0.5}, "right"),
+    _create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
 
