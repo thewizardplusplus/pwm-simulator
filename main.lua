@@ -27,6 +27,7 @@ local random_plot = nil -- luaplot.Oscillogram
 local custom_plot = nil -- luaplot.Oscillogram
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local custom_source_plot = nil -- luaplot.Oscillogram
+local screen = nil -- models.Rectangle
 local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
@@ -87,6 +88,7 @@ function love.load()
     Oscillogram:new("custom", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
 
   local x, y, width, height = love.window.getSafeArea()
+  screen = _make_screen()
   plot_line_width = height / 80
   horizontal_step = width / HORIZONTAL_STEP_COUNT
   horizontal_offset = x
@@ -378,6 +380,10 @@ function love.update(dt)
   if pause_button.hit then
     pause_mode = not pause_mode
   end
+end
+
+function love.resize()
+  screen = _make_screen()
 end
 
 function love.keypressed(key)
