@@ -9,6 +9,7 @@ local Oscillogram = require("luaplot.oscillogram")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Rectangle = require("models.rectangle")
 local Color = require("models.color")
+local ui = require("ui")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -66,17 +67,6 @@ end
 local function _make_screen()
   local x, y, width, height = love.window.getSafeArea()
   return Rectangle:new(x, y, width, height)
-end
-
-local function _create_label_options(color, align)
-  assert(types.is_instance(color, Color))
-  assert(align == "left" or align == "right")
-
-  return {
-    color = {normal = {fg = color:channels()}},
-    align = align,
-    valign = "top",
-  }
 end
 
 function love.load()
@@ -242,7 +232,7 @@ function love.update(dt)
   )
   suit.Label(
     "Best:",
-    _create_label_options(NORMAL_TEXT_COLOR, "left"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
@@ -260,13 +250,13 @@ function love.update(dt)
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(NORMAL_DISTANCE_COLOR, "left"),
+    ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_normal_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
 
@@ -285,13 +275,13 @@ function love.update(dt)
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_soft_limit_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
@@ -310,13 +300,13 @@ function love.update(dt)
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_hard_limit_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
 
@@ -326,46 +316,46 @@ function love.update(dt)
   )
   suit.Label(
     "Now:",
-    _create_label_options(NORMAL_TEXT_COLOR, "left"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(NORMAL_DISTANCE_COLOR, "left"),
+    ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", normal_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
 
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", soft_limit_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
   suit.layout:padding(padding)
   suit.Label(
     "#",
-    _create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
     suit.layout:col(0.75 * grid_step, grid_step)
   )
   suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", hard_limit_result),
-    _create_label_options(NORMAL_TEXT_COLOR, "right"),
+    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
 
