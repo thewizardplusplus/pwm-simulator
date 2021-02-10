@@ -7,6 +7,7 @@ local types = require("luaplot.types")
 local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
+local Rectangle = require("models.rectangle")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -57,6 +58,11 @@ local function _enter_fullscreen()
   end
 
   return true
+end
+
+local function _make_screen()
+  local x, y, width, height = love.window.getSafeArea()
+  return Rectangle:new(x, y, width, height)
 end
 
 local function _create_label_options(color, align)
