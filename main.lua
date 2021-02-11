@@ -9,6 +9,7 @@ local Oscillogram = require("luaplot.oscillogram")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Rectangle = require("models.rectangle")
 local Color = require("models.color")
+local Stats = require("models.stats")
 local ui = require("ui")
 require("compat52")
 
@@ -41,9 +42,7 @@ local boundary_step = 0
 local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
-local normal_time = 0
-local soft_limit_time = 0
-local hard_limit_time = 0
+local normal_stats = Stats:new(0, 0, 0)
 local best_normal_time = 0
 local best_soft_limit_time = 0
 local best_hard_limit_time = 0
@@ -197,26 +196,26 @@ function love.update(dt)
       DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
     if distance < SOFT_DISTANCE_LIMIT then
-      normal_time = normal_time + dt
+      normal_stats.normal_time = normal_stats.normal_time + dt
     elseif distance < HARD_DISTANCE_LIMIT then
-      soft_limit_time = soft_limit_time + dt
+      normal_stats.soft_limit_time = normal_stats.soft_limit_time + dt
     else
-      hard_limit_time = hard_limit_time + dt
+      normal_stats.hard_limit_time = normal_stats.hard_limit_time + dt
     end
   end
 
-  local total_time = normal_time + soft_limit_time + hard_limit_time
+  local total_time = normal_stats.normal_time + normal_stats.soft_limit_time + normal_stats.hard_limit_time
   local best_total_time =
     best_normal_time + best_soft_limit_time + best_hard_limit_time
   if
     (best_total_time == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or normal_time / total_time > best_normal_time / best_total_time
-    or (normal_time / total_time == best_normal_time / best_total_time
-      and soft_limit_time / total_time > best_soft_limit_time / best_total_time)
+    or normal_stats.normal_time / total_time > best_normal_time / best_total_time
+    or (normal_stats.normal_time / total_time == best_normal_time / best_total_time
+      and normal_stats.soft_limit_time / total_time > best_soft_limit_time / best_total_time)
   then
-    best_normal_time = normal_time
-    best_soft_limit_time = soft_limit_time
-    best_hard_limit_time = hard_limit_time
+    best_normal_time = normal_stats.normal_time
+    best_soft_limit_time = normal_stats.soft_limit_time
+    best_hard_limit_time = normal_stats.hard_limit_time
   end
   if best_total_time == 0 then
     best_total_time = 1
@@ -236,7 +235,7 @@ function love.update(dt)
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
-  local normal_result = normal_time / total_time * 100
+  local normal_result = normal_stats.normal_time / total_time * 100
   local best_normal_result = best_normal_time / best_total_time * 100
   local maximal_normal_result = math.max(normal_result, best_normal_result)
   local normal_label_width
@@ -260,7 +259,7 @@ function love.update(dt)
     suit.layout:col(normal_label_width, grid_step)
   )
 
-  local soft_limit_result = soft_limit_time / total_time * 100
+  local soft_limit_result = normal_stats.soft_limit_time / total_time * 100
   local best_soft_limit_result = best_soft_limit_time / best_total_time * 100
   local maximal_soft_limit_result =
     math.max(soft_limit_result, best_soft_limit_result)
@@ -285,7 +284,7 @@ function love.update(dt)
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
-  local hard_limit_result = hard_limit_time / total_time * 100
+  local hard_limit_result = normal_stats.hard_limit_time / total_time * 100
   local best_hard_limit_result = best_hard_limit_time / best_total_time * 100
   local maximal_hard_limit_result =
     math.max(hard_limit_result, best_hard_limit_result)
