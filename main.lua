@@ -43,9 +43,7 @@ local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
 local normal_stats = Stats:new(0, 0, 0)
-local best_normal_time = 0
-local best_soft_limit_time = 0
-local best_hard_limit_time = 0
+local best_stats = Stats:new(0, 0, 0)
 local pause_mode = false
 
 local function _enter_fullscreen()
@@ -205,17 +203,16 @@ function love.update(dt)
   end
 
   local total_time = normal_stats.normal_time + normal_stats.soft_limit_time + normal_stats.hard_limit_time
-  local best_total_time =
-    best_normal_time + best_soft_limit_time + best_hard_limit_time
+  local best_total_time = best_stats.normal_time + best_stats.soft_limit_time + best_stats.hard_limit_time
   if
     (best_total_time == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or normal_stats.normal_time / total_time > best_normal_time / best_total_time
-    or (normal_stats.normal_time / total_time == best_normal_time / best_total_time
-      and normal_stats.soft_limit_time / total_time > best_soft_limit_time / best_total_time)
+    or normal_stats.normal_time / total_time > best_stats.normal_time / best_total_time
+    or (normal_stats.normal_time / total_time == best_stats.normal_time / best_total_time
+      and normal_stats.soft_limit_time / total_time > best_stats.soft_limit_time / best_total_time)
   then
-    best_normal_time = normal_stats.normal_time
-    best_soft_limit_time = normal_stats.soft_limit_time
-    best_hard_limit_time = normal_stats.hard_limit_time
+    best_stats.normal_time = normal_stats.normal_time
+    best_stats.soft_limit_time = normal_stats.soft_limit_time
+    best_stats.hard_limit_time = normal_stats.hard_limit_time
   end
   if best_total_time == 0 then
     best_total_time = 1
@@ -236,7 +233,7 @@ function love.update(dt)
   )
 
   local normal_result = normal_stats.normal_time / total_time * 100
-  local best_normal_result = best_normal_time / best_total_time * 100
+  local best_normal_result = best_stats.normal_time / best_total_time * 100
   local maximal_normal_result = math.max(normal_result, best_normal_result)
   local normal_label_width
   if maximal_normal_result >= 100 then
@@ -260,7 +257,7 @@ function love.update(dt)
   )
 
   local soft_limit_result = normal_stats.soft_limit_time / total_time * 100
-  local best_soft_limit_result = best_soft_limit_time / best_total_time * 100
+  local best_soft_limit_result = best_stats.soft_limit_time / best_total_time * 100
   local maximal_soft_limit_result =
     math.max(soft_limit_result, best_soft_limit_result)
   local soft_limit_label_width
@@ -285,7 +282,7 @@ function love.update(dt)
   )
 
   local hard_limit_result = normal_stats.hard_limit_time / total_time * 100
-  local best_hard_limit_result = best_hard_limit_time / best_total_time * 100
+  local best_hard_limit_result = best_stats.hard_limit_time / best_total_time * 100
   local maximal_hard_limit_result =
     math.max(hard_limit_result, best_hard_limit_result)
   local hard_limit_label_width
