@@ -204,9 +204,9 @@ function love.update(dt)
 
   if
     (best_stats:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or normal_stats.normal_time / normal_stats:total() > best_stats.normal_time / best_stats:total(true)
-    or (normal_stats.normal_time / normal_stats:total() == best_stats.normal_time / best_stats:total(true)
-      and normal_stats.soft_limit_time / normal_stats:total() > best_stats.soft_limit_time / best_stats:total(true))
+    or normal_stats:percentage("normal") > best_stats:percentage("normal", true)
+    or (normal_stats:percentage("normal") == best_stats:percentage("normal", true)
+      and normal_stats:percentage("soft_limit") > best_stats:percentage("soft_limit", true))
   then
     best_stats.normal_time = normal_stats.normal_time
     best_stats.soft_limit_time = normal_stats.soft_limit_time
@@ -227,9 +227,7 @@ function love.update(dt)
     suit.layout:col(1.7 * grid_step, grid_step)
   )
 
-  local normal_result = normal_stats.normal_time / normal_stats:total() * 100
-  local best_normal_result = best_stats.normal_time / best_stats:total() * 100
-  local maximal_normal_result = math.max(normal_result, best_normal_result)
+  local maximal_normal_result = math.max(normal_stats:percentage("normal"), best_stats:percentage("normal"))
   local normal_label_width
   if maximal_normal_result >= 100 then
     normal_label_width = 2.76 * grid_step
@@ -246,15 +244,12 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", best_normal_result),
+    string.format("%.2f%%", best_stats:percentage("normal")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
 
-  local soft_limit_result = normal_stats.soft_limit_time / normal_stats:total() * 100
-  local best_soft_limit_result = best_stats.soft_limit_time / best_stats:total() * 100
-  local maximal_soft_limit_result =
-    math.max(soft_limit_result, best_soft_limit_result)
+  local maximal_soft_limit_result = math.max(normal_stats:percentage("soft_limit"), best_stats:percentage("soft_limit"))
   local soft_limit_label_width
   if maximal_soft_limit_result >= 100 then
     soft_limit_label_width = 2.76 * grid_step
@@ -271,15 +266,12 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", best_soft_limit_result),
+    string.format("%.2f%%", best_stats:percentage("soft_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
 
-  local hard_limit_result = normal_stats.hard_limit_time / normal_stats:total() * 100
-  local best_hard_limit_result = best_stats.hard_limit_time / best_stats:total() * 100
-  local maximal_hard_limit_result =
-    math.max(hard_limit_result, best_hard_limit_result)
+  local maximal_hard_limit_result = math.max(normal_stats:percentage("hard_limit"), best_stats:percentage("hard_limit"))
   local hard_limit_label_width
   if maximal_hard_limit_result >= 100 then
     hard_limit_label_width = 2.76 * grid_step
@@ -296,7 +288,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", best_hard_limit_result),
+    string.format("%.2f%%", best_stats:percentage("hard_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
@@ -319,7 +311,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", normal_result),
+    string.format("%.2f%%", normal_stats:percentage("normal")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(normal_label_width, grid_step)
   )
@@ -332,7 +324,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", soft_limit_result),
+    string.format("%.2f%%", normal_stats:percentage("soft_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(soft_limit_label_width, grid_step)
   )
@@ -345,7 +337,7 @@ function love.update(dt)
   )
   suit.layout:padding(0)
   suit.Label(
-    string.format("%.2f%%", hard_limit_result),
+    string.format("%.2f%%", normal_stats:percentage("hard_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
     suit.layout:col(hard_limit_label_width, grid_step)
   )
