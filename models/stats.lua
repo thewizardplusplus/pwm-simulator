@@ -45,4 +45,21 @@ function Stats:total(nullable)
   return total
 end
 
+---
+-- @tparam "normal"|"soft_limit"|"hard_limit" parameter
+-- @tparam[opt=false] bool nullable
+-- @treturn number [0, 100]
+function Stats:percentage(parameter, nullable)
+  nullable = nullable or false
+
+  assert(
+    parameter == "normal"
+    or parameter == "soft_limit"
+    or parameter == "hard_limit"
+  )
+  assert(type(nullable) == "boolean")
+
+  return self[parameter .. "_time"] / self:total(nullable) * 100
+end
+
 return Stats
