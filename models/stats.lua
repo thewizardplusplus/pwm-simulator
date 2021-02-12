@@ -28,4 +28,21 @@ function Stats:initialize(normal_time, soft_limit_time, hard_limit_time)
   self.hard_limit_time = hard_limit_time
 end
 
+---
+-- @tparam[opt=false] bool nullable
+-- @treturn number
+function Stats:total(nullable)
+  nullable = nullable or false
+
+  assert(type(nullable) == "boolean")
+
+  local total = self.normal_time + self.soft_limit_time + self.hard_limit_time
+  -- for preventing division by zero
+  if not nullable and total == 0 then
+    total = 1
+  end
+
+  return total
+end
+
 return Stats
