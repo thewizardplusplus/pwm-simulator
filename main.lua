@@ -226,14 +226,7 @@ function love.update(dt)
   )
 
   local maximal_normal_result = math.max(normal_stats:percentage("normal"), best_stats:percentage("normal"))
-  local normal_label_width
-  if maximal_normal_result >= 100 then
-    normal_label_width = 2.76 * grid_step
-  elseif maximal_normal_result >= 10 then
-    normal_label_width = 2.4 * grid_step
-  else
-    normal_label_width = 2 * grid_step
-  end
+  local normal_label_width = ui._get_label_width(maximal_normal_result, grid_step)
   suit.layout:padding(padding)
   suit.Label(
     "#",
@@ -248,14 +241,7 @@ function love.update(dt)
   )
 
   local maximal_soft_limit_result = math.max(normal_stats:percentage("soft_limit"), best_stats:percentage("soft_limit"))
-  local soft_limit_label_width
-  if maximal_soft_limit_result >= 100 then
-    soft_limit_label_width = 2.76 * grid_step
-  elseif maximal_soft_limit_result >= 10 then
-    soft_limit_label_width = 2.4 * grid_step
-  else
-    soft_limit_label_width = 2 * grid_step
-  end
+  local soft_limit_label_width = ui._get_label_width(maximal_soft_limit_result, grid_step)
   suit.layout:padding(padding)
   suit.Label(
     "#",
@@ -270,14 +256,7 @@ function love.update(dt)
   )
 
   local maximal_hard_limit_result = math.max(normal_stats:percentage("hard_limit"), best_stats:percentage("hard_limit"))
-  local hard_limit_label_width
-  if maximal_hard_limit_result >= 100 then
-    hard_limit_label_width = 2.76 * grid_step
-  elseif maximal_hard_limit_result >= 10 then
-    hard_limit_label_width = 2.4 * grid_step
-  else
-    hard_limit_label_width = 2 * grid_step
-  end
+  local hard_limit_label_width = ui._get_label_width(maximal_hard_limit_result, grid_step)
   suit.layout:padding(padding)
   suit.Label(
     "#",
