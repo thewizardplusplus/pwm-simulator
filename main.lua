@@ -204,9 +204,7 @@ function love.update(dt)
 
   if
     (best_stats:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or normal_stats:percentage("normal") > best_stats:percentage("normal", true)
-    or (normal_stats:percentage("normal") == best_stats:percentage("normal", true)
-      and normal_stats:percentage("soft_limit") > best_stats:percentage("soft_limit", true))
+    or normal_stats:is_best(best_stats, true)
   then
     best_stats.normal_time = normal_stats.normal_time
     best_stats.soft_limit_time = normal_stats.soft_limit_time
