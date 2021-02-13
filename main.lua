@@ -193,22 +193,22 @@ function love.update(dt)
     local index =
       DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
+    local suitable_parameter
     if distance < SOFT_DISTANCE_LIMIT then
-      normal_stats.normal_time = normal_stats.normal_time + dt
+      suitable_parameter = "normal_time"
     elseif distance < HARD_DISTANCE_LIMIT then
-      normal_stats.soft_limit_time = normal_stats.soft_limit_time + dt
+      suitable_parameter = "soft_limit_time"
     else
-      normal_stats.hard_limit_time = normal_stats.hard_limit_time + dt
+      suitable_parameter = "hard_limit_time"
     end
+    normal_stats[suitable_parameter] = normal_stats[suitable_parameter] + dt
   end
 
   if
     (best_stats:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
     or normal_stats:is_best(best_stats, true)
   then
-    best_stats.normal_time = normal_stats.normal_time
-    best_stats.soft_limit_time = normal_stats.soft_limit_time
-    best_stats.hard_limit_time = normal_stats.hard_limit_time
+    best_stats = Stats:new(normal_stats.normal_time, normal_stats.soft_limit_time, normal_stats.hard_limit_time)
   end
 
   local _, _, width, height = love.window.getSafeArea()
