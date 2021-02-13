@@ -29,6 +29,27 @@ function Stats:initialize(normal_time, soft_limit_time, hard_limit_time)
 end
 
 ---
+-- @tparam Stats sample
+-- @tparam[opt=false] bool nullable
+-- @treturn bool
+function Stats:is_best(sample, nullable)
+  nullable = nullable or false
+
+  assert(types.is_instance(sample, Stats))
+  assert(type(nullable) == "boolean")
+
+  local self_normal_percentage = self:percentage("normal", nullable)
+  local self_soft_limit_percentage = self:percentage("soft_limit", nullable)
+
+  local sample_normal_percentage = sample:percentage("normal", nullable)
+  local sample_soft_limit_percentage = sample:percentage("soft_limit", nullable)
+
+  return self_normal_percentage > sample_normal_percentage
+    or (self_normal_percentage == sample_normal_percentage
+    and self_soft_limit_percentage > sample_soft_limit_percentage)
+end
+
+---
 -- @tparam[opt=false] bool nullable
 -- @treturn number
 function Stats:total(nullable)
