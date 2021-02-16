@@ -213,110 +213,99 @@ function love.update(dt)
 
   local _, _, width, height = love.window.getSafeArea()
   local grid_step = height / 12
-  local padding = grid_step / 2
 
-  suit.layout:reset(
+  local best_stats_layout = ui._create_label_layout(
     horizontal_offset + grid_step / 2,
-    vertical_offset - 1.75 * grid_step
+    vertical_offset - 1.75 * grid_step,
+    grid_step,
+    normal_stats,
+    best_stats
   )
+
   suit.Label(
     "Best:",
     ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
-    suit.layout:col(1.7 * grid_step, grid_step)
+    best_stats_layout:cell(1)
   )
 
-  local maximal_normal_result = math.max(normal_stats:percentage("normal"), best_stats:percentage("normal"))
-  local normal_label_width = ui._get_label_width(maximal_normal_result, grid_step)
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    best_stats_layout:cell(3)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_stats:percentage("normal")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(normal_label_width, grid_step)
+    best_stats_layout:cell(4)
   )
 
-  local maximal_soft_limit_result = math.max(normal_stats:percentage("soft_limit"), best_stats:percentage("soft_limit"))
-  local soft_limit_label_width = ui._get_label_width(maximal_soft_limit_result, grid_step)
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    best_stats_layout:cell(6)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_stats:percentage("soft_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(soft_limit_label_width, grid_step)
+    best_stats_layout:cell(7)
   )
 
-  local maximal_hard_limit_result = math.max(normal_stats:percentage("hard_limit"), best_stats:percentage("hard_limit"))
-  local hard_limit_label_width = ui._get_label_width(maximal_hard_limit_result, grid_step)
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    best_stats_layout:cell(9)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", best_stats:percentage("hard_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(hard_limit_label_width, grid_step)
+    best_stats_layout:cell(10)
   )
 
-  suit.layout:reset(
+  local normal_stats_layout = ui._create_label_layout(
     horizontal_offset + grid_step / 2,
-    vertical_offset - grid_step
+    vertical_offset - grid_step,
+    grid_step,
+    normal_stats,
+    best_stats
   )
+
   suit.Label(
     "Now:",
     ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
-    suit.layout:col(1.7 * grid_step, grid_step)
+    normal_stats_layout:cell(1)
   )
 
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    normal_stats_layout:cell(3)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", normal_stats:percentage("normal")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(normal_label_width, grid_step)
+    normal_stats_layout:cell(4)
   )
 
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    normal_stats_layout:cell(6)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", normal_stats:percentage("soft_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(soft_limit_label_width, grid_step)
+    normal_stats_layout:cell(7)
   )
 
-  suit.layout:padding(padding)
   suit.Label(
     "#",
     ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
-    suit.layout:col(0.75 * grid_step, grid_step)
+    normal_stats_layout:cell(9)
   )
-  suit.layout:padding(0)
   suit.Label(
     string.format("%.2f%%", normal_stats:percentage("hard_limit")),
     ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    suit.layout:col(hard_limit_label_width, grid_step)
+    normal_stats_layout:cell(10)
   )
 
   suit.layout:reset(
