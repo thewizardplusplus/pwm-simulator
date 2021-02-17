@@ -229,17 +229,8 @@ function love.update(dt)
     best_stats
   ))
 
-  suit.layout:reset(
-    horizontal_offset + width - 1.5 * grid_step,
-    vertical_offset - 1.5 * grid_step
-  )
-
-  local pause_button_text = pause_mode and "|>" or "||"
-  local pause_button = suit.Button(
-    pause_button_text,
-    suit.layout:row(grid_step, grid_step)
-  )
-  if pause_button.hit then
+  local update = ui._update_buttons(screen, grid_step, pause_mode)
+  if update.pause then
     pause_mode = not pause_mode
   end
 end

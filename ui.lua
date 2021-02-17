@@ -5,6 +5,8 @@ local suit = require("suit")
 local types = require("luaplot.types")
 local Stats = require("models.stats")
 local Color = require("models.color")
+local Rectangle = require("models.rectangle")
+local UiUpdate = require("models.uiupdate")
 local colors = require("constants.colors")
 
 local ui = {}
@@ -56,6 +58,29 @@ function ui._update_label_row(title, stats, label_layout)
     ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
     label_layout:cell(10)
   )
+end
+
+---
+-- @tparam Rectangle screen
+-- @tparam int grid_step
+-- @tparam bool pause
+-- @treturn UiUpdate
+function ui._update_buttons(screen, grid_step, pause)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_number_with_limits(grid_step, 0))
+  assert(type(pause) == "boolean")
+
+  suit.layout:reset(
+    screen.x + screen.width - 1.25 * grid_step,
+    screen.y + 0.25 * grid_step
+  )
+
+  local pause_button_text = pause and "|>" or "||"
+  local pause_button = suit.Button(
+    pause_button_text,
+    suit.layout:row(grid_step, grid_step)
+  )
+  return UiUpdate:new(pause_button.hit)
 end
 
 ---
