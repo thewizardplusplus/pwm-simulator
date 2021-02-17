@@ -5,8 +5,58 @@ local suit = require("suit")
 local types = require("luaplot.types")
 local Stats = require("models.stats")
 local Color = require("models.color")
+local colors = require("constants.colors")
 
 local ui = {}
+
+---
+-- @tparam string title
+-- @tparam Stats stats
+-- @tparam tab label_layout SUIT precomputed layout
+function ui._update_label_row(title, stats, label_layout)
+  assert(type(title) == "string")
+  assert(types.is_instance(stats, Stats))
+  assert(type(label_layout) == "table")
+
+  suit.Label(
+    title,
+    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "left"),
+    label_layout:cell(1)
+  )
+
+  suit.Label(
+    "#",
+    ui._create_label_options(colors.NORMAL_DISTANCE_COLOR, "left"),
+    label_layout:cell(3)
+  )
+  suit.Label(
+    string.format("%.2f%%", stats:percentage("normal")),
+    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    label_layout:cell(4)
+  )
+
+  suit.Label(
+    "#",
+    ui._create_label_options(colors.SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    label_layout:cell(6)
+  )
+  suit.Label(
+    string.format("%.2f%%", stats:percentage("soft_limit")),
+    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    label_layout:cell(7)
+  )
+
+  suit.Label(
+    "#",
+    ui._create_label_options(colors.HARD_DISTANCE_LIMIT_COLOR, "left"),
+    label_layout:cell(9)
+  )
+  suit.Label(
+    string.format("%.2f%%", stats:percentage("hard_limit")),
+    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    label_layout:cell(10)
+  )
+end
 
 ---
 -- @tparam int x

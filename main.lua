@@ -18,7 +18,6 @@ local HORIZONTAL_STEP_COUNT = 50
 local DISTANCE_SAMPLING_RATE = 50
 local SOFT_DISTANCE_LIMIT = 0.33
 local HARD_DISTANCE_LIMIT = 0.66
-local NORMAL_TEXT_COLOR = Color:new(0.5, 0.5, 0.5, 1)
 local NORMAL_DISTANCE_COLOR = Color:new(0, 1, 0, 0.25)
 local SOFT_DISTANCE_LIMIT_COLOR = Color:new(1, 1, 0, 0.25)
 local HARD_DISTANCE_LIMIT_COLOR = Color:new(1, 0, 0, 0.25)
@@ -214,99 +213,21 @@ function love.update(dt)
   local _, _, width, height = love.window.getSafeArea()
   local grid_step = height / 12
 
-  local best_stats_layout = ui._create_label_layout(
+  ui._update_label_row("Best:", best_stats, ui._create_label_layout(
     horizontal_offset + grid_step / 2,
     vertical_offset - 1.75 * grid_step,
     grid_step,
     normal_stats,
     best_stats
-  )
+  ))
 
-  suit.Label(
-    "Best:",
-    ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
-    best_stats_layout:cell(1)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
-    best_stats_layout:cell(3)
-  )
-  suit.Label(
-    string.format("%.2f%%", best_stats:percentage("normal")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    best_stats_layout:cell(4)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
-    best_stats_layout:cell(6)
-  )
-  suit.Label(
-    string.format("%.2f%%", best_stats:percentage("soft_limit")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    best_stats_layout:cell(7)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
-    best_stats_layout:cell(9)
-  )
-  suit.Label(
-    string.format("%.2f%%", best_stats:percentage("hard_limit")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    best_stats_layout:cell(10)
-  )
-
-  local normal_stats_layout = ui._create_label_layout(
+  ui._update_label_row("Now:", normal_stats, ui._create_label_layout(
     horizontal_offset + grid_step / 2,
     vertical_offset - grid_step,
     grid_step,
     normal_stats,
     best_stats
-  )
-
-  suit.Label(
-    "Now:",
-    ui._create_label_options(NORMAL_TEXT_COLOR, "left"),
-    normal_stats_layout:cell(1)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(NORMAL_DISTANCE_COLOR, "left"),
-    normal_stats_layout:cell(3)
-  )
-  suit.Label(
-    string.format("%.2f%%", normal_stats:percentage("normal")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    normal_stats_layout:cell(4)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(SOFT_DISTANCE_LIMIT_COLOR, "left"),
-    normal_stats_layout:cell(6)
-  )
-  suit.Label(
-    string.format("%.2f%%", normal_stats:percentage("soft_limit")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    normal_stats_layout:cell(7)
-  )
-
-  suit.Label(
-    "#",
-    ui._create_label_options(HARD_DISTANCE_LIMIT_COLOR, "left"),
-    normal_stats_layout:cell(9)
-  )
-  suit.Label(
-    string.format("%.2f%%", normal_stats:percentage("hard_limit")),
-    ui._create_label_options(NORMAL_TEXT_COLOR, "right"),
-    normal_stats_layout:cell(10)
-  )
+  ))
 
   suit.layout:reset(
     horizontal_offset + width - 1.5 * grid_step,
