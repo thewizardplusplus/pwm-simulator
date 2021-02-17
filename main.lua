@@ -2,7 +2,6 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
-local suit = require("suit")
 local types = require("luaplot.types")
 local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
@@ -162,15 +161,12 @@ function love.draw()
   love.graphics.line(custom_plot_points)
 
   local x, y, width, height = love.window.getSafeArea()
-  local font_size = height / 20
-  love.graphics.setFont(love.graphics.newFont(font_size))
-
   if pause_mode then
     love.graphics.setColor(0, 0, 0, 0.75)
     love.graphics.rectangle("fill", x, y, width, height)
   end
 
-  suit.draw()
+  ui.draw(screen)
 end
 
 function love.update(dt)
