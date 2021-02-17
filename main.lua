@@ -210,11 +210,7 @@ function love.update(dt)
     best_stats = Stats:new(normal_stats.normal_time, normal_stats.soft_limit_time, normal_stats.hard_limit_time)
   end
 
-  local _, _, width, height = love.window.getSafeArea()
-  local grid_step = height / 12
-  ui._update_labels(screen, grid_step, normal_stats, best_stats)
-
-  local update = ui._update_buttons(screen, grid_step, pause_mode)
+  local update = ui.update(screen, normal_stats, best_stats, pause_mode)
   if update.pause then
     pause_mode = not pause_mode
   end

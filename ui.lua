@@ -11,6 +11,22 @@ local colors = require("constants.colors")
 
 local ui = {}
 
+-- @tparam Rectangle screen
+-- @tparam Stats normal_stats
+-- @tparam Stats best_stats
+-- @tparam bool pause
+-- @treturn UiUpdate
+function ui.update(screen, normal_stats, best_stats, pause)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_instance(normal_stats, Stats))
+  assert(types.is_instance(best_stats, Stats))
+  assert(type(pause) == "boolean")
+
+  local grid_step = screen.height / 12
+  ui._update_labels(screen, grid_step, normal_stats, best_stats)
+  return ui._update_buttons(screen, grid_step, pause)
+end
+
 ---
 -- @tparam Rectangle screen
 -- @tparam int grid_step
