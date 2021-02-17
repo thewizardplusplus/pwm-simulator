@@ -83,4 +83,19 @@ function Stats:percentage(parameter, nullable)
   return self[parameter .. "_time"] / self:total(nullable) * 100
 end
 
+---
+-- @tparam "normal"|"soft_limit"|"hard_limit" parameter
+-- @tparam number delta
+function Stats:increase(parameter, delta)
+  assert(
+    parameter == "normal"
+    or parameter == "soft_limit"
+    or parameter == "hard_limit"
+  )
+  assert(types.is_number_with_limits(delta))
+
+  parameter = parameter .. "_time"
+  self[parameter] = self[parameter] + delta
+end
+
 return Stats

@@ -190,13 +190,13 @@ function love.update(dt)
     local distance = iterators.difference(random_plot, custom_plot, index, true)
     local suitable_parameter
     if distance < SOFT_DISTANCE_LIMIT then
-      suitable_parameter = "normal_time"
+      suitable_parameter = "normal"
     elseif distance < HARD_DISTANCE_LIMIT then
-      suitable_parameter = "soft_limit_time"
+      suitable_parameter = "soft_limit"
     else
-      suitable_parameter = "hard_limit_time"
+      suitable_parameter = "hard_limit"
     end
-    normal_stats[suitable_parameter] = normal_stats[suitable_parameter] + dt
+    normal_stats:increase(suitable_parameter, dt)
   end
 
   if
