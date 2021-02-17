@@ -212,22 +212,7 @@ function love.update(dt)
 
   local _, _, width, height = love.window.getSafeArea()
   local grid_step = height / 12
-
-  ui._update_label_row("Best:", best_stats, ui._create_label_layout(
-    horizontal_offset + grid_step / 2,
-    vertical_offset - 1.75 * grid_step,
-    grid_step,
-    normal_stats,
-    best_stats
-  ))
-
-  ui._update_label_row("Now:", normal_stats, ui._create_label_layout(
-    horizontal_offset + grid_step / 2,
-    vertical_offset - grid_step,
-    grid_step,
-    normal_stats,
-    best_stats
-  ))
+  ui._update_labels(screen, grid_step, normal_stats, best_stats)
 
   local update = ui._update_buttons(screen, grid_step, pause_mode)
   if update.pause then

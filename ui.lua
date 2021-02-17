@@ -12,6 +12,34 @@ local colors = require("constants.colors")
 local ui = {}
 
 ---
+-- @tparam Rectangle screen
+-- @tparam int grid_step
+-- @tparam Stats normal_stats
+-- @tparam Stats best_stats
+function ui._update_labels(screen, grid_step, normal_stats, best_stats)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_number_with_limits(grid_step, 0))
+  assert(types.is_instance(normal_stats, Stats))
+  assert(types.is_instance(best_stats, Stats))
+
+  ui._update_label_row("Best:", best_stats, ui._create_label_layout(
+    screen.x + 0.25 * grid_step,
+    screen.y + 0.25 * grid_step,
+    grid_step,
+    normal_stats,
+    best_stats
+  ))
+
+  ui._update_label_row("Now:", normal_stats, ui._create_label_layout(
+    screen.x + 0.25 * grid_step,
+    screen.y + grid_step,
+    grid_step,
+    normal_stats,
+    best_stats
+  ))
+end
+
+---
 -- @tparam string title
 -- @tparam Stats stats
 -- @tparam tab label_layout SUIT precomputed layout
