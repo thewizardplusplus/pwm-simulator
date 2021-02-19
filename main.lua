@@ -133,10 +133,8 @@ function love.draw()
   drawing._draw_plot(custom_source_plot, iterator, Color(0, 0.33, 0, 1), plot_line_width / 2)
   drawing._draw_plot(custom_plot, iterator, Color(0, 0.66, 0, 1), plot_line_width)
 
-  local x, y, width, height = love.window.getSafeArea()
   if pause_mode then
-    love.graphics.setColor(0, 0, 0, 0.75)
-    love.graphics.rectangle("fill", x, y, width, height)
+    drawing._draw_pause_background(screen)
   end
 
   ui.draw(screen)

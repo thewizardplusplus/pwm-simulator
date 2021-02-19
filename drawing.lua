@@ -5,6 +5,7 @@ local types = require("luaplot.types")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Color = require("models.color")
+local Rectangle = require("models.rectangle")
 
 local drawing = {}
 
@@ -29,6 +30,21 @@ function drawing._draw_plot(plot, iterator, color, width)
   love.graphics.setLineJoin("bevel")
   love.graphics.setLineWidth(width)
   love.graphics.line(plot_points)
+end
+
+---
+-- @tparam Rectangle screen
+function drawing._draw_pause_background(screen)
+  assert(types.is_instance(screen, Rectangle))
+
+  love.graphics.setColor(0, 0, 0, 0.75)
+  love.graphics.rectangle(
+    "fill",
+    screen.x,
+    screen.y,
+    screen.width,
+    screen.height
+  )
 end
 
 return drawing
