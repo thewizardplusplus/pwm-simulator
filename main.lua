@@ -9,6 +9,7 @@ local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Rectangle = require("models.rectangle")
 local Color = require("models.color")
 local Stats = require("models.stats")
+local drawing = require("drawing")
 local ui = require("ui")
 require("compat52")
 
@@ -128,37 +129,9 @@ function love.draw()
       y = point * vertical_size + vertical_offset,
     }
   end)
-
-  local random_plot_points = {}
-  for _, point in ipairs(iterator:with(random_plot)) do
-    table.insert(random_plot_points, point.x)
-    table.insert(random_plot_points, point.y)
-  end
-
-  love.graphics.setColor(0, 0, 0.5)
-  love.graphics.setLineJoin("bevel")
-  love.graphics.setLineWidth(plot_line_width)
-  love.graphics.line(random_plot_points)
-
-  local custom_source_plot_points = {}
-  for _, point in ipairs(iterator:with(custom_source_plot)) do
-    table.insert(custom_source_plot_points, point.x)
-    table.insert(custom_source_plot_points, point.y)
-  end
-
-  love.graphics.setColor(0, 0.33, 0)
-  love.graphics.setLineWidth(plot_line_width / 2)
-  love.graphics.line(custom_source_plot_points)
-
-  local custom_plot_points = {}
-  for _, point in ipairs(iterator:with(custom_plot)) do
-    table.insert(custom_plot_points, point.x)
-    table.insert(custom_plot_points, point.y)
-  end
-
-  love.graphics.setColor(0, 0.66, 0)
-  love.graphics.setLineWidth(plot_line_width)
-  love.graphics.line(custom_plot_points)
+  drawing._draw_plot(random_plot, iterator, Color(0, 0, 0.5, 1), plot_line_width)
+  drawing._draw_plot(custom_source_plot, iterator, Color(0, 0.33, 0, 1), plot_line_width / 2)
+  drawing._draw_plot(custom_plot, iterator, Color(0, 0.66, 0, 1), plot_line_width)
 
   local x, y, width, height = love.window.getSafeArea()
   if pause_mode then
