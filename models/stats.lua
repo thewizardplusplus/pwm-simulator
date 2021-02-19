@@ -78,6 +78,12 @@ function Stats:total(nullable)
 end
 
 ---
+-- @treturn Stats
+function Stats:copy()
+  return Stats:new(self.normal_time, self.soft_limit_time, self.hard_limit_time)
+end
+
+---
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
 -- @tparam[opt=false] bool nullable
 -- @treturn number [0, 100]

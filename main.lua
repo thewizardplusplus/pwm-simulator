@@ -203,7 +203,7 @@ function love.update(dt)
     (best_stats:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
     or normal_stats:is_best(best_stats, true)
   then
-    best_stats = Stats:new(normal_stats.normal_time, normal_stats.soft_limit_time, normal_stats.hard_limit_time)
+    best_stats = normal_stats:copy()
   end
 
   local update = ui.update(screen, normal_stats, best_stats, pause_mode)
