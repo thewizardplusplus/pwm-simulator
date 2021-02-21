@@ -177,7 +177,7 @@ function love.update(dt)
     best_stats = normal_stats:copy()
   end
 
-  local update = ui.update(screen, normal_stats, best_stats, pause_mode)
+  local update = ui.update(screen, vertical_size, normal_stats, best_stats, pause_mode)
   if update.pause then
     pause_mode = not pause_mode
   end
