@@ -37,7 +37,7 @@ function ui.update(screen, plot_height, normal_stats, best_stats, pause)
 
   local grid_step = screen.height / 12
   ui._update_labels(screen, grid_step, plot_height, normal_stats, best_stats)
-  return ui._update_buttons(screen, grid_step, pause)
+  return ui._update_buttons(screen, grid_step, plot_height, pause)
 end
 
 ---
@@ -130,16 +130,19 @@ end
 ---
 -- @tparam Rectangle screen
 -- @tparam int grid_step
+-- @tparam int plot_height
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui._update_buttons(screen, grid_step, pause)
+function ui._update_buttons(screen, grid_step, plot_height, pause)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(grid_step, 0))
+  assert(types.is_number_with_limits(plot_height, 0))
   assert(type(pause) == "boolean")
 
+  local vertical_offset = screen.y + (screen.height - plot_height) / 2
   suit.layout:reset(
-    screen.x + screen.width - 1.25 * grid_step,
-    screen.y + 0.25 * grid_step
+    screen.x + screen.width - 1.5 * grid_step,
+    vertical_offset - 1.5 * grid_step
   )
 
   local pause_button_text = pause and "|>" or "||"
