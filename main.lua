@@ -2,10 +2,8 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
-local types = require("luaplot.types")
 local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
-local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Rectangle = require("models.rectangle")
 local Color = require("models.color")
 local Stats = require("models.stats")
@@ -120,18 +118,7 @@ function love.draw()
     end
   end
 
-  local iterator = PlotIteratorFactory:new(function(index, point)
-    assert(types.is_number_with_limits(index, 1))
-    assert(types.is_number_with_limits(point))
-
-    return {
-      x = (index - 1) * horizontal_step + horizontal_offset,
-      y = point * vertical_size + vertical_offset,
-    }
-  end)
-  drawing._draw_plot(random_plot, iterator, Color(0, 0, 0.5, 1), plot_line_width)
-  drawing._draw_plot(custom_source_plot, iterator, Color(0, 0.33, 0, 1), plot_line_width / 2)
-  drawing._draw_plot(custom_plot, iterator, Color(0, 0.66, 0, 1), plot_line_width)
+  drawing._draw_plots(screen, vertical_size, horizontal_step, random_plot, custom_source_plot, custom_plot)
 
   if pause_mode then
     drawing._draw_pause_background(screen)
