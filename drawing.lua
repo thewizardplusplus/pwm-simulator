@@ -6,6 +6,7 @@ local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
+local Point = require("models.point")
 
 local drawing = {}
 
@@ -36,10 +37,10 @@ function drawing._draw_plots(
     assert(types.is_number_with_limits(index, 1))
     assert(types.is_number_with_limits(point))
 
-    return {
-      x = screen.x + (index - 1) * plot_step,
-      y = vertical_offset + point * plot_height,
-    }
+    return Point:new(
+      screen.x + (index - 1) * plot_step,
+      vertical_offset + point * plot_height
+    )
   end)
 
   local plot_line_width = screen.height / 80
