@@ -13,6 +13,29 @@ local drawing = {}
 ---
 -- @tparam Rectangle screen
 -- @tparam int plot_height
+function drawing._draw_boundaries(screen, plot_height)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_number_with_limits(plot_height, 0))
+
+  local boundary_line_width = screen.height / 320
+  love.graphics.setColor(0.5, 0.5, 0.5)
+  love.graphics.setLineWidth(boundary_line_width)
+
+  local boundary_step = screen.width / 40
+  local vertical_offset = screen.y + (screen.height - plot_height) / 2
+  for x = 0, screen.width, 1.5 * boundary_step do
+    for _, y in ipairs({0, plot_height}) do
+      love.graphics.line(
+        screen.x + x, vertical_offset + y,
+        screen.x + x + boundary_step, vertical_offset + y
+      )
+    end
+  end
+end
+
+---
+-- @tparam Rectangle screen
+-- @tparam int plot_height
 -- @tparam int plot_step
 -- @tparam Plot random_plot
 -- @tparam Plot custom_source_plot

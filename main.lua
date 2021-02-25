@@ -29,13 +29,10 @@ local custom_plot = nil -- luaplot.Oscillogram
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local custom_source_plot = nil -- luaplot.Oscillogram
 local screen = nil -- models.Rectangle
-local plot_line_width = 0
 local horizontal_step = 0
 local horizontal_offset = 0
 local vertical_size = 0
 local vertical_offset = 0
-local boundary_size = 0
-local boundary_step = 0
 local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
@@ -75,13 +72,10 @@ function love.load()
 
   local x, y, width, height = love.window.getSafeArea()
   screen = _make_screen()
-  plot_line_width = height / 80
   horizontal_step = width / HORIZONTAL_STEP_COUNT
   horizontal_offset = x
   vertical_size = height / 1.5
   vertical_offset = y + (height - vertical_size) / 2
-  boundary_size = width
-  boundary_step = boundary_size / 40
   distance_sampling_step = (width / 2) / DISTANCE_SAMPLING_RATE
 end
 
@@ -107,16 +101,7 @@ function love.draw()
     )
   end
 
-  love.graphics.setColor(0.5, 0.5, 0.5)
-  love.graphics.setLineWidth(plot_line_width / 4)
-  for x = 0, boundary_size, 1.5 * boundary_step do
-    for _, y in ipairs({0, vertical_size}) do
-      love.graphics.line(
-        x + horizontal_offset, y + vertical_offset,
-        x + boundary_step + horizontal_offset, y + vertical_offset
-      )
-    end
-  end
+  drawing._draw_boundaries(screen, vertical_size)
 
   drawing._draw_plots(screen, vertical_size, horizontal_step, random_plot, custom_source_plot, custom_plot)
 
