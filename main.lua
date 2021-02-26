@@ -5,10 +5,10 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
 local Rectangle = require("models.rectangle")
-local Color = require("models.color")
 local Stats = require("models.stats")
 local drawing = require("drawing")
 local ui = require("ui")
+local colors = require("constants.colors")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -16,9 +16,6 @@ local HORIZONTAL_STEP_COUNT = 50
 local DISTANCE_SAMPLING_RATE = 50
 local SOFT_DISTANCE_LIMIT = 0.33
 local HARD_DISTANCE_LIMIT = 0.66
-local NORMAL_DISTANCE_COLOR = Color:new(0, 1, 0, 0.25)
-local SOFT_DISTANCE_LIMIT_COLOR = Color:new(1, 1, 0, 0.25)
-local HARD_DISTANCE_LIMIT_COLOR = Color:new(1, 0, 0, 0.25)
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -86,13 +83,15 @@ function love.draw()
 
     local index = x / horizontal_step + 1
     local distance = iterators.difference(random_plot, custom_plot, index, true)
+    local suitable_color
     if distance < SOFT_DISTANCE_LIMIT then
-      love.graphics.setColor(NORMAL_DISTANCE_COLOR:channels())
+      suitable_color = colors.NORMAL_DISTANCE_COLOR
     elseif distance < HARD_DISTANCE_LIMIT then
-      love.graphics.setColor(SOFT_DISTANCE_LIMIT_COLOR:channels())
+      suitable_color = colors.SOFT_DISTANCE_LIMIT_COLOR
     else
-      love.graphics.setColor(HARD_DISTANCE_LIMIT_COLOR:channels())
+      suitable_color = colors.HARD_DISTANCE_LIMIT_COLOR
     end
+    love.graphics.setColor(suitable_color:channels())
 
     love.graphics.rectangle(
       "fill",
