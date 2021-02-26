@@ -2,13 +2,14 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
-local iterators = require("luaplot.iterators")
 local Oscillogram = require("luaplot.oscillogram")
 local Rectangle = require("models.rectangle")
 local Stats = require("models.stats")
+local DistanceLimit = require("models.distancelimit")
 local drawing = require("drawing")
 local ui = require("ui")
 local colors = require("constants.colors")
+local iteratorutils = require("iteratorutils")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -82,15 +83,11 @@ function love.draw()
     x = x + distance_sampling_step
 
     local index = x / horizontal_step + 1
-    local distance = iterators.difference(random_plot, custom_plot, index, true)
-    local suitable_color
-    if distance < SOFT_DISTANCE_LIMIT then
-      suitable_color = colors.NORMAL_DISTANCE_COLOR
-    elseif distance < HARD_DISTANCE_LIMIT then
-      suitable_color = colors.SOFT_DISTANCE_LIMIT_COLOR
-    else
-      suitable_color = colors.HARD_DISTANCE_LIMIT_COLOR
-    end
+    local suitable_color = iteratorutils.select_case_by_distance(random_plot, custom_plot, index, {
+      DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
+      DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
+      DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
+    })
     love.graphics.setColor(suitable_color:channels())
 
     love.graphics.rectangle(
@@ -129,15 +126,11 @@ function love.update(dt)
 
     local index =
       DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
-    local distance = iterators.difference(random_plot, custom_plot, index, true)
-    local suitable_parameter
-    if distance < SOFT_DISTANCE_LIMIT then
-      suitable_parameter = "normal"
-    elseif distance < HARD_DISTANCE_LIMIT then
-      suitable_parameter = "soft_limit"
-    else
-      suitable_parameter = "hard_limit"
-    end
+    local suitable_parameter = iteratorutils.select_case_by_distance(random_plot, custom_plot, index, {
+      DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
+      DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
+      DistanceLimit:new(math.huge, "hard_limit"),
+    })
     normal_stats:increase(suitable_parameter, dt)
   end
 
