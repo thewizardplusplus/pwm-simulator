@@ -2,6 +2,7 @@
 -- @module drawing
 
 local types = require("luaplot.types")
+local iteratorutils = require("iteratorutils")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local Color = require("models.color")
@@ -9,6 +10,54 @@ local Rectangle = require("models.rectangle")
 local Point = require("models.point")
 
 local drawing = {}
+
+---
+-- @tparam Rectangle screen
+-- @tparam int plot_height
+-- @tparam int plot_step
+-- @tparam int sampling_rate
+-- @tparam Plot random_plot
+-- @tparam Plot custom_plot
+-- @tparam {DistanceLimit,...} cases
+function drawing._draw_distance(
+  screen,
+  plot_height,
+  plot_step,
+  sampling_rate,
+  random_plot,
+  custom_plot,
+  cases
+)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_number_with_limits(plot_height, 0))
+  assert(types.is_number_with_limits(plot_step, 0))
+  assert(types.is_number_with_limits(sampling_rate, 0))
+  assert(types.is_instance(random_plot, Plot))
+  assert(types.is_instance(custom_plot, Plot))
+  assert(type(cases) == "table")
+
+  local x = 0
+  local sampling_step = (screen.width / 2) / sampling_rate
+  local vertical_offset = screen.y + (screen.height - plot_height) / 2
+  for _ = 1, sampling_rate do
+    x = x + sampling_step
+
+    local index = x / plot_step + 1
+    local suitable_color = iteratorutils.select_case_by_distance(
+      random_plot,
+      custom_plot,
+      index,
+      cases
+    )
+    love.graphics.setColor(suitable_color:channels())
+
+    love.graphics.rectangle(
+      "fill",
+      screen.x + x - sampling_step, vertical_offset,
+      sampling_step, plot_height
+    )
+  end
+end
 
 ---
 -- @tparam Rectangle screen

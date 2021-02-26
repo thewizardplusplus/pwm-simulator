@@ -28,9 +28,7 @@ local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local custom_source_plot = nil -- luaplot.Oscillogram
 local screen = nil -- models.Rectangle
 local horizontal_step = 0
-local horizontal_offset = 0
 local vertical_size = 0
-local vertical_offset = 0
 local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
@@ -68,34 +66,19 @@ function love.load()
   custom_source_plot =
     Oscillogram:new("custom", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
 
-  local x, y, width, height = love.window.getSafeArea()
+  local _, _, width, height = love.window.getSafeArea()
   screen = _make_screen()
   horizontal_step = width / HORIZONTAL_STEP_COUNT
-  horizontal_offset = x
   vertical_size = height / 1.5
-  vertical_offset = y + (height - vertical_size) / 2
   distance_sampling_step = (width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
-  local x = 0
-  for _ = 1, DISTANCE_SAMPLING_RATE do
-    x = x + distance_sampling_step
-
-    local index = x / horizontal_step + 1
-    local suitable_color = iteratorutils.select_case_by_distance(random_plot, custom_plot, index, {
-      DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
-      DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
-      DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
-    })
-    love.graphics.setColor(suitable_color:channels())
-
-    love.graphics.rectangle(
-      "fill",
-      x - distance_sampling_step + horizontal_offset, vertical_offset,
-      distance_sampling_step, vertical_size
-    )
-  end
+  drawing._draw_distance(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, random_plot, custom_plot, {
+    DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
+    DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
+    DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
+  })
 
   drawing._draw_boundaries(screen, vertical_size)
 
