@@ -68,19 +68,11 @@ function love.load()
 end
 
 function love.draw()
-  drawing._draw_distance(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, plots, {
+  drawing.draw_game(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, plots, pause_mode, {
     DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
     DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
     DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
   })
-
-  drawing._draw_boundaries(screen, vertical_size)
-
-  drawing._draw_plots(screen, vertical_size, horizontal_step, plots)
-
-  if pause_mode then
-    drawing._draw_pause_background(screen)
-  end
 
   ui.draw(screen)
 end

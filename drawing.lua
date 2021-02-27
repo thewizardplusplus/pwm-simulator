@@ -18,6 +18,46 @@ local drawing = {}
 -- @tparam int plot_step
 -- @tparam int sampling_rate
 -- @tparam PlotGroup plots
+-- @tparam bool pause
+-- @tparam {DistanceLimit,...} cases
+function drawing.draw_game(
+  screen,
+  plot_height,
+  plot_step,
+  sampling_rate,
+  plots,
+  pause,
+  cases
+)
+  assert(types.is_instance(screen, Rectangle))
+  assert(types.is_number_with_limits(plot_height, 0))
+  assert(types.is_number_with_limits(plot_step, 0))
+  assert(types.is_number_with_limits(sampling_rate, 0))
+  assert(types.is_instance(plots, PlotGroup))
+  assert(type(pause) == "boolean")
+  assert(type(cases) == "table")
+
+  drawing._draw_distance(
+    screen,
+    plot_height,
+    plot_step,
+    sampling_rate,
+    plots,
+    cases
+  )
+  drawing._draw_boundaries(screen, plot_height)
+  drawing._draw_plots(screen, plot_height, plot_step, plots)
+  if pause then
+    drawing._draw_pause_background(screen)
+  end
+end
+
+---
+-- @tparam Rectangle screen
+-- @tparam int plot_height
+-- @tparam int plot_step
+-- @tparam int sampling_rate
+-- @tparam PlotGroup plots
 -- @tparam {DistanceLimit,...} cases
 function drawing._draw_distance(
   screen,
