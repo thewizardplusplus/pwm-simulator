@@ -3,11 +3,12 @@
 
 local suit = require("suit")
 local types = require("luaplot.types")
+local mathutils = require("mathutils")
+local colors = require("constants.colors")
 local Stats = require("models.stats")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local UiUpdate = require("models.uiupdate")
-local colors = require("constants.colors")
 
 local ui = {}
 
@@ -222,8 +223,7 @@ function ui._get_label_width(value, grid_step)
     label_width = 2 * grid_step
   end
 
-  -- rounding to an integer
-  return math.floor(label_width + 0.5)
+  return mathutils.round_positive(label_width)
 end
 
 ---
