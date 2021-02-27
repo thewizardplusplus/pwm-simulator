@@ -152,26 +152,12 @@ function ui._create_label_layout(x, y, grid_step, stats)
   assert(types.is_number_with_limits(grid_step, 0))
   assert(types.is_instance(stats, StatsGroup))
 
-  local maximal_normal_result = math.max(
-    stats.current:percentage("normal"),
-    stats.best:percentage("normal")
-  )
   local normal_label_width =
-    ui._get_label_width(maximal_normal_result, grid_step)
-
-  local maximal_soft_limit_result = math.max(
-    stats.current:percentage("soft_limit"),
-    stats.best:percentage("soft_limit")
-  )
+    ui._get_label_width(stats:max_percentage("normal"), grid_step)
   local soft_limit_label_width =
-    ui._get_label_width(maximal_soft_limit_result, grid_step)
-
-  local maximal_hard_limit_result = math.max(
-    stats.current:percentage("hard_limit"),
-    stats.best:percentage("hard_limit")
-  )
+    ui._get_label_width(stats:max_percentage("soft_limit"), grid_step)
   local hard_limit_label_width =
-    ui._get_label_width(maximal_hard_limit_result, grid_step)
+    ui._get_label_width(stats:max_percentage("hard_limit"), grid_step)
 
   local padding = grid_step / 2
   return suit.layout:cols({
