@@ -116,11 +116,8 @@ function love.update(dt)
     stats.current:increase(suitable_parameter, dt)
   end
 
-  if
-    (stats.best:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or stats.current:is_best(stats.best, true)
-  then
-    stats.best = stats.current:copy()
+  if update_counter == HORIZONTAL_STEP_COUNT / 2 then
+    stats:update(true)
   end
 
   local update = ui.update(screen, vertical_size, stats, pause_mode)

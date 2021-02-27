@@ -35,4 +35,18 @@ function StatsGroup:max_percentage(parameter, nullable)
   )
 end
 
+---
+-- @tparam[opt=false] bool nullable
+function StatsGroup:update(nullable)
+  nullable = nullable or false
+
+  assert(type(nullable) == "boolean")
+
+  local is_best_null = self.best:total(nullable) == 0
+  local is_current_best = self.current:is_best(self.best, nullable)
+  if is_best_null or is_current_best then
+    self.best = self.current:copy()
+  end
+end
+
 return StatsGroup
