@@ -38,7 +38,6 @@ function drawing._draw_distance(
 
   local x = 0
   local sampling_step = (screen.width / 2) / sampling_rate
-  local vertical_offset = screen.y + (screen.height - plot_height) / 2
   for _ = 1, sampling_rate do
     x = x + sampling_step
 
@@ -53,7 +52,7 @@ function drawing._draw_distance(
 
     love.graphics.rectangle(
       "fill",
-      screen.x + x - sampling_step, vertical_offset,
+      screen.x + x - sampling_step, screen:vertical_offset(plot_height),
       sampling_step, plot_height
     )
   end
@@ -71,12 +70,11 @@ function drawing._draw_boundaries(screen, plot_height)
   love.graphics.setLineWidth(boundary_line_width)
 
   local boundary_step = screen.width / 40
-  local vertical_offset = screen.y + (screen.height - plot_height) / 2
   for x = 0, screen.width, 1.5 * boundary_step do
     for _, y in ipairs({0, plot_height}) do
       love.graphics.line(
-        screen.x + x, vertical_offset + y,
-        screen.x + x + boundary_step, vertical_offset + y
+        screen.x + x, screen:vertical_offset(plot_height) + y,
+        screen.x + x + boundary_step, screen:vertical_offset(plot_height) + y
       )
     end
   end
@@ -104,14 +102,13 @@ function drawing._draw_plots(
   assert(types.is_instance(custom_source_plot, Plot))
   assert(types.is_instance(custom_plot, Plot))
 
-  local vertical_offset = screen.y + (screen.height - plot_height) / 2
   local iterator = PlotIteratorFactory:new(function(index, point)
     assert(types.is_number_with_limits(index, 1))
     assert(types.is_number_with_limits(point))
 
     return Point:new(
       screen.x + (index - 1) * plot_step,
-      vertical_offset + point * plot_height
+      screen:vertical_offset(plot_height) + point * plot_height
     )
   end)
 

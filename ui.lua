@@ -59,11 +59,9 @@ function ui._update_labels(
   assert(types.is_instance(normal_stats, Stats))
   assert(types.is_instance(best_stats, Stats))
 
-  local vertical_offset = screen.y + (screen.height - plot_height) / 2
-
   ui._update_label_row("Best:", best_stats, ui._create_label_layout(
     screen.x + grid_step / 2,
-    vertical_offset - 1.75 * grid_step,
+    screen:vertical_offset(plot_height) - 1.75 * grid_step,
     grid_step,
     normal_stats,
     best_stats
@@ -71,7 +69,7 @@ function ui._update_labels(
 
   ui._update_label_row("Now:", normal_stats, ui._create_label_layout(
     screen.x + grid_step / 2,
-    vertical_offset - grid_step,
+    screen:vertical_offset(plot_height) - grid_step,
     grid_step,
     normal_stats,
     best_stats
@@ -139,10 +137,9 @@ function ui._update_buttons(screen, grid_step, plot_height, pause)
   assert(types.is_number_with_limits(plot_height, 0))
   assert(type(pause) == "boolean")
 
-  local vertical_offset = screen.y + (screen.height - plot_height) / 2
   suit.layout:reset(
     screen.x + screen.width - 1.5 * grid_step,
-    vertical_offset - 1.5 * grid_step
+    screen:vertical_offset(plot_height) - 1.5 * grid_step
   )
 
   local pause_button_text = pause and "|>" or "||"
