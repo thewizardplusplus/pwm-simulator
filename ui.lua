@@ -6,6 +6,7 @@ local types = require("luaplot.types")
 local mathutils = require("mathutils")
 local colors = require("constants.colors")
 local Stats = require("models.stats")
+local StatsGroup = require("models.statsgroup")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local UiUpdate = require("models.uiupdate")
@@ -25,19 +26,17 @@ end
 
 -- @tparam Rectangle screen
 -- @tparam int plot_height
--- @tparam Stats normal_stats
--- @tparam Stats best_stats
+-- @tparam StatsGroup stats
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui.update(screen, plot_height, normal_stats, best_stats, pause)
+function ui.update(screen, plot_height, stats, pause)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(plot_height, 0))
-  assert(types.is_instance(normal_stats, Stats))
-  assert(types.is_instance(best_stats, Stats))
+  assert(types.is_instance(stats, StatsGroup))
   assert(type(pause) == "boolean")
 
   local grid_step = screen.height / 12
-  ui._update_labels(screen, grid_step, plot_height, normal_stats, best_stats)
+  ui._update_labels(screen, grid_step, plot_height, stats)
   return ui._update_buttons(screen, grid_step, plot_height, pause)
 end
 
@@ -45,35 +44,25 @@ end
 -- @tparam Rectangle screen
 -- @tparam int grid_step
 -- @tparam int plot_height
--- @tparam Stats normal_stats
--- @tparam Stats best_stats
-function ui._update_labels(
-  screen,
-  grid_step,
-  plot_height,
-  normal_stats,
-  best_stats
-)
+-- @tparam StatsGroup stats
+function ui._update_labels(screen, grid_step, plot_height, stats)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(grid_step, 0))
   assert(types.is_number_with_limits(plot_height, 0))
-  assert(types.is_instance(normal_stats, Stats))
-  assert(types.is_instance(best_stats, Stats))
+  assert(types.is_instance(stats, StatsGroup))
 
-  ui._update_label_row("Best:", best_stats, ui._create_label_layout(
+  ui._update_label_row("Best:", stats.best, ui._create_label_layout(
     screen.x + grid_step / 2,
     screen:vertical_offset(plot_height) - 1.75 * grid_step,
     grid_step,
-    normal_stats,
-    best_stats
+    stats
   ))
 
-  ui._update_label_row("Now:", normal_stats, ui._create_label_layout(
+  ui._update_label_row("Now:", stats.current, ui._create_label_layout(
     screen.x + grid_step / 2,
     screen:vertical_offset(plot_height) - grid_step,
     grid_step,
-    normal_stats,
-    best_stats
+    stats
   ))
 end
 
@@ -155,33 +144,31 @@ end
 -- @tparam int x
 -- @tparam int y
 -- @tparam int grid_step
--- @tparam Stats normal_stats
--- @tparam Stats best_stats
+-- @tparam StatsGroup stats
 -- @treturn tab SUIT precomputed layout
-function ui._create_label_layout(x, y, grid_step, normal_stats, best_stats)
+function ui._create_label_layout(x, y, grid_step, stats)
   assert(types.is_number_with_limits(x, 0))
   assert(types.is_number_with_limits(y, 0))
   assert(types.is_number_with_limits(grid_step, 0))
-  assert(types.is_instance(normal_stats, Stats))
-  assert(types.is_instance(best_stats, Stats))
+  assert(types.is_instance(stats, StatsGroup))
 
   local maximal_normal_result = math.max(
-    normal_stats:percentage("normal"),
-    best_stats:percentage("normal")
+    stats.current:percentage("normal"),
+    stats.best:percentage("normal")
   )
   local normal_label_width =
     ui._get_label_width(maximal_normal_result, grid_step)
 
   local maximal_soft_limit_result = math.max(
-    normal_stats:percentage("soft_limit"),
-    best_stats:percentage("soft_limit")
+    stats.current:percentage("soft_limit"),
+    stats.best:percentage("soft_limit")
   )
   local soft_limit_label_width =
     ui._get_label_width(maximal_soft_limit_result, grid_step)
 
   local maximal_hard_limit_result = math.max(
-    normal_stats:percentage("hard_limit"),
-    best_stats:percentage("hard_limit")
+    stats.current:percentage("hard_limit"),
+    stats.best:percentage("hard_limit")
   )
   local hard_limit_label_width =
     ui._get_label_width(maximal_hard_limit_result, grid_step)

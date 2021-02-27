@@ -4,7 +4,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local Oscillogram = require("luaplot.oscillogram")
 local Rectangle = require("models.rectangle")
-local Stats = require("models.stats")
+local StatsGroup = require("models.statsgroup")
 local DistanceLimit = require("models.distancelimit")
 local drawing = require("drawing")
 local ui = require("ui")
@@ -32,8 +32,7 @@ local vertical_size = 0
 local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
-local normal_stats = Stats:new(0, 0, 0)
-local best_stats = Stats:new(0, 0, 0)
+local stats = StatsGroup:new()
 local pause_mode = false
 
 local function _enter_fullscreen()
@@ -114,17 +113,17 @@ function love.update(dt)
       DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
       DistanceLimit:new(math.huge, "hard_limit"),
     })
-    normal_stats:increase(suitable_parameter, dt)
+    stats.current:increase(suitable_parameter, dt)
   end
 
   if
-    (best_stats:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
-    or normal_stats:is_best(best_stats, true)
+    (stats.best:total(true) == 0 and update_counter == HORIZONTAL_STEP_COUNT / 2)
+    or stats.current:is_best(stats.best, true)
   then
-    best_stats = normal_stats:copy()
+    stats.best = stats.current:copy()
   end
 
-  local update = ui.update(screen, vertical_size, normal_stats, best_stats, pause_mode)
+  local update = ui.update(screen, vertical_size, stats, pause_mode)
   if update.pause then
     pause_mode = not pause_mode
   end
