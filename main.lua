@@ -2,10 +2,10 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
-local Oscillogram = require("luaplot.oscillogram")
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local DistanceLimit = require("models.distancelimit")
+local PlotGroup = require("models.plotgroup")
 local drawing = require("drawing")
 local ui = require("ui")
 local colors = require("constants.colors")
@@ -22,10 +22,8 @@ local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 
-local random_plot = nil -- luaplot.Oscillogram
-local custom_plot = nil -- luaplot.Oscillogram
+local plots = nil -- models.PlotGroup
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
-local custom_source_plot = nil -- luaplot.Oscillogram
 local screen = nil -- models.Rectangle
 local horizontal_step = 0
 local vertical_size = 0
@@ -60,10 +58,7 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  random_plot = Oscillogram:new("random", HORIZONTAL_STEP_COUNT * 0.75 + 1, 0.5)
-  custom_plot = Oscillogram:new("linear", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
-  custom_source_plot =
-    Oscillogram:new("custom", HORIZONTAL_STEP_COUNT * 0.5 + 1, 0.5)
+  plots = PlotGroup:new(HORIZONTAL_STEP_COUNT)
 
   local _, _, width, height = love.window.getSafeArea()
   screen = _make_screen()
@@ -73,7 +68,7 @@ function love.load()
 end
 
 function love.draw()
-  drawing._draw_distance(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, random_plot, custom_plot, {
+  drawing._draw_distance(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, plots, {
     DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
     DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
     DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
@@ -81,7 +76,7 @@ function love.draw()
 
   drawing._draw_boundaries(screen, vertical_size)
 
-  drawing._draw_plots(screen, vertical_size, horizontal_step, random_plot, custom_source_plot, custom_plot)
+  drawing._draw_plots(screen, vertical_size, horizontal_step, plots)
 
   if pause_mode then
     drawing._draw_pause_background(screen)
@@ -96,9 +91,9 @@ function love.update(dt)
     if total_dt > UPDATE_DELAY then
       local is_custom_plot_factor_up =
         custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
-      random_plot:update(RANDOM_PLOT_FACTOR)
-      custom_plot:update(custom_plot_factor)
-      custom_source_plot:update(is_custom_plot_factor_up and 0 or 1)
+      plots.random:update(RANDOM_PLOT_FACTOR)
+      plots.custom:update(custom_plot_factor)
+      plots.custom_source:update(is_custom_plot_factor_up and 0 or 1)
 
       total_dt = total_dt - UPDATE_DELAY
       if update_counter < HORIZONTAL_STEP_COUNT / 2 then
@@ -108,7 +103,7 @@ function love.update(dt)
 
     local index =
       DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
-    local suitable_parameter = iteratorutils.select_case_by_distance(random_plot, custom_plot, index, {
+    local suitable_parameter = iteratorutils.select_case_by_distance(plots, index, {
       DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
       DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
       DistanceLimit:new(math.huge, "hard_limit"),

@@ -5,6 +5,7 @@ local types = require("luaplot.types")
 local iteratorutils = require("iteratorutils")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
+local PlotGroup = require("models.plotgroup")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local Point = require("models.point")
@@ -16,24 +17,21 @@ local drawing = {}
 -- @tparam int plot_height
 -- @tparam int plot_step
 -- @tparam int sampling_rate
--- @tparam Plot random_plot
--- @tparam Plot custom_plot
+-- @tparam PlotGroup plots
 -- @tparam {DistanceLimit,...} cases
 function drawing._draw_distance(
   screen,
   plot_height,
   plot_step,
   sampling_rate,
-  random_plot,
-  custom_plot,
+  plots,
   cases
 )
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_number_with_limits(plot_step, 0))
   assert(types.is_number_with_limits(sampling_rate, 0))
-  assert(types.is_instance(random_plot, Plot))
-  assert(types.is_instance(custom_plot, Plot))
+  assert(types.is_instance(plots, PlotGroup))
   assert(type(cases) == "table")
 
   local x = 0
@@ -42,12 +40,8 @@ function drawing._draw_distance(
     x = x + sampling_step
 
     local index = x / plot_step + 1
-    local suitable_color = iteratorutils.select_case_by_distance(
-      random_plot,
-      custom_plot,
-      index,
-      cases
-    )
+    local suitable_color =
+      iteratorutils.select_case_by_distance(plots, index, cases)
     love.graphics.setColor(suitable_color:channels())
 
     love.graphics.rectangle(
@@ -84,23 +78,12 @@ end
 -- @tparam Rectangle screen
 -- @tparam int plot_height
 -- @tparam int plot_step
--- @tparam Plot random_plot
--- @tparam Plot custom_source_plot
--- @tparam Plot custom_plot
-function drawing._draw_plots(
-  screen,
-  plot_height,
-  plot_step,
-  random_plot,
-  custom_source_plot,
-  custom_plot
-)
+-- @tparam PlotGroup plots
+function drawing._draw_plots(screen, plot_height, plot_step, plots)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_number_with_limits(plot_step, 0))
-  assert(types.is_instance(random_plot, Plot))
-  assert(types.is_instance(custom_source_plot, Plot))
-  assert(types.is_instance(custom_plot, Plot))
+  assert(types.is_instance(plots, PlotGroup))
 
   local iterator = PlotIteratorFactory:new(function(index, point)
     assert(types.is_number_with_limits(index, 1))
@@ -114,19 +97,19 @@ function drawing._draw_plots(
 
   local plot_line_width = screen.height / 80
   drawing._draw_plot(
-    random_plot,
+    plots.random,
     iterator,
     Color(0, 0, 0.5, 1),
     plot_line_width
   )
   drawing._draw_plot(
-    custom_source_plot,
+    plots.custom_source,
     iterator,
     Color(0, 0.33, 0, 1),
     plot_line_width / 2
   )
   drawing._draw_plot(
-    custom_plot,
+    plots.custom,
     iterator,
     Color(0, 0.66, 0, 1),
     plot_line_width
