@@ -2,8 +2,8 @@
 -- @module ui
 
 local suit = require("suit")
+local cpml = require("cpml")
 local types = require("luaplot.types")
-local mathutils = require("mathutils")
 local colors = require("constants.colors")
 local Stats = require("models.stats")
 local StatsGroup = require("models.statsgroup")
@@ -196,7 +196,7 @@ function ui._get_label_width(value, grid_step)
     label_width = 2 * grid_step
   end
 
-  return mathutils.round_positive(label_width)
+  return cpml.utils.round(label_width)
 end
 
 ---
