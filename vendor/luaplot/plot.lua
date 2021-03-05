@@ -2,6 +2,7 @@
 -- @classmod Plot
 
 local middleclass = require("middleclass")
+local cpml = require("cpml")
 local types = require("luaplot.types")
 local maths = require("luaplot.maths")
 local Iterable = require("luaplot.iterable")
@@ -68,7 +69,7 @@ function Plot:__index(index)
     progress = 1 - progress
   end
 
-  return maths.lerp(left_point, right_point, progress)
+  return cpml.utils.lerp(left_point, right_point, progress)
 end
 
 ---
@@ -83,7 +84,7 @@ end
 function Plot:push(point)
   assert(types.is_number_with_limits(point))
 
-  point = maths.clamp(point, self._minimum, self._maximum)
+  point = cpml.utils.clamp(point, self._minimum, self._maximum)
   table.insert(self._points, point)
 end
 
