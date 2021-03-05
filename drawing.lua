@@ -14,39 +14,22 @@ local drawing = {}
 
 ---
 -- @tparam Rectangle screen
--- @tparam int plot_height
 -- @tparam int plot_step
 -- @tparam int sampling_rate
 -- @tparam PlotGroup plots
 -- @tparam bool pause
 -- @tparam {DistanceLimit,...} cases
-function drawing.draw_game(
-  screen,
-  plot_height,
-  plot_step,
-  sampling_rate,
-  plots,
-  pause,
-  cases
-)
+function drawing.draw_game(screen, plot_step, sampling_rate, plots, pause, cases)
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_number_with_limits(plot_step, 0))
   assert(types.is_number_with_limits(sampling_rate, 0))
   assert(types.is_instance(plots, PlotGroup))
   assert(type(pause) == "boolean")
   assert(type(cases) == "table")
 
-  drawing._draw_distance(
-    screen,
-    plot_height,
-    plot_step,
-    sampling_rate,
-    plots,
-    cases
-  )
-  drawing._draw_boundaries(screen, plot_height)
-  drawing._draw_plots(screen, plot_height, plot_step, plots)
+  drawing._draw_distance(screen, plot_step, sampling_rate, plots, cases)
+  drawing._draw_boundaries(screen)
+  drawing._draw_plots(screen, plot_step, plots)
   if pause then
     drawing._draw_pause_background(screen)
   end
@@ -54,21 +37,12 @@ end
 
 ---
 -- @tparam Rectangle screen
--- @tparam int plot_height
 -- @tparam int plot_step
 -- @tparam int sampling_rate
 -- @tparam PlotGroup plots
 -- @tparam {DistanceLimit,...} cases
-function drawing._draw_distance(
-  screen,
-  plot_height,
-  plot_step,
-  sampling_rate,
-  plots,
-  cases
-)
+function drawing._draw_distance(screen, plot_step, sampling_rate, plots, cases)
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_number_with_limits(plot_step, 0))
   assert(types.is_number_with_limits(sampling_rate, 0))
   assert(types.is_instance(plots, PlotGroup))
@@ -91,18 +65,16 @@ function drawing._draw_distance(
 
     love.graphics.rectangle(
       "fill",
-      screen.x + x - sampling_step, screen:vertical_offset(plot_height),
-      sampling_step, plot_height
+      screen.x + x - sampling_step, screen:vertical_offset(),
+      sampling_step, screen:plot_height()
     )
   end
 end
 
 ---
 -- @tparam Rectangle screen
--- @tparam int plot_height
-function drawing._draw_boundaries(screen, plot_height)
+function drawing._draw_boundaries(screen)
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_height, 0))
 
   local boundary_line_width = screen.height / 320
   love.graphics.setColor(0.5, 0.5, 0.5)
@@ -110,10 +82,10 @@ function drawing._draw_boundaries(screen, plot_height)
 
   local boundary_step = screen.width / 40
   for x = 0, screen.width, 1.5 * boundary_step do
-    for _, y in ipairs({0, plot_height}) do
+    for _, y in ipairs({0, screen:plot_height()}) do
       love.graphics.line(
-        screen.x + x, screen:vertical_offset(plot_height) + y,
-        screen.x + x + boundary_step, screen:vertical_offset(plot_height) + y
+        screen.x + x, screen:vertical_offset() + y,
+        screen.x + x + boundary_step, screen:vertical_offset() + y
       )
     end
   end
@@ -121,12 +93,10 @@ end
 
 ---
 -- @tparam Rectangle screen
--- @tparam int plot_height
 -- @tparam int plot_step
 -- @tparam PlotGroup plots
-function drawing._draw_plots(screen, plot_height, plot_step, plots)
+function drawing._draw_plots(screen, plot_step, plots)
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_number_with_limits(plot_step, 0))
   assert(types.is_instance(plots, PlotGroup))
 
@@ -136,7 +106,7 @@ function drawing._draw_plots(screen, plot_height, plot_step, plots)
 
     return Point:new(
       screen.x + (index - 1) * plot_step,
-      screen:vertical_offset(plot_height) + point * plot_height
+      screen:vertical_offset() + point * screen:plot_height()
     )
   end)
 

@@ -25,42 +25,38 @@ function ui.draw(screen)
 end
 
 -- @tparam Rectangle screen
--- @tparam int plot_height
 -- @tparam StatsGroup stats
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui.update(screen, plot_height, stats, pause)
+function ui.update(screen, stats, pause)
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_instance(stats, StatsGroup))
   assert(type(pause) == "boolean")
 
   local grid_step = screen.height / 12
-  ui._update_labels(screen, grid_step, plot_height, stats)
-  return ui._update_buttons(screen, grid_step, plot_height, pause)
+  ui._update_labels(screen, grid_step, stats)
+  return ui._update_buttons(screen, grid_step, pause)
 end
 
 ---
 -- @tparam Rectangle screen
 -- @tparam int grid_step
--- @tparam int plot_height
 -- @tparam StatsGroup stats
-function ui._update_labels(screen, grid_step, plot_height, stats)
+function ui._update_labels(screen, grid_step, stats)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(grid_step, 0))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(types.is_instance(stats, StatsGroup))
 
   ui._update_label_row("Best:", stats.best, ui._create_label_layout(
     screen.x + grid_step / 2,
-    screen:vertical_offset(plot_height) - 1.75 * grid_step,
+    screen:vertical_offset() - 1.75 * grid_step,
     grid_step,
     stats
   ))
 
   ui._update_label_row("Now:", stats.current, ui._create_label_layout(
     screen.x + grid_step / 2,
-    screen:vertical_offset(plot_height) - grid_step,
+    screen:vertical_offset() - grid_step,
     grid_step,
     stats
   ))
@@ -118,18 +114,16 @@ end
 ---
 -- @tparam Rectangle screen
 -- @tparam int grid_step
--- @tparam int plot_height
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui._update_buttons(screen, grid_step, plot_height, pause)
+function ui._update_buttons(screen, grid_step, pause)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_number_with_limits(grid_step, 0))
-  assert(types.is_number_with_limits(plot_height, 0))
   assert(type(pause) == "boolean")
 
   suit.layout:reset(
     screen.x + screen.width - 1.5 * grid_step,
-    screen:vertical_offset(plot_height) - 1.5 * grid_step
+    screen:vertical_offset() - 1.5 * grid_step
   )
 
   local pause_button_text = pause and "|>" or "||"

@@ -26,7 +26,6 @@ local plots = nil -- models.PlotGroup
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local screen = nil -- models.Rectangle
 local horizontal_step = 0
-local vertical_size = 0
 local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
@@ -60,15 +59,14 @@ function love.load()
 
   plots = PlotGroup:new(HORIZONTAL_STEP_COUNT)
 
-  local _, _, width, height = love.window.getSafeArea()
+  local _, _, width, _ = love.window.getSafeArea()
   screen = _make_screen()
   horizontal_step = width / HORIZONTAL_STEP_COUNT
-  vertical_size = height / 1.5
   distance_sampling_step = (width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
-  drawing.draw_game(screen, vertical_size, horizontal_step, DISTANCE_SAMPLING_RATE, plots, pause_mode, {
+  drawing.draw_game(screen, horizontal_step, DISTANCE_SAMPLING_RATE, plots, pause_mode, {
     DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
     DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
     DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
@@ -107,7 +105,7 @@ function love.update(dt)
     stats:update(true)
   end
 
-  local update = ui.update(screen, vertical_size, stats, pause_mode)
+  local update = ui.update(screen, stats, pause_mode)
   if update.pause then
     pause_mode = not pause_mode
   end

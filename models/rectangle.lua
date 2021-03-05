@@ -33,12 +33,15 @@ function Rectangle:initialize(x, y, width, height)
 end
 
 ---
--- @tparam int plot_height
 -- @treturn int
-function Rectangle:vertical_offset(plot_height)
-  assert(types.is_number_with_limits(plot_height, 0))
+function Rectangle:plot_height()
+  return self.height / 1.5
+end
 
-  return self.y + (self.height - plot_height) / 2
+---
+-- @treturn int
+function Rectangle:vertical_offset()
+  return self.y + (self.height - self:plot_height()) / 2
 end
 
 return Rectangle
