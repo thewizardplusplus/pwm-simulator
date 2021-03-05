@@ -59,10 +59,9 @@ function love.load()
 
   plots = PlotGroup:new(HORIZONTAL_STEP_COUNT)
 
-  local _, _, width, _ = love.window.getSafeArea()
   screen = _make_screen()
-  horizontal_step = width / HORIZONTAL_STEP_COUNT
-  distance_sampling_step = (width / 2) / DISTANCE_SAMPLING_RATE
+  horizontal_step = screen.width / HORIZONTAL_STEP_COUNT
+  distance_sampling_step = (screen.width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
