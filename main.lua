@@ -15,7 +15,6 @@ require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
-local DISTANCE_SAMPLING_RATE = 50
 local SOFT_DISTANCE_LIMIT = 0.33
 local HARD_DISTANCE_LIMIT = 0.66
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
@@ -27,8 +26,6 @@ local plots = nil -- models.PlotGroup
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
-local horizontal_step = 0
-local distance_sampling_step = 0
 local total_dt = 0
 local update_counter = 0
 local stats = StatsGroup:new()
@@ -63,11 +60,9 @@ function love.load()
 
   settings = GameSettings:new(
     HORIZONTAL_STEP_COUNT,
-    DISTANCE_SAMPLING_RATE
+    50
   )
   screen = _make_screen()
-  horizontal_step = screen.width / HORIZONTAL_STEP_COUNT
-  distance_sampling_step = (screen.width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
@@ -96,8 +91,7 @@ function love.update(dt)
       end
     end
 
-    local index =
-      DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
+    local index = HORIZONTAL_STEP_COUNT / 2 + 1
     local suitable_parameter = iterators.select_by_distance(plots.random, plots.custom, index, true, {
       DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
       DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
