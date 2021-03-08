@@ -2,7 +2,7 @@
 -- @module drawing
 
 local types = require("luaplot.types")
-local iteratorutils = require("iteratorutils")
+local iterators = require("luaplot.iterators")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local PlotGroup = require("models.plotgroup")
@@ -80,8 +80,13 @@ function drawing._draw_distance(
     x = x + sampling_step
 
     local index = x / plot_step + 1
-    local suitable_color =
-      iteratorutils.select_case_by_distance(plots, index, cases)
+    local suitable_color = iterators.select_by_distance(
+      plots.random,
+      plots.custom,
+      index,
+      true,
+      cases
+    )
     love.graphics.setColor(suitable_color:channels())
 
     love.graphics.rectangle(

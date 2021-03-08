@@ -4,12 +4,12 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
-local DistanceLimit = require("models.distancelimit")
+local DistanceLimit = require("luaplot.distancelimit")
 local PlotGroup = require("models.plotgroup")
 local drawing = require("drawing")
 local ui = require("ui")
 local colors = require("constants.colors")
-local iteratorutils = require("iteratorutils")
+local iterators = require("luaplot.iterators")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -95,7 +95,7 @@ function love.update(dt)
 
     local index =
       DISTANCE_SAMPLING_RATE * distance_sampling_step / horizontal_step + 1
-    local suitable_parameter = iteratorutils.select_case_by_distance(plots, index, {
+    local suitable_parameter = iterators.select_by_distance(plots.random, plots.custom, index, true, {
       DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
       DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
       DistanceLimit:new(math.huge, "hard_limit"),
