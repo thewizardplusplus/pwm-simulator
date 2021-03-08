@@ -9,48 +9,46 @@ local PlotGroup = require("models.plotgroup")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local Point = require("models.point")
+local GameSettings = require("models.gamesettings")
 
 local drawing = {}
 
 ---
+-- @tparam GameSettings settings
 -- @tparam Rectangle screen
--- @tparam int plot_step
--- @tparam int sampling_rate
 -- @tparam PlotGroup plots
 -- @tparam bool pause
 -- @tparam {DistanceLimit,...} cases
-function drawing.draw_game(screen, plot_step, sampling_rate, plots, pause, cases)
+function drawing.draw_game(settings, screen, plots, pause, cases)
+  assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_step, 0))
-  assert(types.is_number_with_limits(sampling_rate, 0))
   assert(types.is_instance(plots, PlotGroup))
   assert(type(pause) == "boolean")
   assert(type(cases) == "table")
 
-  drawing._draw_distance(screen, plot_step, sampling_rate, plots, cases)
+  drawing._draw_distance(settings, screen, plots, cases)
   drawing._draw_boundaries(screen)
-  drawing._draw_plots(screen, plot_step, plots)
+  drawing._draw_plots(settings, screen, plots)
   if pause then
     drawing._draw_pause_background(screen)
   end
 end
 
 ---
+-- @tparam GameSettings settings
 -- @tparam Rectangle screen
--- @tparam int plot_step
--- @tparam int sampling_rate
 -- @tparam PlotGroup plots
 -- @tparam {DistanceLimit,...} cases
-function drawing._draw_distance(screen, plot_step, sampling_rate, plots, cases)
+function drawing._draw_distance(settings, screen, plots, cases)
+  assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_step, 0))
-  assert(types.is_number_with_limits(sampling_rate, 0))
   assert(types.is_instance(plots, PlotGroup))
   assert(type(cases) == "table")
 
   local x = 0
-  local sampling_step = (screen.width / 2) / sampling_rate
-  for _ = 1, sampling_rate do
+  local plot_step = screen.width / settings.plot_sampling_rate
+  local sampling_step = (screen.width / 2) / settings.distance_sampling_rate
+  for _ = 1, settings.distance_sampling_rate do
     x = x + sampling_step
 
     local index = x / plot_step + 1
@@ -92,14 +90,15 @@ function drawing._draw_boundaries(screen)
 end
 
 ---
+-- @tparam GameSettings settings
 -- @tparam Rectangle screen
--- @tparam int plot_step
 -- @tparam PlotGroup plots
-function drawing._draw_plots(screen, plot_step, plots)
+function drawing._draw_plots(settings, screen, plots)
+  assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(screen, Rectangle))
-  assert(types.is_number_with_limits(plot_step, 0))
   assert(types.is_instance(plots, PlotGroup))
 
+  local plot_step = screen.width / settings.plot_sampling_rate
   local iterator = PlotIteratorFactory:new(function(index, point)
     assert(types.is_number_with_limits(index, 1))
     assert(types.is_number_with_limits(point))

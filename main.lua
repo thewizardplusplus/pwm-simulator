@@ -6,6 +6,7 @@ local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local DistanceLimit = require("luaplot.distancelimit")
 local PlotGroup = require("models.plotgroup")
+local GameSettings = require("models.gamesettings")
 local drawing = require("drawing")
 local ui = require("ui")
 local colors = require("constants.colors")
@@ -24,6 +25,7 @@ local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 
 local plots = nil -- models.PlotGroup
 local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
+local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local horizontal_step = 0
 local distance_sampling_step = 0
@@ -59,13 +61,17 @@ function love.load()
 
   plots = PlotGroup:new(HORIZONTAL_STEP_COUNT)
 
+  settings = GameSettings:new(
+    HORIZONTAL_STEP_COUNT,
+    DISTANCE_SAMPLING_RATE
+  )
   screen = _make_screen()
   horizontal_step = screen.width / HORIZONTAL_STEP_COUNT
   distance_sampling_step = (screen.width / 2) / DISTANCE_SAMPLING_RATE
 end
 
 function love.draw()
-  drawing.draw_game(screen, horizontal_step, DISTANCE_SAMPLING_RATE, plots, pause_mode, {
+  drawing.draw_game(settings, screen, plots, pause_mode, {
     DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
     DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
     DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
