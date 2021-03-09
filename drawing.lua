@@ -46,12 +46,10 @@ function drawing._draw_distance(settings, screen, plots, cases)
   assert(type(cases) == "table")
 
   local x = 0
-  local plot_step = screen.width / settings.plot_sampling_rate
-  local sampling_step = (screen.width / 2) / settings.distance_sampling_rate
   for _ = 1, settings.distance_sampling_rate do
-    x = x + sampling_step
+    x = x + settings:step(screen, "distance")
 
-    local index = x / plot_step + 1
+    local index = x / settings:step(screen, "plot") + 1
     local suitable_color = iterators.select_by_distance(
       plots.random,
       plots.custom,
@@ -63,8 +61,10 @@ function drawing._draw_distance(settings, screen, plots, cases)
 
     love.graphics.rectangle(
       "fill",
-      screen.x + x - sampling_step, screen:vertical_offset(),
-      sampling_step, screen:plot_height()
+      screen.x + x - settings:step(screen, "distance"),
+      screen:vertical_offset(),
+      settings:step(screen, "distance"),
+      screen:plot_height()
     )
   end
 end
@@ -98,13 +98,12 @@ function drawing._draw_plots(settings, screen, plots)
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_instance(plots, PlotGroup))
 
-  local plot_step = screen.width / settings.plot_sampling_rate
   local iterator = PlotIteratorFactory:new(function(index, point)
     assert(types.is_number_with_limits(index, 1))
     assert(types.is_number_with_limits(point))
 
     return Point:new(
-      screen.x + (index - 1) * plot_step,
+      screen.x + (index - 1) * settings:step(screen, "plot"),
       screen:vertical_offset() + point * screen:plot_height()
     )
   end)

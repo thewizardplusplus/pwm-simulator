@@ -3,6 +3,7 @@
 
 local middleclass = require("middleclass")
 local types = require("luaplot.types")
+local Rectangle = require("models.rectangle")
 
 local GameSettings = middleclass("GameSettings")
 
@@ -25,6 +26,22 @@ function GameSettings:initialize(
 
   self.plot_sampling_rate = plot_sampling_rate
   self.distance_sampling_rate = distance_sampling_rate
+end
+
+---
+-- @tparam Rectangle screen
+-- @tparam "plot"|"distance" parameter
+-- @treturn number
+function GameSettings:step(screen, parameter)
+  assert(types.is_instance(screen, Rectangle))
+  assert(parameter == "plot" or parameter == "distance")
+
+  local width = screen.width
+  if parameter == "distance" then
+    width = width / 2
+  end
+
+  return width / self[parameter .. "_sampling_rate"]
 end
 
 return GameSettings
