@@ -61,7 +61,7 @@ end
 
 ---
 -- @tparam[opt=false] bool nullable
-function StatsGroup:update(nullable)
+function StatsGroup:update_best(nullable)
   nullable = nullable or false
 
   assert(type(nullable) == "boolean")

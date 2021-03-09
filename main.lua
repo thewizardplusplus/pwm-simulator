@@ -83,10 +83,9 @@ function love.update(dt)
     end
 
     stats:increase_current(settings, plots, dt)
-  end
-
-  if update_counter == settings:plot_length("custom") then
-    stats:update(true)
+    if update_counter == settings:plot_length("custom") then
+      stats:update_best(true)
+    end
   end
 
   local update = ui.update(screen, stats, pause_mode)
