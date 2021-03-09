@@ -4,12 +4,10 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
-local DistanceLimit = require("luaplot.distancelimit")
 local PlotGroup = require("models.plotgroup")
 local GameSettings = require("models.gamesettings")
 local drawing = require("drawing")
 local ui = require("ui")
-local iterators = require("luaplot.iterators")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
@@ -84,13 +82,7 @@ function love.update(dt)
       end
     end
 
-    local index = settings:plot_length("custom")
-    local suitable_parameter = iterators.select_by_distance(plots.random, plots.custom, index, true, {
-      DistanceLimit:new(settings.soft_distance_limit, "normal"),
-      DistanceLimit:new(settings.hard_distance_limit, "soft_limit"),
-      DistanceLimit:new(math.huge, "hard_limit"),
-    })
-    stats.current:increase(suitable_parameter, dt)
+    stats:increase_current(settings, plots, dt)
   end
 
   if update_counter == settings:plot_length("custom") then
