@@ -3,8 +3,10 @@
 
 local types = require("luaplot.types")
 local iterators = require("luaplot.iterators")
+local colors = require("constants.colors")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
+local DistanceLimit = require("luaplot.distancelimit")
 local PlotGroup = require("models.plotgroup")
 local Color = require("models.color")
 local Rectangle = require("models.rectangle")
@@ -18,15 +20,13 @@ local drawing = {}
 -- @tparam Rectangle screen
 -- @tparam PlotGroup plots
 -- @tparam bool pause
--- @tparam {DistanceLimit,...} cases
-function drawing.draw_game(settings, screen, plots, pause, cases)
+function drawing.draw_game(settings, screen, plots, pause)
   assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_instance(plots, PlotGroup))
   assert(type(pause) == "boolean")
-  assert(type(cases) == "table")
 
-  drawing._draw_distance(settings, screen, plots, cases)
+  drawing._draw_distance(settings, screen, plots)
   drawing._draw_boundaries(screen)
   drawing._draw_plots(settings, screen, plots)
   if pause then
@@ -38,25 +38,28 @@ end
 -- @tparam GameSettings settings
 -- @tparam Rectangle screen
 -- @tparam PlotGroup plots
--- @tparam {DistanceLimit,...} cases
-function drawing._draw_distance(settings, screen, plots, cases)
+function drawing._draw_distance(settings, screen, plots)
   assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(screen, Rectangle))
   assert(types.is_instance(plots, PlotGroup))
-  assert(type(cases) == "table")
 
   local x = 0
   for _ = 1, settings.distance_sampling_rate do
     x = x + settings:step(screen, "distance")
 
     local index = x / settings:step(screen, "plot") + 1
-    local suitable_color = iterators.select_by_distance(
-      plots.random,
-      plots.custom,
-      index,
-      true,
-      cases
-    )
+    local suitable_color =
+      iterators.select_by_distance(plots.random, plots.custom, index, true, {
+        DistanceLimit:new(
+          settings.soft_distance_limit,
+          colors.NORMAL_DISTANCE_COLOR
+        ),
+        DistanceLimit:new(
+          settings.hard_distance_limit,
+          colors.SOFT_DISTANCE_LIMIT_COLOR
+        ),
+        DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
+      })
     love.graphics.setColor(suitable_color:channels())
 
     love.graphics.rectangle(

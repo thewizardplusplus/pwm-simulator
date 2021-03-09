@@ -9,14 +9,11 @@ local PlotGroup = require("models.plotgroup")
 local GameSettings = require("models.gamesettings")
 local drawing = require("drawing")
 local ui = require("ui")
-local colors = require("constants.colors")
 local iterators = require("luaplot.iterators")
 require("compat52")
 
 local HORIZONTAL_SPEED = 0.2
 local HORIZONTAL_STEP_COUNT = 50
-local SOFT_DISTANCE_LIMIT = 0.33
-local HARD_DISTANCE_LIMIT = 0.66
 local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
 local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
@@ -58,19 +55,16 @@ function love.load()
 
   settings = GameSettings:new(
     HORIZONTAL_STEP_COUNT,
-    50
+    50,
+    0.33,
+    0.66
   )
   screen = _make_screen()
   plots = PlotGroup:new(settings)
 end
 
 function love.draw()
-  drawing.draw_game(settings, screen, plots, pause_mode, {
-    DistanceLimit:new(SOFT_DISTANCE_LIMIT, colors.NORMAL_DISTANCE_COLOR),
-    DistanceLimit:new(HARD_DISTANCE_LIMIT, colors.SOFT_DISTANCE_LIMIT_COLOR),
-    DistanceLimit:new(math.huge, colors.HARD_DISTANCE_LIMIT_COLOR),
-  })
-
+  drawing.draw_game(settings, screen, plots, pause_mode)
   ui.draw(screen)
 end
 
@@ -92,8 +86,8 @@ function love.update(dt)
 
     local index = settings:plot_length("custom")
     local suitable_parameter = iterators.select_by_distance(plots.random, plots.custom, index, true, {
-      DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
-      DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
+      DistanceLimit:new(settings.soft_distance_limit, "normal"),
+      DistanceLimit:new(settings.hard_distance_limit, "soft_limit"),
       DistanceLimit:new(math.huge, "hard_limit"),
     })
     stats.current:increase(suitable_parameter, dt)
