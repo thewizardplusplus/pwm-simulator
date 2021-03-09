@@ -29,6 +29,22 @@ function GameSettings:initialize(
 end
 
 ---
+-- @tparam "random"|"custom" plot
+-- @treturn number
+function GameSettings:plot_length(plot)
+  assert(plot == "random" or plot == "custom")
+
+  local factor
+  if plot == "random" then
+    factor = 0.75
+  elseif plot == "custom" then
+    factor = 0.5
+  end
+
+  return factor * self.plot_sampling_rate + 1
+end
+
+---
 -- @tparam Rectangle screen
 -- @tparam "plot"|"distance" parameter
 -- @treturn number

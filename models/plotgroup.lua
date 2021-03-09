@@ -3,6 +3,7 @@
 
 local middleclass = require("middleclass")
 local types = require("luaplot.types")
+local GameSettings = require("models.gamesettings")
 local Oscillogram = require("luaplot.oscillogram")
 
 local PlotGroup = middleclass("PlotGroup")
@@ -15,14 +16,15 @@ local PlotGroup = middleclass("PlotGroup")
 
 ---
 -- @function new
--- @tparam int step_count
+-- @tparam GameSettings settings
 -- @treturn PlotGroup
-function PlotGroup:initialize(step_count)
-  assert(types.is_number_with_limits(step_count, 0))
+function PlotGroup:initialize(settings)
+  assert(types.is_instance(settings, GameSettings))
 
-  self.random = Oscillogram:new("random", 0.75 * step_count + 1, 0.5)
-  self.custom = Oscillogram:new("linear", step_count / 2 + 1, 0.5)
-  self.custom_source = Oscillogram:new("custom", step_count / 2 + 1, 0.5)
+  self.random = Oscillogram:new("random", settings:plot_length("random"), 0.5)
+  self.custom = Oscillogram:new("linear", settings:plot_length("custom"), 0.5)
+  self.custom_source =
+    Oscillogram:new("custom", settings:plot_length("custom"), 0.5)
 end
 
 return PlotGroup

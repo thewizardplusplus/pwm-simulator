@@ -22,10 +22,10 @@ local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
 local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 
-local plots = nil -- models.PlotGroup
-local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
+local plots = nil -- models.PlotGroup
+local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
 local total_dt = 0
 local update_counter = 0
 local stats = StatsGroup:new()
@@ -56,13 +56,12 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  plots = PlotGroup:new(HORIZONTAL_STEP_COUNT)
-
   settings = GameSettings:new(
     HORIZONTAL_STEP_COUNT,
     50
   )
   screen = _make_screen()
+  plots = PlotGroup:new(settings)
 end
 
 function love.draw()
@@ -86,12 +85,12 @@ function love.update(dt)
       plots.custom_source:update(is_custom_plot_factor_up and 0 or 1)
 
       total_dt = total_dt - UPDATE_DELAY
-      if update_counter < HORIZONTAL_STEP_COUNT / 2 then
+      if update_counter < settings:plot_length("custom") then
         update_counter = update_counter + 1
       end
     end
 
-    local index = HORIZONTAL_STEP_COUNT / 2 + 1
+    local index = settings:plot_length("custom")
     local suitable_parameter = iterators.select_by_distance(plots.random, plots.custom, index, true, {
       DistanceLimit:new(SOFT_DISTANCE_LIMIT, "normal"),
       DistanceLimit:new(HARD_DISTANCE_LIMIT, "soft_limit"),
@@ -100,7 +99,7 @@ function love.update(dt)
     stats.current:increase(suitable_parameter, dt)
   end
 
-  if update_counter == HORIZONTAL_STEP_COUNT / 2 then
+  if update_counter == settings:plot_length("custom") then
     stats:update(true)
   end
 
