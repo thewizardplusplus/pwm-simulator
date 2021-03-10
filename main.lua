@@ -20,7 +20,7 @@ local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local plots = nil -- models.PlotGroup
-local custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
+local custom_plot_activity = false
 local total_dt = 0
 local update_counter = 0
 local stats = StatsGroup:new()
@@ -70,11 +70,9 @@ function love.update(dt)
   if not pause_mode then
     total_dt = total_dt + dt
     if total_dt > UPDATE_DELAY then
-      local is_custom_plot_factor_up =
-        custom_plot_factor == CUSTOM_PLOT_FACTOR_UP
       plots.random:update(RANDOM_PLOT_FACTOR)
-      plots.custom:update(custom_plot_factor)
-      plots.custom_source:update(is_custom_plot_factor_up and 0 or 1)
+      plots.custom:update(custom_plot_activity and CUSTOM_PLOT_FACTOR_UP or CUSTOM_PLOT_FACTOR_DOWN)
+      plots.custom_source:update(custom_plot_activity and 0 or 1)
 
       total_dt = total_dt - UPDATE_DELAY
       if update_counter < settings:plot_length("custom") then
@@ -105,9 +103,9 @@ function love.keypressed(key)
 end
 
 function love.mousepressed()
-  custom_plot_factor = CUSTOM_PLOT_FACTOR_UP
+  custom_plot_activity = true
 end
 
 function love.mousereleased()
-  custom_plot_factor = CUSTOM_PLOT_FACTOR_DOWN
+  custom_plot_activity = false
 end
