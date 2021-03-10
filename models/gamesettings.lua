@@ -14,6 +14,9 @@ local GameSettings = middleclass("GameSettings")
 -- @tfield int distance_sampling_rate
 -- @tfield number soft_distance_limit
 -- @tfield number hard_distance_limit
+-- @tfield number random_plot_factor
+-- @tfield number inactive_custom_plot_factor
+-- @tfield number active_custom_plot_factor
 
 ---
 -- @function new
@@ -22,13 +25,19 @@ local GameSettings = middleclass("GameSettings")
 -- @tparam int distance_sampling_rate
 -- @tparam number soft_distance_limit [0, 1]
 -- @tparam number hard_distance_limit [soft_distance_limit, 1]
+-- @tparam number random_plot_factor
+-- @tparam number inactive_custom_plot_factor
+-- @tparam number active_custom_plot_factor
 -- @treturn GameSettings
 function GameSettings:initialize(
   plot_sampling_speed,
   plot_sampling_rate,
   distance_sampling_rate,
   soft_distance_limit,
-  hard_distance_limit
+  hard_distance_limit,
+  random_plot_factor,
+  inactive_custom_plot_factor,
+  active_custom_plot_factor
 )
   assert(types.is_number_with_limits(plot_sampling_speed, 0))
   assert(types.is_number_with_limits(plot_sampling_rate, 0))
@@ -39,12 +48,18 @@ function GameSettings:initialize(
     soft_distance_limit,
     1
   ))
+  assert(types.is_number_with_limits(random_plot_factor, 0))
+  assert(types.is_number_with_limits(inactive_custom_plot_factor))
+  assert(types.is_number_with_limits(active_custom_plot_factor))
 
   self.plot_sampling_speed = plot_sampling_speed
   self.plot_sampling_rate = plot_sampling_rate
   self.distance_sampling_rate = distance_sampling_rate
   self.soft_distance_limit = soft_distance_limit
   self.hard_distance_limit = hard_distance_limit
+  self.random_plot_factor = random_plot_factor
+  self.inactive_custom_plot_factor = inactive_custom_plot_factor
+  self.active_custom_plot_factor = active_custom_plot_factor
 end
 
 ---
@@ -83,6 +98,19 @@ function GameSettings:step(screen, parameter)
   end
 
   return width / self[parameter .. "_sampling_rate"]
+end
+
+---
+-- @tparam "random"|"inactive_custom"|"active_custom" plot
+-- @treturn number
+function GameSettings:plot_factor(plot)
+  assert(
+    plot == "random"
+    or plot == "inactive_custom"
+    or plot == "active_custom"
+  )
+
+  return self[plot .. "_plot_factor"] * self:update_delay()
 end
 
 return GameSettings

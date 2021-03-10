@@ -10,13 +10,6 @@ local drawing = require("drawing")
 local ui = require("ui")
 require("compat52")
 
-local HORIZONTAL_SPEED = 0.2
-local HORIZONTAL_STEP_COUNT = 50
-local UPDATE_DELAY = 1 / (HORIZONTAL_SPEED * HORIZONTAL_STEP_COUNT)
-local RANDOM_PLOT_FACTOR = 2 * UPDATE_DELAY
-local CUSTOM_PLOT_FACTOR_DOWN = 0.5 * UPDATE_DELAY
-local CUSTOM_PLOT_FACTOR_UP = -1 * UPDATE_DELAY
-
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local plots = nil -- models.PlotGroup
@@ -51,13 +44,7 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  settings = GameSettings:new(
-    HORIZONTAL_SPEED,
-    HORIZONTAL_STEP_COUNT,
-    50,
-    0.33,
-    0.66
-  )
+  settings = GameSettings:new(0.2, 50, 50, 0.33, 0.66, 2, 0.5, -1)
   screen = _make_screen()
   plots = PlotGroup:new(settings)
 end
@@ -71,8 +58,8 @@ function love.update(dt)
   if not pause_mode then
     total_dt = total_dt + dt
     if total_dt > settings:update_delay() then
-      plots.random:update(RANDOM_PLOT_FACTOR)
-      plots.custom:update(custom_plot_activity and CUSTOM_PLOT_FACTOR_UP or CUSTOM_PLOT_FACTOR_DOWN)
+      plots.random:update(settings:plot_factor("random"))
+      plots.custom:update(settings:plot_factor(custom_plot_activity and "active_custom" or "inactive_custom"))
       plots.custom_source:update(custom_plot_activity and 0 or 1)
 
       total_dt = total_dt - settings:update_delay()
