@@ -9,6 +9,7 @@ local GameSettings = middleclass("GameSettings")
 
 ---
 -- @table instance
+-- @tfield number plot_sampling_speed
 -- @tfield int plot_sampling_rate
 -- @tfield int distance_sampling_rate
 -- @tfield number soft_distance_limit
@@ -16,17 +17,20 @@ local GameSettings = middleclass("GameSettings")
 
 ---
 -- @function new
+-- @tparam number plot_sampling_speed
 -- @tparam int plot_sampling_rate
 -- @tparam int distance_sampling_rate
 -- @tparam number soft_distance_limit [0, 1]
 -- @tparam number hard_distance_limit [soft_distance_limit, 1]
 -- @treturn GameSettings
 function GameSettings:initialize(
+  plot_sampling_speed,
   plot_sampling_rate,
   distance_sampling_rate,
   soft_distance_limit,
   hard_distance_limit
 )
+  assert(types.is_number_with_limits(plot_sampling_speed, 0))
   assert(types.is_number_with_limits(plot_sampling_rate, 0))
   assert(types.is_number_with_limits(distance_sampling_rate, 0))
   assert(types.is_number_with_limits(soft_distance_limit, 0, 1))
@@ -36,10 +40,17 @@ function GameSettings:initialize(
     1
   ))
 
+  self.plot_sampling_speed = plot_sampling_speed
   self.plot_sampling_rate = plot_sampling_rate
   self.distance_sampling_rate = distance_sampling_rate
   self.soft_distance_limit = soft_distance_limit
   self.hard_distance_limit = hard_distance_limit
+end
+
+---
+-- @treturn number
+function GameSettings:update_delay()
+  return 1 / (self.plot_sampling_speed * self.plot_sampling_rate)
 end
 
 ---

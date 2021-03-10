@@ -52,6 +52,7 @@ function love.load()
   assert(_enter_fullscreen())
 
   settings = GameSettings:new(
+    HORIZONTAL_SPEED,
     HORIZONTAL_STEP_COUNT,
     50,
     0.33,
@@ -69,12 +70,12 @@ end
 function love.update(dt)
   if not pause_mode then
     total_dt = total_dt + dt
-    if total_dt > UPDATE_DELAY then
+    if total_dt > settings:update_delay() then
       plots.random:update(RANDOM_PLOT_FACTOR)
       plots.custom:update(custom_plot_activity and CUSTOM_PLOT_FACTOR_UP or CUSTOM_PLOT_FACTOR_DOWN)
       plots.custom_source:update(custom_plot_activity and 0 or 1)
 
-      total_dt = total_dt - UPDATE_DELAY
+      total_dt = total_dt - settings:update_delay()
       if update_counter < settings:plot_length("custom") then
         update_counter = update_counter + 1
       end
