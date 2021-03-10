@@ -58,9 +58,7 @@ function love.update(dt)
   if not pause_mode then
     total_dt = total_dt + dt
     if total_dt > settings:update_delay() then
-      plots.random:update(settings:plot_factor("random"))
-      plots.custom:update(settings:plot_factor(custom_plot_activity and "active_custom" or "inactive_custom"))
-      plots.custom_source:update(custom_plot_activity and 0 or 1)
+      plots:update(settings, custom_plot_activity)
 
       total_dt = total_dt - settings:update_delay()
       if update_counter < settings:plot_length("custom") then
