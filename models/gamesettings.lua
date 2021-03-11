@@ -20,12 +20,12 @@ local GameSettings = middleclass("GameSettings")
 
 ---
 -- @function new
--- @tparam number plot_sampling_speed
--- @tparam int plot_sampling_rate
--- @tparam int distance_sampling_rate
+-- @tparam number plot_sampling_speed [0, ∞)
+-- @tparam int plot_sampling_rate [0, ∞)
+-- @tparam int distance_sampling_rate [0, ∞)
 -- @tparam number soft_distance_limit [0, 1]
--- @tparam number hard_distance_limit [soft_distance_limit, 1]
--- @tparam number random_plot_factor
+-- @tparam number hard_distance_limit [soft\_distance\_limit, 1]
+-- @tparam number random_plot_factor [0, ∞)
 -- @tparam number inactive_custom_plot_factor
 -- @tparam number active_custom_plot_factor
 -- @treturn GameSettings
