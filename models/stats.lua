@@ -15,7 +15,7 @@ local Stats = middleclass("Stats")
 ---
 -- @function _is_parameter
 -- @static
--- @tparam "normal"|"soft_limit"|"hard_limit" parameter
+-- @tparam any parameter
 -- @treturn bool
 function Stats.static._is_parameter(parameter)
   return table.find({"normal", "soft_limit", "hard_limit"}, parameter)
@@ -23,9 +23,9 @@ end
 
 ---
 -- @function new
--- @tparam number normal_time
--- @tparam number soft_limit_time
--- @tparam number hard_limit_time
+-- @tparam number normal_time [0, ∞)
+-- @tparam number soft_limit_time [0, ∞)
+-- @tparam number hard_limit_time [0, ∞)
 -- @treturn Stats
 function Stats:initialize(normal_time, soft_limit_time, hard_limit_time)
   assert(types.is_number_with_limits(normal_time, 0))
