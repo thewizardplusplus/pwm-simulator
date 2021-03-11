@@ -16,9 +16,9 @@ local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local plots = nil -- models.PlotGroup
 local custom_plot_activity = false
-local update_counter = 0
 local stats = StatsGroup:new()
-local pause_mode = false
+local update_count = 0
+local pause = false
 
 local function _enter_fullscreen()
   local os = love.system.getOS()
@@ -41,14 +41,14 @@ local function _make_screen()
 end
 
 local function _update_plots()
-  if pause_mode then
+  if pause then
     return
   end
 
   plots:update(settings, custom_plot_activity)
 
-  if update_counter < settings:plot_length("custom") then
-    update_counter = update_counter + 1
+  if update_count < settings:plot_length("custom") then
+    update_count = update_count + 1
   end
 end
 
@@ -65,23 +65,23 @@ function love.load()
 end
 
 function love.draw()
-  drawing.draw_game(settings, screen, plots, pause_mode)
+  drawing.draw_game(settings, screen, plots, pause)
   ui.draw(screen)
 end
 
 function love.update(dt)
   tick.update(dt)
 
-  if not pause_mode then
+  if not pause then
     stats:increase_current(settings, plots, dt)
-    if update_counter == settings:plot_length("custom") then
+    if update_count == settings:plot_length("custom") then
       stats:update_best(true)
     end
   end
 
-  local update = ui.update(screen, stats, pause_mode)
+  local update = ui.update(screen, stats, pause)
   if update.pause then
-    pause_mode = not pause_mode
+    pause = not pause
   end
 end
 
