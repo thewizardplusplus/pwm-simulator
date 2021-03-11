@@ -8,6 +8,7 @@ local PlotGroup = require("models.plotgroup")
 local GameSettings = require("models.gamesettings")
 local drawing = require("drawing")
 local ui = require("ui")
+require("luatable")
 require("compat52")
 
 local settings = nil -- models.GameSettings
