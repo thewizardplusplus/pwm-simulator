@@ -31,7 +31,7 @@ end
 function StatsGroup:max_percentage(parameter, nullable)
   nullable = nullable or false
 
-  assert(Stats._is_parameter(parameter))
+  assert(Stats.is_parameter(parameter))
   assert(type(nullable) == "boolean")
 
   return math.max(

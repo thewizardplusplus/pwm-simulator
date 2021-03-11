@@ -13,11 +13,11 @@ local Stats = middleclass("Stats")
 -- @tfield number hard_limit_time
 
 ---
--- @function _is_parameter
+-- @function is_parameter
 -- @static
 -- @tparam any parameter
 -- @treturn bool
-function Stats.static._is_parameter(parameter)
+function Stats.static.is_parameter(parameter)
   return table.find({"normal", "soft_limit", "hard_limit"}, parameter)
 end
 
@@ -88,7 +88,7 @@ end
 function Stats:percentage(parameter, nullable)
   nullable = nullable or false
 
-  assert(Stats._is_parameter(parameter))
+  assert(Stats.is_parameter(parameter))
   assert(type(nullable) == "boolean")
 
   return self[parameter .. "_time"] / self:total(nullable) * 100
@@ -98,7 +98,7 @@ end
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
 -- @tparam number delta [0, ∞)
 function Stats:increase(parameter, delta)
-  assert(Stats._is_parameter(parameter))
+  assert(Stats.is_parameter(parameter))
   assert(types.is_number_with_limits(delta, 0))
 
   parameter = parameter .. "_time"
