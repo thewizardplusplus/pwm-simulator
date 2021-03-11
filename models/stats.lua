@@ -96,10 +96,10 @@ end
 
 ---
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
--- @tparam number delta
+-- @tparam number delta [0, ∞)
 function Stats:increase(parameter, delta)
   assert(Stats._is_parameter(parameter))
-  assert(types.is_number_with_limits(delta))
+  assert(types.is_number_with_limits(delta, 0))
 
   parameter = parameter .. "_time"
   self[parameter] = self[parameter] + delta
