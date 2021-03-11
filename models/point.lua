@@ -13,8 +13,8 @@ local Point = middleclass("Point")
 
 ---
 -- @function new
--- @tparam number x
--- @tparam number y
+-- @tparam number x [0, ∞)
+-- @tparam number y [0, ∞)
 -- @treturn Point
 function Point:initialize(x, y)
   assert(types.is_number_with_limits(x, 0))
