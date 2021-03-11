@@ -8,10 +8,10 @@ local Color = middleclass("Color")
 
 ---
 -- @table instance
--- @tfield number red [0, 1]
--- @tfield number green [0, 1]
--- @tfield number blue [0, 1]
--- @tfield number alpha [0, 1]
+-- @tfield number red
+-- @tfield number green
+-- @tfield number blue
+-- @tfield number alpha
 
 ---
 -- @function new
