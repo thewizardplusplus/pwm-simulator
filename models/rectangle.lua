@@ -4,21 +4,21 @@
 local middleclass = require("middleclass")
 local types = require("luaplot.types")
 
----
--- @table instance
--- @tfield number x [0, ∞)
--- @tfield number y [0, ∞)
--- @tfield number width [0, ∞)
--- @tfield number height [0, ∞)
-
 local Rectangle = middleclass("Rectangle")
 
 ---
+-- @table instance
+-- @tfield int x
+-- @tfield int y
+-- @tfield int width
+-- @tfield int height
+
+---
 -- @function new
--- @tparam number x [0, ∞)
--- @tparam number y [0, ∞)
--- @tparam number width [0, ∞)
--- @tparam number height [0, ∞)
+-- @tparam int x [0, ∞)
+-- @tparam int y [0, ∞)
+-- @tparam int width [0, ∞)
+-- @tparam int height [0, ∞)
 -- @treturn Rectangle
 function Rectangle:initialize(x, y, width, height)
   assert(types.is_number_with_limits(x, 0))
@@ -33,13 +33,13 @@ function Rectangle:initialize(x, y, width, height)
 end
 
 ---
--- @treturn int
+-- @treturn number
 function Rectangle:plot_height()
   return self.height / 1.5
 end
 
 ---
--- @treturn int
+-- @treturn number
 function Rectangle:vertical_offset()
   return self.y + (self.height - self:plot_height()) / 2
 end
