@@ -40,7 +40,7 @@ end
 
 ---
 -- @tparam Rectangle screen
--- @tparam int grid_step
+-- @tparam int grid_step [0, ∞)
 -- @tparam StatsGroup stats
 function ui._update_labels(screen, grid_step, stats)
   assert(types.is_instance(screen, Rectangle))
@@ -113,7 +113,7 @@ end
 
 ---
 -- @tparam Rectangle screen
--- @tparam int grid_step
+-- @tparam int grid_step [0, ∞)
 -- @tparam bool pause
 -- @treturn UiUpdate
 function ui._update_buttons(screen, grid_step, pause)
@@ -135,9 +135,9 @@ function ui._update_buttons(screen, grid_step, pause)
 end
 
 ---
--- @tparam int x
--- @tparam int y
--- @tparam int grid_step
+-- @tparam int x [0, ∞)
+-- @tparam int y [0, ∞)
+-- @tparam int grid_step [0, ∞)
 -- @tparam StatsGroup stats
 -- @treturn tab SUIT precomputed layout
 function ui._create_label_layout(x, y, grid_step, stats)
@@ -174,8 +174,8 @@ function ui._create_label_layout(x, y, grid_step, stats)
 end
 
 ---
--- @tparam number value
--- @tparam int grid_step
+-- @tparam number value [0, 100]
+-- @tparam int grid_step [0, ∞)
 -- @treturn int
 function ui._get_label_width(value, grid_step)
   assert(types.is_number_with_limits(value, 0, 100))
