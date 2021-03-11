@@ -43,7 +43,7 @@ end
 ---
 -- @tparam GameSettings settings
 -- @tparam PlotGroup plots
--- @tparam number delta
+-- @tparam number delta [0, ∞)
 function StatsGroup:increase_current(settings, plots, delta)
   assert(types.is_instance(settings, GameSettings))
   assert(types.is_instance(plots, PlotGroup))
