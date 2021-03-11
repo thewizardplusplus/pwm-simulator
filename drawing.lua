@@ -136,7 +136,7 @@ end
 -- @tparam Plot plot
 -- @tparam PlotIteratorFactory iterator
 -- @tparam Color color
--- @tparam int width
+-- @tparam int width [0, ∞)
 function drawing._draw_plot(plot, iterator, color, width)
   assert(types.is_instance(plot, Plot))
   assert(types.is_instance(iterator, PlotIteratorFactory))
