@@ -2,6 +2,7 @@ local require_paths =
   {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
+local tick = require("tick")
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
@@ -15,7 +16,6 @@ local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local plots = nil -- models.PlotGroup
 local custom_plot_activity = false
-local total_dt = 0
 local update_counter = 0
 local stats = StatsGroup:new()
 local pause_mode = false
@@ -40,6 +40,18 @@ local function _make_screen()
   return Rectangle:new(x, y, width, height)
 end
 
+local function _update_plots()
+  if pause_mode then
+    return
+  end
+
+  plots:update(settings, custom_plot_activity)
+
+  if update_counter < settings:plot_length("custom") then
+    update_counter = update_counter + 1
+  end
+end
+
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
@@ -48,6 +60,8 @@ function love.load()
   settings = GameSettings:new(0.2, 50, 50, 0.33, 0.66, 2, 0.5, -1)
   screen = _make_screen()
   plots = PlotGroup:new(settings)
+
+  tick.recur(_update_plots, settings:update_delay())
 end
 
 function love.draw()
@@ -56,17 +70,9 @@ function love.draw()
 end
 
 function love.update(dt)
+  tick.update(dt)
+
   if not pause_mode then
-    total_dt = total_dt + dt
-    if total_dt > settings:update_delay() then
-      plots:update(settings, custom_plot_activity)
-
-      total_dt = total_dt - settings:update_delay()
-      if update_counter < settings:plot_length("custom") then
-        update_counter = update_counter + 1
-      end
-    end
-
     stats:increase_current(settings, plots, dt)
     if update_counter == settings:plot_length("custom") then
       stats:update_best(true)
