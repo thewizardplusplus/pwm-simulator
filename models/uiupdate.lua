@@ -3,11 +3,11 @@
 
 local middleclass = require("middleclass")
 
+local UiUpdate = middleclass("UiUpdate")
+
 ---
 -- @table instance
 -- @tfield bool pause
-
-local UiUpdate = middleclass("UiUpdate")
 
 ---
 -- @function new
