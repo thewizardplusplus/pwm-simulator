@@ -18,9 +18,7 @@ local Stats = middleclass("Stats")
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
 -- @treturn bool
 function Stats.static._is_parameter(parameter)
-  return parameter == "normal"
-    or parameter == "soft_limit"
-    or parameter == "hard_limit"
+  return table.find({"normal", "soft_limit", "hard_limit"}, parameter)
 end
 
 ---

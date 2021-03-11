@@ -199,7 +199,7 @@ end
 -- @treturn tab common SUIT widget options
 function ui._create_label_options(color, align)
   assert(types.is_instance(color, Color))
-  assert(align == "left" or align == "right")
+  assert(table.find({"left", "right"}, align))
 
   return {
     color = {normal = {fg = color:channels()}},

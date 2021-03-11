@@ -72,7 +72,7 @@ end
 -- @tparam "random"|"custom" plot
 -- @treturn number
 function GameSettings:plot_length(plot)
-  assert(plot == "random" or plot == "custom")
+  assert(table.find({"random", "custom"}, plot))
 
   local factor
   if plot == "random" then
@@ -90,7 +90,7 @@ end
 -- @treturn number
 function GameSettings:step(screen, parameter)
   assert(types.is_instance(screen, Rectangle))
-  assert(parameter == "plot" or parameter == "distance")
+  assert(table.find({"plot", "distance"}, parameter))
 
   local width = screen.width
   if parameter == "distance" then
@@ -104,11 +104,7 @@ end
 -- @tparam "random"|"inactive_custom"|"active_custom" plot
 -- @treturn number
 function GameSettings:plot_factor(plot)
-  assert(
-    plot == "random"
-    or plot == "inactive_custom"
-    or plot == "active_custom"
-  )
+  assert(table.find({"random", "inactive_custom", "active_custom"}, plot))
 
   return self[plot .. "_plot_factor"] * self:update_delay()
 end

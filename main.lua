@@ -21,8 +21,8 @@ local stats = StatsGroup:new()
 local pause_mode = false
 
 local function _enter_fullscreen()
-  local is_mobile_os = love.system.getOS() == "Android"
-    or love.system.getOS() == "iOS"
+  local os = love.system.getOS()
+  local is_mobile_os = table.find({"Android", "iOS"}, os)
   if not is_mobile_os then
     return true
   end
