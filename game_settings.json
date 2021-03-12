@@ -1,0 +1,10 @@
+{
+  "plot_sampling_speed": 0.2,
+  "plot_sampling_rate": 50,
+  "distance_sampling_rate": 50,
+  "soft_distance_limit": 0.33,
+  "hard_distance_limit": 0.66,
+  "random_plot_factor": 2,
+  "inactive_custom_plot_factor": 0.5,
+  "active_custom_plot_factor": -1
+}
