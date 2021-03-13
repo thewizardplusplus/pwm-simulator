@@ -9,6 +9,7 @@ file = {
   "models/statsgroup.lua",
   "models/stats.lua",
   "models/uiupdate.lua",
+  "statsstorage.lua",
   "typeutils.lua",
   "drawing.lua",
   "ui.lua",
