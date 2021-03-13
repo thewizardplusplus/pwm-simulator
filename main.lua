@@ -8,6 +8,7 @@ local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
 local GameSettings = require("models.gamesettings")
+local StatsStorage = require("statsstorage")
 local drawing = require("drawing")
 local ui = require("ui")
 require("luatable")
@@ -17,6 +18,7 @@ local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local plots = nil -- models.PlotGroup
 local custom_plot_activity = false
+local stats_storage = nil -- StatsStorage
 local stats = StatsGroup:new()
 local update_count = 0
 local pause = false
@@ -129,6 +131,7 @@ function love.load()
   settings = assert(_load_game_settings("game_settings.json"))
   screen = _make_screen()
   plots = PlotGroup:new(settings)
+  stats_storage = assert(StatsStorage.create("stats-db"))
 
   tick.recur(_update_plots, settings:update_delay())
 end
