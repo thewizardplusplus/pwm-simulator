@@ -3,6 +3,7 @@
 
 local middleclass = require("middleclass")
 local flatdb = require("flatdb")
+local Stats = require("models.stats")
 
 local StatsStorage = middleclass("StatsStorage")
 
@@ -43,6 +44,16 @@ function StatsStorage:initialize(path)
       hard_limit_time = 0,
     }
   end
+end
+
+---
+-- @treturn Stats
+function StatsStorage:get_stats()
+  return Stats:new(
+    self._db.stats.normal_time,
+    self._db.stats.soft_limit_time,
+    self._db.stats.hard_limit_time
+  )
 end
 
 return StatsStorage

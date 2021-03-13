@@ -132,6 +132,7 @@ function love.load()
   screen = _make_screen()
   plots = PlotGroup:new(settings)
   stats_storage = assert(StatsStorage.create("stats-db"))
+  stats.best = stats_storage:get_stats()
 
   tick.recur(_update_plots, settings:update_delay())
 end
