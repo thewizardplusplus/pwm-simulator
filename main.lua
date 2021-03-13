@@ -123,6 +123,14 @@ local function _update_plots()
   end
 end
 
+local function _update_stats()
+  if update_count < settings:plot_length("custom") then
+    return
+  end
+
+  stats_storage:store_stats(stats.current, true)
+end
+
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
@@ -135,6 +143,7 @@ function love.load()
   stats.best = stats_storage:get_stats()
 
   tick.recur(_update_plots, settings:update_delay())
+  tick.recur(_update_stats, 1)
 end
 
 function love.draw()
