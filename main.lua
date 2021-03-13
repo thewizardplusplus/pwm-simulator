@@ -128,7 +128,7 @@ local function _update_stats()
     return
   end
 
-  stats_storage:store_stats(stats.current, true)
+  stats_storage:store_stats(stats.best)
 end
 
 function love.load()

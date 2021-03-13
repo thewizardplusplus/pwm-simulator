@@ -59,25 +59,16 @@ end
 
 ---
 -- @tparam Stats stats
--- @tparam[opt=false] bool nullable
-function StatsStorage:store_stats(stats, nullable)
-  nullable = nullable or false
-
+function StatsStorage:store_stats(stats)
   assert(types.is_instance(stats, Stats))
-  assert(type(nullable) == "boolean")
 
-  local prev_stats = self:get_stats()
-  local is_prev_null = prev_stats:total(nullable) == 0
-  local is_current_best = stats:is_best(prev_stats, nullable)
-  if is_prev_null or is_current_best then
-    self._db.stats = {
-      normal_time = stats.normal_time,
-      soft_limit_time = stats.soft_limit_time,
-      hard_limit_time = stats.hard_limit_time,
-    }
+  self._db.stats = {
+    normal_time = stats.normal_time,
+    soft_limit_time = stats.soft_limit_time,
+    hard_limit_time = stats.hard_limit_time,
+  }
 
-    self._db:save()
-  end
+  self._db:save()
 end
 
 return StatsStorage
