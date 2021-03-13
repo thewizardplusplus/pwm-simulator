@@ -57,6 +57,7 @@ local function _load_game_settings(path)
       "random_plot_factor",
       "inactive_custom_plot_factor",
       "active_custom_plot_factor",
+      "stats_storing_delay",
     },
     properties = {
       plot_sampling_speed = {
@@ -93,6 +94,10 @@ local function _load_game_settings(path)
       active_custom_plot_factor = {
         type = "number",
       },
+      stats_storing_delay = {
+        type = "number",
+        minimum = 0,
+      },
     },
   })
   if not data then
@@ -107,7 +112,8 @@ local function _load_game_settings(path)
     data.hard_distance_limit,
     data.random_plot_factor,
     data.inactive_custom_plot_factor,
-    data.active_custom_plot_factor
+    data.active_custom_plot_factor,
+    data.stats_storing_delay
   )
 end
 
@@ -143,7 +149,7 @@ function love.load()
   stats.best = stats_storage:get_stats()
 
   tick.recur(_update_plots, settings:update_delay())
-  tick.recur(_update_stats, 1)
+  tick.recur(_update_stats, settings.stats_storing_delay)
 end
 
 function love.draw()

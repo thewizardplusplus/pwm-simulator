@@ -17,6 +17,7 @@ local GameSettings = middleclass("GameSettings")
 -- @tfield number random_plot_factor
 -- @tfield number inactive_custom_plot_factor
 -- @tfield number active_custom_plot_factor
+-- @tfield number stats_storing_delay
 
 ---
 -- @function new
@@ -28,6 +29,7 @@ local GameSettings = middleclass("GameSettings")
 -- @tparam number random_plot_factor [0, ∞)
 -- @tparam number inactive_custom_plot_factor
 -- @tparam number active_custom_plot_factor
+-- @tparam number stats_storing_delay [0, ∞)
 -- @treturn GameSettings
 function GameSettings:initialize(
   plot_sampling_speed,
@@ -37,7 +39,8 @@ function GameSettings:initialize(
   hard_distance_limit,
   random_plot_factor,
   inactive_custom_plot_factor,
-  active_custom_plot_factor
+  active_custom_plot_factor,
+  stats_storing_delay
 )
   assert(types.is_number_with_limits(plot_sampling_speed, 0))
   assert(types.is_number_with_limits(plot_sampling_rate, 0))
@@ -51,6 +54,7 @@ function GameSettings:initialize(
   assert(types.is_number_with_limits(random_plot_factor, 0))
   assert(types.is_number_with_limits(inactive_custom_plot_factor))
   assert(types.is_number_with_limits(active_custom_plot_factor))
+  assert(types.is_number_with_limits(stats_storing_delay, 0))
 
   self.plot_sampling_speed = plot_sampling_speed
   self.plot_sampling_rate = plot_sampling_rate
@@ -60,6 +64,7 @@ function GameSettings:initialize(
   self.random_plot_factor = random_plot_factor
   self.inactive_custom_plot_factor = inactive_custom_plot_factor
   self.active_custom_plot_factor = active_custom_plot_factor
+  self.stats_storing_delay = stats_storing_delay
 end
 
 ---

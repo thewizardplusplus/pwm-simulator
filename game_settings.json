@@ -6,5 +6,6 @@
   "hard_distance_limit": 0.66,
   "random_plot_factor": 2,
   "inactive_custom_plot_factor": 0.5,
-  "active_custom_plot_factor": -1
+  "active_custom_plot_factor": -1,
+  "stats_storing_delay": 1
 }
