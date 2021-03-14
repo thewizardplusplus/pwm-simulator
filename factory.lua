@@ -28,10 +28,7 @@ function factory.create_game_settings(path)
       "stats_storing_delay",
     },
     properties = {
-      plot_sampling_speed = {
-        type = "number",
-        minimum = 0,
-      },
+      plot_sampling_speed = {["$ref"] = "#/definitions/positive_number"},
       plot_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
       distance_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
       soft_distance_limit = {
@@ -44,22 +41,20 @@ function factory.create_game_settings(path)
         minimum = 0,
         maximum = 1,
       },
-      random_plot_factor = {
-        type = "number",
-        minimum = 0,
-      },
+      random_plot_factor = {["$ref"] = "#/definitions/positive_number"},
       inactive_custom_plot_factor = {
         type = "number",
       },
       active_custom_plot_factor = {
         type = "number",
       },
-      stats_storing_delay = {
+      stats_storing_delay = {["$ref"] = "#/definitions/positive_number"},
+    },
+    definitions = {
+      positive_number = {
         type = "number",
         minimum = 0,
       },
-    },
-    definitions = {
       positive_integer = {
         type = "number",
         minimum = 0,
