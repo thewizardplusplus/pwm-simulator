@@ -49,7 +49,7 @@ function StatsGroup:increase_current(settings, plots, delta)
   assert(types.is_instance(plots, PlotGroup))
   assert(types.is_number_with_limits(delta, 0))
 
-  local index = settings:plot_length("custom")
+  local index = math.floor(settings:plot_length("custom"))
   local suitable_parameter =
     iterators.select_by_distance(plots.random, plots.custom, index, true, {
       DistanceLimit:new(settings.soft_distance_limit, "normal"),

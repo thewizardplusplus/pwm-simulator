@@ -47,7 +47,7 @@ function drawing._draw_distance(settings, screen, plots)
   for _ = 1, settings.distance_sampling_rate do
     x = x + settings:step(screen, "distance")
 
-    local index = x / settings:step(screen, "plot") + 1
+    local index = math.floor(x / settings:step(screen, "plot") + 1)
     local suitable_color =
       iterators.select_by_distance(plots.random, plots.custom, index, true, {
         DistanceLimit:new(
