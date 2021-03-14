@@ -31,16 +31,8 @@ function factory.create_game_settings(path)
       plot_sampling_speed = {["$ref"] = "#/definitions/positive_number"},
       plot_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
       distance_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
-      soft_distance_limit = {
-        type = "number",
-        minimum = 0,
-        maximum = 1,
-      },
-      hard_distance_limit = {
-        type = "number",
-        minimum = 0,
-        maximum = 1,
-      },
+      soft_distance_limit = {["$ref"] = "#/definitions/percents"},
+      hard_distance_limit = {["$ref"] = "#/definitions/percents"},
       random_plot_factor = {["$ref"] = "#/definitions/positive_number"},
       inactive_custom_plot_factor = {
         type = "number",
@@ -59,6 +51,11 @@ function factory.create_game_settings(path)
         type = "number",
         minimum = 0,
         multipleOf = 1,
+      },
+      percents = {
+        type = "number",
+        minimum = 0,
+        maximum = 1,
       },
     },
   })
