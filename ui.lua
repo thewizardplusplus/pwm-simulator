@@ -202,7 +202,7 @@ function ui._create_label_options(color, align)
   assert(table.find({"left", "right"}, align))
 
   return {
-    color = {normal = {fg = color:channels()}},
+    color = { normal = { fg = color:channels() } },
     align = align,
     valign = "top",
   }
