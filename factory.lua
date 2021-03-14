@@ -1,9 +1,89 @@
 ---
 -- @module factory
 
+local typeutils = require("typeutils")
+local GameSettings = require("models.gamesettings")
 local StatsStorage = require("statsstorage")
 
 local factory = {}
+
+---
+-- @tparam string path
+-- @treturn GameSettings
+-- @error error message
+function factory.create_game_settings(path)
+  assert(type(path) == "string")
+
+  local data, loading_err = typeutils.load_json(path, {
+    type = "object",
+    required = {
+      "plot_sampling_speed",
+      "plot_sampling_rate",
+      "distance_sampling_rate",
+      "soft_distance_limit",
+      "hard_distance_limit",
+      "random_plot_factor",
+      "inactive_custom_plot_factor",
+      "active_custom_plot_factor",
+      "stats_storing_delay",
+    },
+    properties = {
+      plot_sampling_speed = {
+        type = "number",
+        minimum = 0,
+      },
+      plot_sampling_rate = {
+        type = "number",
+        minimum = 0,
+        multipleOf = 1,
+      },
+      distance_sampling_rate = {
+        type = "number",
+        minimum = 0,
+        multipleOf = 1,
+      },
+      soft_distance_limit = {
+        type = "number",
+        minimum = 0,
+        maximum = 1,
+      },
+      hard_distance_limit = {
+        type = "number",
+        minimum = 0,
+        maximum = 1,
+      },
+      random_plot_factor = {
+        type = "number",
+        minimum = 0,
+      },
+      inactive_custom_plot_factor = {
+        type = "number",
+      },
+      active_custom_plot_factor = {
+        type = "number",
+      },
+      stats_storing_delay = {
+        type = "number",
+        minimum = 0,
+      },
+    },
+  })
+  if not data then
+    return nil, "unable to load the game settings: " .. loading_err
+  end
+
+  return GameSettings:new(
+    data.plot_sampling_speed,
+    data.plot_sampling_rate,
+    data.distance_sampling_rate,
+    data.soft_distance_limit,
+    data.hard_distance_limit,
+    data.random_plot_factor,
+    data.inactive_custom_plot_factor,
+    data.active_custom_plot_factor,
+    data.stats_storing_delay
+  )
+end
 
 ---
 -- @tparam string path

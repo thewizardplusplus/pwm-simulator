@@ -3,11 +3,9 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local tick = require("tick")
-local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
-local GameSettings = require("models.gamesettings")
 local factory = require("factory")
 local drawing = require("drawing")
 local ui = require("ui")
@@ -43,80 +41,6 @@ local function _make_screen()
   return Rectangle:new(x, y, width, height)
 end
 
-local function _load_game_settings(path)
-  assert(type(path) == "string")
-
-  local data, loading_err = typeutils.load_json(path, {
-    type = "object",
-    required = {
-      "plot_sampling_speed",
-      "plot_sampling_rate",
-      "distance_sampling_rate",
-      "soft_distance_limit",
-      "hard_distance_limit",
-      "random_plot_factor",
-      "inactive_custom_plot_factor",
-      "active_custom_plot_factor",
-      "stats_storing_delay",
-    },
-    properties = {
-      plot_sampling_speed = {
-        type = "number",
-        minimum = 0,
-      },
-      plot_sampling_rate = {
-        type = "number",
-        minimum = 0,
-        multipleOf = 1,
-      },
-      distance_sampling_rate = {
-        type = "number",
-        minimum = 0,
-        multipleOf = 1,
-      },
-      soft_distance_limit = {
-        type = "number",
-        minimum = 0,
-        maximum = 1,
-      },
-      hard_distance_limit = {
-        type = "number",
-        minimum = 0,
-        maximum = 1,
-      },
-      random_plot_factor = {
-        type = "number",
-        minimum = 0,
-      },
-      inactive_custom_plot_factor = {
-        type = "number",
-      },
-      active_custom_plot_factor = {
-        type = "number",
-      },
-      stats_storing_delay = {
-        type = "number",
-        minimum = 0,
-      },
-    },
-  })
-  if not data then
-    return nil, "unable to load the game settings: " .. loading_err
-  end
-
-  return GameSettings:new(
-    data.plot_sampling_speed,
-    data.plot_sampling_rate,
-    data.distance_sampling_rate,
-    data.soft_distance_limit,
-    data.hard_distance_limit,
-    data.random_plot_factor,
-    data.inactive_custom_plot_factor,
-    data.active_custom_plot_factor,
-    data.stats_storing_delay
-  )
-end
-
 local function _update_plots()
   if pause then
     return
@@ -142,7 +66,7 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  settings = assert(_load_game_settings("game_settings.json"))
+  settings = assert(factory.create_game_settings("game_settings.json"))
   screen = _make_screen()
   plots = PlotGroup:new(settings)
   stats_storage = assert(factory.create_stats_storage("stats-db"))
