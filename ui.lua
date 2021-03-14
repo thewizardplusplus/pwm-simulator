@@ -183,11 +183,11 @@ function ui._get_label_width(value, grid_step)
 
   local label_width
   if value == 100 then -- three digits
-    label_width = 2.76 * grid_step
+    label_width = 2.9 * grid_step
   elseif value >= 10 then -- two digits
-    label_width = 2.4 * grid_step
+    label_width = 2.5 * grid_step
   else -- one digit
-    label_width = 2 * grid_step
+    label_width = 2.1 * grid_step
   end
 
   return cpml.utils.round(label_width)
