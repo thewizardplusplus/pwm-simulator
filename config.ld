@@ -11,6 +11,7 @@ file = {
   "models/uiupdate.lua",
   "statsstorage.lua",
   "typeutils.lua",
+  "factory.lua",
   "drawing.lua",
   "ui.lua",
 }
