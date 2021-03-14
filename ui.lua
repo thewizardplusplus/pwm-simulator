@@ -24,6 +24,7 @@ function ui.draw(screen)
   suit.draw()
 end
 
+---
 -- @tparam Rectangle screen
 -- @tparam StatsGroup stats
 -- @tparam bool pause
