@@ -28,35 +28,20 @@ function factory.create_game_settings(path)
       "stats_storing_delay",
     },
     properties = {
-      plot_sampling_speed = {["$ref"] = "#/definitions/positive_number"},
-      plot_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
-      distance_sampling_rate = {["$ref"] = "#/definitions/positive_integer"},
-      soft_distance_limit = {["$ref"] = "#/definitions/percents"},
-      hard_distance_limit = {["$ref"] = "#/definitions/percents"},
-      random_plot_factor = {["$ref"] = "#/definitions/positive_number"},
-      inactive_custom_plot_factor = {
-        type = "number",
-      },
-      active_custom_plot_factor = {
-        type = "number",
-      },
-      stats_storing_delay = {["$ref"] = "#/definitions/positive_number"},
+      plot_sampling_speed = { ["$ref"] = "#/definitions/positive_number" },
+      plot_sampling_rate = { ["$ref"] = "#/definitions/positive_integer" },
+      distance_sampling_rate = { ["$ref"] = "#/definitions/positive_integer" },
+      soft_distance_limit = { ["$ref"] = "#/definitions/percents" },
+      hard_distance_limit = { ["$ref"] = "#/definitions/percents" },
+      random_plot_factor = { ["$ref"] = "#/definitions/positive_number" },
+      inactive_custom_plot_factor = { type = "number" },
+      active_custom_plot_factor = { type = "number" },
+      stats_storing_delay = { ["$ref"] = "#/definitions/positive_number" },
     },
     definitions = {
-      positive_number = {
-        type = "number",
-        minimum = 0,
-      },
-      positive_integer = {
-        type = "number",
-        minimum = 0,
-        multipleOf = 1,
-      },
-      percents = {
-        type = "number",
-        minimum = 0,
-        maximum = 1,
-      },
+      positive_number = { type = "number", minimum = 0 },
+      positive_integer = { type = "number", minimum = 0, multipleOf = 1 },
+      percents = { type = "number", minimum = 0, maximum = 1 },
     },
   })
   if not data then
