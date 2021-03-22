@@ -22,6 +22,39 @@ Perform refactoring.
 
 ## [v1.0](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.0) (2020-12-25)
 
+Major version. Implement the custom and custom source plots.
+
+- plots:
+  - they are initially initialized by the average value over the entire length;
+  - custom plot:
+    - it is updated with a custom shift from the last value:
+      - custom shift can be positive (the plot grows);
+      - custom shift can be negative (the plot shrinks);
+    - it takes up half of the screen width;
+  - custom source plot:
+    - it is updated by either the minimal or maximal value;
+    - it takes up half of the screen width.
+
+### Features
+
+- plots:
+  - they display functions of time (as in an oscilloscope);
+  - they are initially initialized by the average value over the entire length;
+  - random plot:
+    - it is updated with a random shift from the last value;
+    - it takes up three-quarters of the screen width;
+  - custom plot:
+    - it is updated with a custom shift from the last value:
+      - custom shift can be positive (the plot grows);
+      - custom shift can be negative (the plot shrinks);
+    - it takes up half of the screen width;
+  - custom source plot:
+    - it is updated by either the minimal or maximal value;
+    - it takes up half of the screen width;
+- drawing:
+  - drawing of plot boundaries;
+  - drawing of plots.
+
 ## [v1.0-alpha](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.0-alpha) (2020-12-23)
 
 Alpha of the major version. Implement the random plot.
