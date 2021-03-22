@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.5.1](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.1) (2021-03-22)
+
+Describe releases of the game.
+
+- description of releases:
+  - features;
+  - change log.
+
 ## [v1.5](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5) (2021-03-14)
 
 Store the game stats in the [FlatDB](https://github.com/uleelx/FlatDB) database, store the game configuration in a JSON file, and support resizing of the game window.
