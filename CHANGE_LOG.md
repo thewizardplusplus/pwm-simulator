@@ -23,3 +23,16 @@ Perform refactoring.
 ## [v1.0](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.0) (2020-12-25)
 
 ## [v1.0-alpha](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.0-alpha) (2020-12-23)
+
+Alpha of the major version. Implement the random plot.
+
+### Features
+
+- plots:
+  - they display functions of time (as in an oscilloscope);
+  - random plot:
+    - it is updated with a random shift from the last value;
+    - it takes up three-quarters of the screen width;
+- drawing:
+  - drawing of plot boundaries;
+  - drawing of plots.
