@@ -1,5 +1,7 @@
 # PWM Simulator
 
+![](docs/screenshot.png)
+
 2D puzzle game for Android inspired by [pulse-width modulation](https://en.wikipedia.org/wiki/Pulse-width_modulation) and various side-scrolling games.
 
 ## Features
