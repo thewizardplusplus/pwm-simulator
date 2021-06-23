@@ -29,21 +29,21 @@ The limits have the following values:
 
 ### Changing of the plots
 
-All three plots show the change of some signals as a function of time (just like an oscilloscope does). Thus, all plot points are shifted to the left at the specific speed, and new ones are added to the right.
+All three plots display how signals change as a function of time (just like an oscilloscope). Thus, all plot points are moving to the left at a certain speed, and the new ones appear from the right side.
 
-The points added to the random plot have a random offset relative to the last point on that plot.
+The points added to the random plot have a random offset from the last point on that plot.
 
-The custom plot and the custom plot source can be in two states: **active** and **inactive**.
+The custom plot and the custom plot source can have two states: **active** and **inactive**.
 
-The points added to the custom plot have the constant offset relative to the last point of that plot. The sign of the offset depends on the plot state:
+The points added to the custom plot have the constant offset from the last point of that plot. The offset sign depends on the plot state:
 
-- if the plot is **active**, the offset is **positive** (the plot **increases**);
-- if the plot is **inactive**, the offset is **negative** (the plot **decreases**).
+- if **active**, the offset is **positive** (the plot is **increasing**);
+- if **inactive**, the offset is **negative** (the plot is **decreasing**).
 
 The points added to the custom plot source can have only the two values and also depend on the plot state:
 
-- if the plot is **active**, the value is **maximum**;
-- if the plot is **inactive**, the value is **minimum**.
+- if **active**, the value is the specified **maximum**;
+- if **inactive**, the value is the specified **minimum**.
 
 ### Meaning of the plots
 
