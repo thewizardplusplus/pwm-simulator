@@ -1,5 +1,18 @@
 # Change Log
 
+## [v1.5.2](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.2) (2021-06-29)
+
+- describe the game documentation:
+  - contents:
+    - controls;
+    - gameplay;
+  - translations:
+    - in English;
+    - in Russian;
+  - misc.:
+    - screenshot;
+    - linked table of contents.
+
 ## [v1.5.1](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.1) (2021-03-22)
 
 Describe releases of the game.
