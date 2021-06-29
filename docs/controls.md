@@ -4,6 +4,6 @@
 
 ![](screenshot.png)
 
-Activating the custom plot is performed by a mouse click/touchscreen tap. The plot remains active only for the duration of the interaction.
+Activate the custom plot by clicking the mouse or tapping on the touch screen. The plot remains active only during the interaction.
 
-Switching to the pause mode is performed by the <kbd>||</kbd> button. Exiting the pause mode is performed by the <kbd>|></kbd> button.
+Pause by clicking the <kbd>||</kbd> button. To resume, click the <kbd>|></kbd> button.
