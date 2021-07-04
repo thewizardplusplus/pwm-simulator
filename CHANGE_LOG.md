@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.5.3](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.3) (2021-07-04)
+
+- misc. improvements:
+  - adding the configuration of the [makelove](https://github.com/pfirsich/makelove) tool:
+    - supporting the building of the game for the following platforms:
+      - Windows;
+      - macOS;
+      - Linux (via the [AppImage](https://appimage.org/) format).
+
 ## [v1.5.2](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.2) (2021-06-29)
 
 - describe the game documentation:
