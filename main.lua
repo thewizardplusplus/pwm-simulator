@@ -3,6 +3,7 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local tick = require("tick")
+local assertions = require("luatypechecks.assertions")
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
@@ -82,6 +83,8 @@ function love.draw()
 end
 
 function love.update(dt)
+  assertions.is_number(dt)
+
   tick.update(dt)
 
   if not pause then
@@ -102,6 +105,8 @@ function love.resize()
 end
 
 function love.keypressed(key)
+  assertions.is_string(key)
+
   if key == "escape" then
     love.event.quit()
   end
