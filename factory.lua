@@ -46,7 +46,7 @@ function factory.create_game_settings(path)
     },
   })
   if not data then
-    return nil, "unable to load the game settings: " .. loading_err
+    return nil
   end
 
   return GameSettings:new(
@@ -71,7 +71,7 @@ function factory.create_stats_storage(path)
 
   local ok = love.filesystem.createDirectory(path)
   if not ok then
-    return nil, "unable to create the stats DB"
+    return nil
   end
 
   local full_path = love.filesystem.getSaveDirectory() .. "/" .. path

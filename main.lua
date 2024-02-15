@@ -3,6 +3,7 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local tick = require("tick")
+local assertions = require("luatypechecks.assertions")
 local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
@@ -30,7 +31,7 @@ local function _enter_fullscreen()
 
   local ok = love.window.setFullscreen(true, "desktop")
   if not ok then
-    return false, "unable to enter fullscreen"
+    return false
   end
 
   return true
@@ -64,12 +65,17 @@ end
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
-  assert(_enter_fullscreen())
+  assertions.is_true(_enter_fullscreen())
 
-  settings = assert(factory.create_game_settings("game_settings.json"))
+  settings = factory.create_game_settings("game_settings.json")
+  assertions.is_true(settings)
+
   screen = _make_screen()
   plots = PlotGroup:new(settings)
-  stats_storage = assert(factory.create_stats_storage("stats-db"))
+
+  stats_storage = factory.create_stats_storage("stats-db")
+  assertions.is_true(stats_storage)
+
   stats.best = stats_storage:get_stats()
 
   tick.recur(_update_plots, settings:update_delay())
@@ -82,6 +88,8 @@ function love.draw()
 end
 
 function love.update(dt)
+  assertions.is_number(dt)
+
   tick.update(dt)
 
   if not pause then
@@ -102,6 +110,8 @@ function love.resize()
 end
 
 function love.keypressed(key)
+  assertions.is_string(key)
+
   if key == "escape" then
     love.event.quit()
   end
