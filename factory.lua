@@ -2,6 +2,7 @@
 -- @module factory
 
 local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 local GameSettings = require("models.gamesettings")
 local StatsStorage = require("statsstorage")
 
@@ -12,7 +13,7 @@ local factory = {}
 -- @treturn GameSettings
 -- @error error message
 function factory.create_game_settings(path)
-  assert(type(path) == "string")
+  assertions.is_string(path)
 
   local data, loading_err = typeutils.load_json(path, {
     type = "object",
@@ -66,7 +67,7 @@ end
 -- @treturn StatsStorage
 -- @error error message
 function factory.create_stats_storage(path)
-  assert(type(path) == "string")
+  assertions.is_string(path)
 
   local ok = love.filesystem.createDirectory(path)
   if not ok then
