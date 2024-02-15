@@ -2,7 +2,7 @@
 -- @classmod Rectangle
 
 local middleclass = require("middleclass")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
 
 local Rectangle = middleclass("Rectangle")
 
@@ -21,10 +21,10 @@ local Rectangle = middleclass("Rectangle")
 -- @tparam int height [0, ∞)
 -- @treturn Rectangle
 function Rectangle:initialize(x, y, width, height)
-  assert(types.is_number_with_limits(x, 0))
-  assert(types.is_number_with_limits(y, 0))
-  assert(types.is_number_with_limits(width, 0))
-  assert(types.is_number_with_limits(height, 0))
+  assertions.is_integer(x)
+  assertions.is_integer(y)
+  assertions.is_integer(width)
+  assertions.is_integer(height)
 
   self.x = x
   self.y = y

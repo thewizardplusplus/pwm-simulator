@@ -2,7 +2,7 @@
 -- @classmod StatsGroup
 
 local middleclass = require("middleclass")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
 local iterators = require("luaplot.iterators")
 local DistanceLimit = require("luaplot.distancelimit")
 local Stats = require("models.stats")
@@ -31,8 +31,8 @@ end
 function StatsGroup:max_percentage(parameter, nullable)
   nullable = nullable or false
 
-  assert(Stats.is_parameter(parameter))
-  assert(type(nullable) == "boolean")
+  assertions.is_true(Stats.is_parameter(parameter))
+  assertions.is_boolean(nullable)
 
   return math.max(
     self.current:percentage(parameter, nullable),
@@ -45,9 +45,9 @@ end
 -- @tparam PlotGroup plots
 -- @tparam number delta [0, ∞)
 function StatsGroup:increase_current(settings, plots, delta)
-  assert(types.is_instance(settings, GameSettings))
-  assert(types.is_instance(plots, PlotGroup))
-  assert(types.is_number_with_limits(delta, 0))
+  assertions.is_instance(settings, GameSettings)
+  assertions.is_instance(plots, PlotGroup)
+  assertions.is_number(delta)
 
   local index = math.floor(settings:plot_length("custom"))
   local suitable_parameter =
@@ -64,7 +64,7 @@ end
 function StatsGroup:update_best(nullable)
   nullable = nullable or false
 
-  assert(type(nullable) == "boolean")
+  assertions.is_boolean(nullable)
 
   local is_best_null = self.best:total(nullable) == 0
   local is_current_best = self.current:is_best(self.best, nullable)
