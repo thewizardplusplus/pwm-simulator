@@ -2,7 +2,7 @@
 -- @classmod GameSettings
 
 local middleclass = require("middleclass")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
 local Rectangle = require("models.rectangle")
 
 local GameSettings = middleclass("GameSettings")
@@ -42,19 +42,15 @@ function GameSettings:initialize(
   active_custom_plot_factor,
   stats_storing_delay
 )
-  assert(types.is_number_with_limits(plot_sampling_speed, 0))
-  assert(types.is_number_with_limits(plot_sampling_rate, 0))
-  assert(types.is_number_with_limits(distance_sampling_rate, 0))
-  assert(types.is_number_with_limits(soft_distance_limit, 0, 1))
-  assert(types.is_number_with_limits(
-    hard_distance_limit,
-    soft_distance_limit,
-    1
-  ))
-  assert(types.is_number_with_limits(random_plot_factor, 0))
-  assert(types.is_number_with_limits(inactive_custom_plot_factor))
-  assert(types.is_number_with_limits(active_custom_plot_factor))
-  assert(types.is_number_with_limits(stats_storing_delay, 0))
+  assertions.is_number(plot_sampling_speed)
+  assertions.is_integer(plot_sampling_rate)
+  assertions.is_integer(distance_sampling_rate)
+  assertions.is_number(soft_distance_limit)
+  assertions.is_number(hard_distance_limit)
+  assertions.is_number(random_plot_factor)
+  assertions.is_number(inactive_custom_plot_factor)
+  assertions.is_number(active_custom_plot_factor)
+  assertions.is_number(stats_storing_delay)
 
   self.plot_sampling_speed = plot_sampling_speed
   self.plot_sampling_rate = plot_sampling_rate
@@ -77,7 +73,7 @@ end
 -- @tparam "random"|"custom" plot
 -- @treturn number
 function GameSettings:plot_length(plot)
-  assert(table.find({"random", "custom"}, plot))
+  assertions.is_enumeration(plot, {"random", "custom"})
 
   local factor
   if plot == "random" then
@@ -94,8 +90,8 @@ end
 -- @tparam "plot"|"distance" parameter
 -- @treturn number
 function GameSettings:step(screen, parameter)
-  assert(types.is_instance(screen, Rectangle))
-  assert(table.find({"plot", "distance"}, parameter))
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_enumeration(parameter, {"plot", "distance"})
 
   local width = screen.width
   if parameter == "distance" then
@@ -109,7 +105,10 @@ end
 -- @tparam "random"|"inactive_custom"|"active_custom" plot
 -- @treturn number
 function GameSettings:plot_factor(plot)
-  assert(table.find({"random", "inactive_custom", "active_custom"}, plot))
+  assertions.is_enumeration(
+    plot,
+    {"random", "inactive_custom", "active_custom"}
+  )
 
   return self[plot .. "_plot_factor"] * self:update_delay()
 end

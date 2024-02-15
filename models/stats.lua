@@ -2,7 +2,8 @@
 -- @classmod Stats
 
 local middleclass = require("middleclass")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 
 local Stats = middleclass("Stats")
 
@@ -18,7 +19,10 @@ local Stats = middleclass("Stats")
 -- @tparam any parameter
 -- @treturn bool
 function Stats.static.is_parameter(parameter)
-  return table.find({"normal", "soft_limit", "hard_limit"}, parameter)
+  return checks.is_enumeration(
+    parameter,
+    {"normal", "soft_limit", "hard_limit"}
+  )
 end
 
 ---
@@ -28,9 +32,9 @@ end
 -- @tparam number hard_limit_time [0, ∞)
 -- @treturn Stats
 function Stats:initialize(normal_time, soft_limit_time, hard_limit_time)
-  assert(types.is_number_with_limits(normal_time, 0))
-  assert(types.is_number_with_limits(soft_limit_time, 0))
-  assert(types.is_number_with_limits(hard_limit_time, 0))
+  assertions.is_number(normal_time)
+  assertions.is_number(soft_limit_time)
+  assertions.is_number(hard_limit_time)
 
   self.normal_time = normal_time
   self.soft_limit_time = soft_limit_time
@@ -44,8 +48,8 @@ end
 function Stats:is_best(sample, nullable)
   nullable = nullable or false
 
-  assert(types.is_instance(sample, Stats))
-  assert(type(nullable) == "boolean")
+  assertions.is_instance(sample, Stats)
+  assertions.is_boolean(nullable)
 
   local self_normal_percentage = self:percentage("normal", nullable)
   local self_soft_limit_percentage = self:percentage("soft_limit", nullable)
@@ -64,7 +68,7 @@ end
 function Stats:total(nullable)
   nullable = nullable or false
 
-  assert(type(nullable) == "boolean")
+  assertions.is_boolean(nullable)
 
   local total = self.normal_time + self.soft_limit_time + self.hard_limit_time
   -- for preventing division by zero
@@ -88,8 +92,8 @@ end
 function Stats:percentage(parameter, nullable)
   nullable = nullable or false
 
-  assert(Stats.is_parameter(parameter))
-  assert(type(nullable) == "boolean")
+  assertions.is_true(Stats.is_parameter(parameter))
+  assertions.is_boolean(nullable)
 
   return self[parameter .. "_time"] / self:total(nullable) * 100
 end
@@ -98,8 +102,8 @@ end
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
 -- @tparam number delta [0, ∞)
 function Stats:increase(parameter, delta)
-  assert(Stats.is_parameter(parameter))
-  assert(types.is_number_with_limits(delta, 0))
+  assertions.is_true(Stats.is_parameter(parameter))
+  assertions.is_number(delta)
 
   parameter = parameter .. "_time"
   self[parameter] = self[parameter] + delta
