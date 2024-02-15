@@ -2,7 +2,7 @@
 -- @classmod Point
 
 local middleclass = require("middleclass")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
 
 local Point = middleclass("Point")
 
@@ -17,8 +17,8 @@ local Point = middleclass("Point")
 -- @tparam number y [0, ∞)
 -- @treturn Point
 function Point:initialize(x, y)
-  assert(types.is_number_with_limits(x, 0))
-  assert(types.is_number_with_limits(y, 0))
+  assertions.is_number(x)
+  assertions.is_number(y)
 
   self.x = x
   self.y = y
