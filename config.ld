@@ -27,6 +27,7 @@ topics = {
   "CHANGE_LOG.md",
   "LICENSE.txt",
 }
+dir = "docs/api"
 format = "markdown"
 postprocess_html = function(html)
   local github_corner = [[

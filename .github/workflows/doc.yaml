@@ -24,6 +24,6 @@ jobs:
           ldoc .
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: doc/
+          path: docs/api/
       - id: deploy
         uses: actions/deploy-pages@v4
