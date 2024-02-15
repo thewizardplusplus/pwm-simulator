@@ -1,7 +1,8 @@
 ---
 -- @module drawing
 
-local types = require("luaplot.types")
+local cpml = require("cpml")
+local assertions = require("luatypechecks.assertions")
 local iterators = require("luaplot.iterators")
 local colors = require("constants.colors")
 local Plot = require("luaplot.plot")
@@ -21,10 +22,10 @@ local drawing = {}
 -- @tparam PlotGroup plots
 -- @tparam bool pause
 function drawing.draw_game(settings, screen, plots, pause)
-  assert(types.is_instance(settings, GameSettings))
-  assert(types.is_instance(screen, Rectangle))
-  assert(types.is_instance(plots, PlotGroup))
-  assert(type(pause) == "boolean")
+  assertions.is_instance(settings, GameSettings)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(plots, PlotGroup)
+  assertions.is_boolean(pause)
 
   drawing._draw_distance(settings, screen, plots)
   drawing._draw_boundaries(screen)
@@ -39,9 +40,9 @@ end
 -- @tparam Rectangle screen
 -- @tparam PlotGroup plots
 function drawing._draw_distance(settings, screen, plots)
-  assert(types.is_instance(settings, GameSettings))
-  assert(types.is_instance(screen, Rectangle))
-  assert(types.is_instance(plots, PlotGroup))
+  assertions.is_instance(settings, GameSettings)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(plots, PlotGroup)
 
   local x = 0
   for _ = 1, settings.distance_sampling_rate do
@@ -75,7 +76,7 @@ end
 ---
 -- @tparam Rectangle screen
 function drawing._draw_boundaries(screen)
-  assert(types.is_instance(screen, Rectangle))
+  assertions.is_instance(screen, Rectangle)
 
   local boundary_line_width = screen.height / 320
   love.graphics.setColor(0.5, 0.5, 0.5)
@@ -97,13 +98,13 @@ end
 -- @tparam Rectangle screen
 -- @tparam PlotGroup plots
 function drawing._draw_plots(settings, screen, plots)
-  assert(types.is_instance(settings, GameSettings))
-  assert(types.is_instance(screen, Rectangle))
-  assert(types.is_instance(plots, PlotGroup))
+  assertions.is_instance(settings, GameSettings)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(plots, PlotGroup)
 
   local iterator = PlotIteratorFactory:new(function(index, point)
-    assert(types.is_number_with_limits(index, 1))
-    assert(types.is_number_with_limits(point))
+    assertions.is_number(index)
+    assertions.is_number(point)
 
     return Point:new(
       screen.x + (index - 1) * settings:step(screen, "plot"),
@@ -111,7 +112,7 @@ function drawing._draw_plots(settings, screen, plots)
     )
   end)
 
-  local plot_line_width = screen.height / 80
+  local plot_line_width = cpml.utils.round(screen.height / 80)
   drawing._draw_plot(
     plots.random,
     iterator,
@@ -122,7 +123,7 @@ function drawing._draw_plots(settings, screen, plots)
     plots.custom_source,
     iterator,
     Color(0, 0.33, 0, 1),
-    plot_line_width / 2
+    cpml.utils.round(plot_line_width / 2)
   )
   drawing._draw_plot(
     plots.custom,
@@ -138,10 +139,10 @@ end
 -- @tparam Color color
 -- @tparam int width [0, ∞)
 function drawing._draw_plot(plot, iterator, color, width)
-  assert(types.is_instance(plot, Plot))
-  assert(types.is_instance(iterator, PlotIteratorFactory))
-  assert(types.is_instance(color, Color))
-  assert(types.is_number_with_limits(width, 0))
+  assertions.is_instance(plot, Plot)
+  assertions.is_instance(iterator, PlotIteratorFactory)
+  assertions.is_instance(color, Color)
+  assertions.is_integer(width)
 
   local plot_points = {}
   for _, point in ipairs(iterator:with(plot)) do
@@ -158,7 +159,7 @@ end
 ---
 -- @tparam Rectangle screen
 function drawing._draw_pause_background(screen)
-  assert(types.is_instance(screen, Rectangle))
+  assertions.is_instance(screen, Rectangle)
 
   love.graphics.setColor(0, 0, 0, 0.75)
   love.graphics.rectangle(
