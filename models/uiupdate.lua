@@ -2,6 +2,7 @@
 -- @classmod UiUpdate
 
 local middleclass = require("middleclass")
+local assertions = require("luatypechecks.assertions")
 
 local UiUpdate = middleclass("UiUpdate")
 
@@ -14,7 +15,7 @@ local UiUpdate = middleclass("UiUpdate")
 -- @tparam bool pause
 -- @treturn UiUpdate
 function UiUpdate:initialize(pause)
-  assert(type(pause) == "boolean")
+  assertions.is_boolean(pause)
 
   self.pause = pause
 end
