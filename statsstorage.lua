@@ -3,7 +3,7 @@
 
 local middleclass = require("middleclass")
 local flatdb = require("flatdb")
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
 local Stats = require("models.stats")
 
 local StatsStorage = middleclass("StatsStorage")
@@ -17,7 +17,7 @@ local StatsStorage = middleclass("StatsStorage")
 -- @tparam string path
 -- @treturn StatsStorage
 function StatsStorage:initialize(path)
-  assert(type(path) == "string")
+  assertions.is_string(path)
 
   self._db = flatdb(path)
   if not self._db.stats then
@@ -42,7 +42,7 @@ end
 ---
 -- @tparam Stats stats
 function StatsStorage:store_stats(stats)
-  assert(types.is_instance(stats, Stats))
+  assertions.is_instance(stats, Stats)
 
   self._db.stats = {
     normal_time = stats.normal_time,
