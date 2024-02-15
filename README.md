@@ -1,5 +1,7 @@
 # PWM Simulator
 
+[![lint](https://github.com/thewizardplusplus/pwm-simulator/actions/workflows/lint.yaml/badge.svg)](https://github.com/thewizardplusplus/pwm-simulator/actions/workflows/lint.yaml)
+
 ![](docs/screenshot.png)
 
 2D puzzle game for Android inspired by [pulse-width modulation](https://en.wikipedia.org/wiki/Pulse-width_modulation) and various side-scrolling games.
