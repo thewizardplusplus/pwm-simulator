@@ -10,7 +10,6 @@ local PlotGroup = require("models.plotgroup")
 local factory = require("factory")
 local drawing = require("drawing")
 local ui = require("ui")
-require("luatable")
 require("compat52")
 
 local settings = nil -- models.GameSettings
@@ -23,8 +22,8 @@ local update_count = 0
 local pause = false
 
 local function _enter_fullscreen()
-  local os = love.system.getOS()
-  local is_mobile_os = table.find({"Android", "iOS"}, os)
+  local is_mobile_os = love.system.getOS() == "Android"
+    or love.system.getOS() == "iOS"
   if not is_mobile_os then
     return true
   end
