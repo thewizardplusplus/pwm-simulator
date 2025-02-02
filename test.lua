@@ -10,6 +10,7 @@ for _, module in ipairs({
   "models.plotgroup",
   "models.point",
   "models.rectangle",
+  "models.stats",
 }) do
   require(module .. "_test")
 end

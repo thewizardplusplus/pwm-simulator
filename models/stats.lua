@@ -1,11 +1,17 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod Stats
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 
 local Stats = middleclass("Stats")
+Stats:include(Nameable)
+Stats:include(Stringifiable)
 
 ---
 -- @table instance
@@ -41,6 +47,22 @@ function Stats:initialize(normal_time, soft_limit_time, hard_limit_time)
   self.soft_limit_time = soft_limit_time
   self.hard_limit_time = hard_limit_time
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Stats:__data()
+  return {
+    normal_time = self.normal_time,
+    soft_limit_time = self.soft_limit_time,
+    hard_limit_time = self.hard_limit_time,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 ---
 -- @tparam Stats sample
