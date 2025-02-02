@@ -1,10 +1,16 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod Point
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 
 local Point = middleclass("Point")
+Point:include(Nameable)
+Point:include(Stringifiable)
 
 ---
 -- @table instance
@@ -23,5 +29,20 @@ function Point:initialize(x, y)
   self.x = x
   self.y = y
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Point:__data()
+  return {
+    x = self.x,
+    y = self.y,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 return Point
