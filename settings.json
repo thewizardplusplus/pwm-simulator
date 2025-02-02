@@ -1,4 +1,5 @@
 {
+  "__name": "GameSettings",
   "plot_sampling_speed": 0.2,
   "plot_sampling_rate": 50,
   "distance_sampling_rate": 50,

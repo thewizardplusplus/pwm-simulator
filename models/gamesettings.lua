@@ -14,6 +14,67 @@ GameSettings:include(Nameable)
 GameSettings:include(Stringifiable)
 
 ---
+-- @function schema
+-- @static
+-- @treturn tab JSON Schema for this class
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function GameSettings.static.schema()
+  local number = { type = "number" }
+  local positive_number = { type = "number", minimum = 0 }
+  local positive_integer = { type = "number", minimum = 0, multipleOf = 1 }
+  local percents = { type = "number", minimum = 0, maximum = 1 }
+
+  return {
+    type = "object",
+    required = {
+      "plot_sampling_speed",
+      "plot_sampling_rate",
+      "distance_sampling_rate",
+      "soft_distance_limit",
+      "hard_distance_limit",
+      "random_plot_factor",
+      "inactive_custom_plot_factor",
+      "active_custom_plot_factor",
+      "stats_storing_delay",
+    },
+    properties = {
+      plot_sampling_speed = positive_number,
+      plot_sampling_rate = positive_integer,
+      distance_sampling_rate = positive_integer,
+      soft_distance_limit = percents,
+      hard_distance_limit = percents,
+      random_plot_factor = positive_number,
+      inactive_custom_plot_factor = number,
+      active_custom_plot_factor = number,
+      stats_storing_delay = positive_number,
+    },
+  }
+end
+
+---
+-- @function from_options
+-- @static
+-- @tparam tab options constructor options conforming to the JSON Schema
+--   returned by @{GameSettings.schema|GameSettings.schema()}
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+-- @treturn GameSettings
+function GameSettings.static.from_options(options)
+  assertions.is_table(options)
+
+  return GameSettings:new(
+    options.plot_sampling_speed,
+    options.plot_sampling_rate,
+    options.distance_sampling_rate,
+    options.soft_distance_limit,
+    options.hard_distance_limit,
+    options.random_plot_factor,
+    options.inactive_custom_plot_factor,
+    options.active_custom_plot_factor,
+    options.stats_storing_delay
+  )
+end
+
+---
 -- @table instance
 -- @tfield number plot_sampling_speed
 -- @tfield int plot_sampling_rate
