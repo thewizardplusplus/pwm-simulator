@@ -67,7 +67,7 @@ function love.load()
   love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
-  settings = assert(factory.create_game_settings("game_settings.json"))
+  settings = assert(factory.create_game_settings("settings.json"))
   screen = _make_screen()
   plots = PlotGroup:new(settings)
   stats_storage = assert(factory.create_stats_storage("stats-db"))
