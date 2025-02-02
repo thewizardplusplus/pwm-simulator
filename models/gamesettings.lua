@@ -1,11 +1,17 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod GameSettings
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 local Rectangle = require("models.rectangle")
 
 local GameSettings = middleclass("GameSettings")
+GameSettings:include(Nameable)
+GameSettings:include(Stringifiable)
 
 ---
 -- @table instance
@@ -62,6 +68,28 @@ function GameSettings:initialize(
   self.active_custom_plot_factor = active_custom_plot_factor
   self.stats_storing_delay = stats_storing_delay
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function GameSettings:__data()
+  return {
+    plot_sampling_speed = self.plot_sampling_speed,
+    plot_sampling_rate = self.plot_sampling_rate,
+    distance_sampling_rate = self.distance_sampling_rate,
+    soft_distance_limit = self.soft_distance_limit,
+    hard_distance_limit = self.hard_distance_limit,
+    random_plot_factor = self.random_plot_factor,
+    inactive_custom_plot_factor = self.inactive_custom_plot_factor,
+    active_custom_plot_factor = self.active_custom_plot_factor,
+    stats_storing_delay = self.stats_storing_delay,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 ---
 -- @treturn number
