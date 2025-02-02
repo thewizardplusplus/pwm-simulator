@@ -1,8 +1,12 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod StatsGroup
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 local iterators = require("luaplot.iterators")
 local DistanceLimit = require("luaplot.distancelimit")
 local Stats = require("models.stats")
@@ -10,6 +14,8 @@ local GameSettings = require("models.gamesettings")
 local PlotGroup = require("models.plotgroup")
 
 local StatsGroup = middleclass("StatsGroup")
+StatsGroup:include(Nameable)
+StatsGroup:include(Stringifiable)
 
 ---
 -- @table instance
@@ -23,6 +29,21 @@ function StatsGroup:initialize()
   self.current = Stats:new(0, 0, 0)
   self.best = Stats:new(0, 0, 0)
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function StatsGroup:__data()
+  return {
+    current = self.current,
+    best = self.best,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 ---
 -- @tparam "normal"|"soft_limit"|"hard_limit" parameter
