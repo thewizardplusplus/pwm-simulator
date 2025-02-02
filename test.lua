@@ -12,6 +12,7 @@ for _, module in ipairs({
   "models.rectangle",
   "models.stats",
   "models.statsgroup",
+  "models.uiupdate",
 }) do
   require(module .. "_test")
 end
