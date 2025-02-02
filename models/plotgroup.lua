@@ -1,12 +1,18 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod PlotGroup
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 local GameSettings = require("models.gamesettings")
 local Oscillogram = require("luaplot.oscillogram")
 
 local PlotGroup = middleclass("PlotGroup")
+PlotGroup:include(Nameable)
+PlotGroup:include(Stringifiable)
 
 ---
 -- @table instance
@@ -26,6 +32,22 @@ function PlotGroup:initialize(settings)
   self.custom_source =
     Oscillogram:new("custom", settings:plot_length("custom"), 0.5)
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function PlotGroup:__data()
+  return {
+    random = self.random,
+    custom = self.custom,
+    custom_source = self.custom_source,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 ---
 -- @tparam GameSettings settings

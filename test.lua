@@ -7,6 +7,7 @@ local luaunit = require("luaunit")
 for _, module in ipairs({
   "models.color",
   "models.gamesettings",
+  "models.plotgroup",
 }) do
   require(module .. "_test")
 end
