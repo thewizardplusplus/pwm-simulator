@@ -12,6 +12,7 @@ local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local Point = require("models.point")
 local GameSettings = require("models.gamesettings")
+setfenv(1, require("compat53.module"))
 
 local drawing = {}
 
