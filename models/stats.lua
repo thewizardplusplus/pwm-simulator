@@ -14,6 +14,42 @@ Stats:include(Nameable)
 Stats:include(Stringifiable)
 
 ---
+-- @function schema
+-- @static
+-- @treturn tab JSON Schema for this class
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Stats.static.schema()
+  local positive_number = { type = "number", minimum = 0 }
+
+  return {
+    type = "object",
+    required = {"normal_time", "soft_limit_time", "hard_limit_time"},
+    properties = {
+      normal_time = positive_number,
+      soft_limit_time = positive_number,
+      hard_limit_time = positive_number,
+    },
+  }
+end
+
+---
+-- @function from_options
+-- @static
+-- @tparam tab options constructor options conforming to the JSON Schema
+--   returned by @{Stats.schema|Stats.schema()}
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+-- @treturn Stats
+function Stats.static.from_options(options)
+  assertions.is_table(options)
+
+  return Stats:new(
+    options.normal_time,
+    options.soft_limit_time,
+    options.hard_limit_time
+  )
+end
+
+---
 -- @table instance
 -- @tfield number normal_time
 -- @tfield number soft_limit_time
