@@ -4,12 +4,12 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local tick = require("tick")
 local assertions = require("luatypechecks.assertions")
-local Rectangle = require("models.rectangle")
 local StatsGroup = require("models.statsgroup")
 local PlotGroup = require("models.plotgroup")
 local factory = require("factory")
 local drawing = require("drawing")
 local ui = require("ui")
+local window = require("window")
 local StatsStorage = require("statsstorage")
 require("luatable")
 
@@ -21,26 +21,6 @@ local stats_storage = nil -- StatsStorage
 local stats = StatsGroup:new()
 local update_count = 0
 local pause = false
-
-local function _enter_fullscreen()
-  local os = love.system.getOS()
-  local is_mobile_os = table.find({"Android", "iOS"}, os)
-  if not is_mobile_os then
-    return true
-  end
-
-  local ok = love.window.setFullscreen(true, "desktop")
-  if not ok then
-    return false, "unable to enter fullscreen"
-  end
-
-  return true
-end
-
-local function _make_screen()
-  local x, y, width, height = love.window.getSafeArea()
-  return Rectangle:new(x, y, width, height)
-end
 
 local function _update_plots()
   if pause then
@@ -65,10 +45,10 @@ end
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
-  assert(_enter_fullscreen())
+  assert(window.enter_fullscreen())
 
   settings = assert(factory.create_game_settings("settings.json"))
-  screen = _make_screen()
+  screen = window.create_screen()
   plots = PlotGroup:new(settings)
   stats_storage = StatsStorage:new("stats.json")
   stats.best = stats_storage:stats()
@@ -101,7 +81,7 @@ function love.update(dt)
 end
 
 function love.resize()
-  screen = _make_screen()
+  screen = window.create_screen()
 end
 
 function love.keypressed(key)
