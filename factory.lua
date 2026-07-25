@@ -4,7 +4,6 @@
 local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
 local GameSettings = require("models.gamesettings")
-local StatsStorage = require("statsstorage")
 
 local factory = {}
 
@@ -31,22 +30,6 @@ function factory.create_game_settings(path)
   end
 
   return settings
-end
-
----
--- @tparam string path
--- @treturn StatsStorage
--- @error error message
-function factory.create_stats_storage(path)
-  assertions.is_string(path)
-
-  local ok = love.filesystem.createDirectory(path)
-  if not ok then
-    return nil, "unable to create the stats DB"
-  end
-
-  local full_path = love.filesystem.getSaveDirectory() .. "/" .. path
-  return StatsStorage:new(full_path)
 end
 
 return factory

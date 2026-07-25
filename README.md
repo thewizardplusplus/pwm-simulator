@@ -44,7 +44,8 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
   - types:
     - current;
     - best;
-  - storing the game stats in the [FlatDB](https://github.com/uleelx/FlatDB) database:
+  - storing the game stats:
+    - save only the best metrics;
     - regular saving with a certain period;
   - configuration:
     - options:
