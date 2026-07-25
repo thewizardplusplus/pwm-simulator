@@ -12,7 +12,6 @@ local drawing = require("drawing")
 local ui = require("ui")
 local StatsStorage = require("statsstorage")
 require("luatable")
-require("compat52")
 
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
