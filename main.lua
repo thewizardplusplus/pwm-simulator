@@ -15,6 +15,7 @@ require("luatable")
 
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
+local fonts = nil -- {[string]=Font,...}
 local plots = nil -- models.PlotGroup
 local custom_plot_activity = false
 local stats_storage = nil -- StatsStorage
@@ -49,6 +50,7 @@ function love.load()
 
   settings = assert(factory.create_game_settings("settings.json"))
   screen = window.create_screen()
+  fonts = ui.load_fonts(screen)
   plots = PlotGroup:new(settings)
   stats_storage = StatsStorage:new("stats.json")
   stats.best = stats_storage:stats()
@@ -59,7 +61,7 @@ end
 
 function love.draw()
   drawing.draw_game(settings, screen, plots, pause)
-  ui.draw(screen)
+  ui.draw()
 end
 
 function love.update(dt)
@@ -74,7 +76,7 @@ function love.update(dt)
     end
   end
 
-  local update = ui.update(screen, stats, pause)
+  local update = ui.update(screen, fonts, stats, pause)
   if update.pause then
     pause = not pause
   end
@@ -82,6 +84,7 @@ end
 
 function love.resize()
   screen = window.create_screen()
+  fonts = ui.load_fonts(screen)
 end
 
 function love.keypressed(key)

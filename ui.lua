@@ -4,6 +4,7 @@
 local suit = require("suit")
 local cpml = require("cpml")
 local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 local colors = require("constants.colors")
 local icons = require("constants.icons")
 local Stats = require("models.stats")
@@ -12,51 +13,70 @@ local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local UiUpdate = require("models.uiupdate")
 
+local _ICONS_FONT_PATH =
+  "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf"
+
 local ui = {}
 
 ---
 -- @tparam Rectangle screen
-function ui.draw(screen)
+-- @treturn {[string]=Font,...}
+function ui.load_fonts(screen)
   assertions.is_instance(screen, Rectangle)
 
   local font_size = screen.height / 20
-  love.graphics.setFont(love.graphics.newFont(font_size))
+  return {
+    default = love.graphics.newFont(font_size),
+    icons = love.graphics.newFont(_ICONS_FONT_PATH, font_size),
+  }
+end
 
+---
+-- @function draw
+function ui.draw()
   suit.draw()
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @tparam StatsGroup stats
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui.update(screen, stats, pause)
+function ui.update(screen, fonts, stats, pause)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_instance(stats, StatsGroup)
   assertions.is_boolean(pause)
 
   local grid_step = math.floor(screen.height / 12)
-  ui._update_labels(screen, grid_step, stats)
-  return ui._update_buttons(screen, grid_step, pause)
+  ui._update_labels(screen, fonts, grid_step, stats)
+  return ui._update_buttons(screen, fonts, grid_step, pause)
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @tparam int grid_step [0, ∞)
 -- @tparam StatsGroup stats
-function ui._update_labels(screen, grid_step, stats)
+function ui._update_labels(screen, fonts, grid_step, stats)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_integer(grid_step)
   assertions.is_instance(stats, StatsGroup)
 
-  ui._update_label_row("Best:", stats.best, ui._create_label_layout(
+  ui._update_label_row(fonts, "Best:", stats.best, ui._create_label_layout(
     math.floor(screen.x + grid_step / 2),
     math.floor(screen:vertical_offset() - 1.75 * grid_step),
     grid_step,
     stats
   ))
 
-  ui._update_label_row("Now:", stats.current, ui._create_label_layout(
+  ui._update_label_row(fonts, "Now:", stats.current, ui._create_label_layout(
     math.floor(screen.x + grid_step / 2),
     math.floor(screen:vertical_offset() - grid_step),
     grid_step,
@@ -65,69 +85,99 @@ function ui._update_labels(screen, grid_step, stats)
 end
 
 ---
+-- @tparam {[string]=Font,...} fonts
 -- @tparam string title
 -- @tparam Stats stats
 -- @tparam tab label_layout SUIT precomputed layout
-function ui._update_label_row(title, stats, label_layout)
+function ui._update_label_row(fonts, title, stats, label_layout)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_string(title)
   assertions.is_instance(stats, Stats)
   assertions.is_table(label_layout)
 
   suit.Label(
     title,
-    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "left"),
+    ui._create_label_options(
+      fonts.default,
+      "left",
+      Color:new(0.5, 0.5, 0.5, 1)
+    ),
     label_layout:cell(1)
   )
 
   suit.Label(
     "#",
-    ui._create_label_options(colors.NORMAL_DISTANCE_COLOR, "left"),
+    ui._create_label_options(
+      fonts.default,
+      "left",
+      colors.NORMAL_DISTANCE_COLOR
+    ),
     label_layout:cell(3)
   )
   suit.Label(
     string.format("%.2f%%", stats:percentage("normal")),
-    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    ui._create_label_options(
+      fonts.default,
+      "right",
+      Color:new(0.5, 0.5, 0.5, 1)
+    ),
     label_layout:cell(4)
   )
 
   suit.Label(
     "#",
-    ui._create_label_options(colors.SOFT_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(
+      fonts.default,
+      "left",
+      colors.SOFT_DISTANCE_LIMIT_COLOR
+    ),
     label_layout:cell(6)
   )
   suit.Label(
     string.format("%.2f%%", stats:percentage("soft_limit")),
-    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    ui._create_label_options(
+      fonts.default,
+      "right",
+      Color:new(0.5, 0.5, 0.5, 1)
+    ),
     label_layout:cell(7)
   )
 
   suit.Label(
     "#",
-    ui._create_label_options(colors.HARD_DISTANCE_LIMIT_COLOR, "left"),
+    ui._create_label_options(
+      fonts.default,
+      "left",
+      colors.HARD_DISTANCE_LIMIT_COLOR
+    ),
     label_layout:cell(9)
   )
   suit.Label(
     string.format("%.2f%%", stats:percentage("hard_limit")),
-    ui._create_label_options(Color:new(0.5, 0.5, 0.5, 1), "right"),
+    ui._create_label_options(
+      fonts.default,
+      "right",
+      Color:new(0.5, 0.5, 0.5, 1)
+    ),
     label_layout:cell(10)
   )
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @tparam int grid_step [0, ∞)
 -- @tparam bool pause
 -- @treturn UiUpdate
-function ui._update_buttons(screen, grid_step, pause)
+function ui._update_buttons(screen, fonts, grid_step, pause)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_integer(grid_step)
   assertions.is_boolean(pause)
-
-  local font_size = screen.height / 20
-  local icon_font = love.graphics.newFont(
-    "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf",
-    font_size
-  )
 
   suit.layout:reset(
     screen.x + screen.width - 1.5 * grid_step,
@@ -136,7 +186,7 @@ function ui._update_buttons(screen, grid_step, pause)
 
   local pause_button = suit.Button(
     pause and icons.PLAY_ICON or icons.PAUSE_ICON,
-    { font = icon_font },
+    { font = fonts.icons },
     suit.layout:row(grid_step, grid_step)
   )
   return UiUpdate:new(pause_button.hit)
@@ -202,17 +252,20 @@ function ui._get_label_width(value, grid_step)
 end
 
 ---
--- @tparam Color color
+-- @tparam Font font
 -- @tparam "left"|"right" align
+-- @tparam Color color
 -- @treturn tab common SUIT widget options
-function ui._create_label_options(color, align)
-  assertions.is_instance(color, Color)
+function ui._create_label_options(font, align, color)
+  assertions.is_true(type(font) == "userdata")
   assertions.is_enumeration(align, {"left", "right"})
+  assertions.is_instance(color, Color)
 
   return {
-    color = { normal = { fg = color:channels() } },
+    font = font,
     align = align,
     valign = "top",
+    color = { normal = { fg = color:channels() } },
   }
 end
 
