@@ -5,6 +5,7 @@ local suit = require("suit")
 local cpml = require("cpml")
 local assertions = require("luatypechecks.assertions")
 local colors = require("constants.colors")
+local icons = require("constants.icons")
 local Stats = require("models.stats")
 local StatsGroup = require("models.statsgroup")
 local Color = require("models.color")
@@ -122,14 +123,20 @@ function ui._update_buttons(screen, grid_step, pause)
   assertions.is_integer(grid_step)
   assertions.is_boolean(pause)
 
+  local font_size = screen.height / 20
+  local icon_font = love.graphics.newFont(
+    "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf",
+    font_size
+  )
+
   suit.layout:reset(
     screen.x + screen.width - 1.5 * grid_step,
     screen:vertical_offset() - 1.5 * grid_step
   )
 
-  local pause_button_text = pause and "|>" or "||"
   local pause_button = suit.Button(
-    pause_button_text,
+    pause and icons.PLAY_ICON or icons.PAUSE_ICON,
+    { font = icon_font },
     suit.layout:row(grid_step, grid_step)
   )
   return UiUpdate:new(pause_button.hit)
