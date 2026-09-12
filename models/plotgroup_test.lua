@@ -17,25 +17,22 @@ function TestPlotGroup.test_tostring()
       "__name = \"Oscillogram\"," ..
       "default = 0.5," ..
       "kind = \"linear\"," ..
-      "maximum = 1," ..
-      "minimum = 0," ..
-      "points = { 0.5 }" ..
+      "points = { 0.5 }," ..
+      "range = {__name = \"Range\",max = 1,min = 0}" ..
     "}," ..
     "custom_source = {" ..
       "__name = \"Oscillogram\"," ..
       "default = 0.5," ..
       "kind = \"custom\"," ..
-      "maximum = 1," ..
-      "minimum = 0," ..
-      "points = { 0.5 }" ..
+      "points = { 0.5 }," ..
+      "range = {__name = \"Range\",max = 1,min = 0}" ..
     "}," ..
     "random = {" ..
       "__name = \"Oscillogram\"," ..
       "default = 0.5," ..
       "kind = \"random\"," ..
-      "maximum = 1," ..
-      "minimum = 0," ..
-      "points = { 0.5 }" ..
+      "points = { 0.5 }," ..
+      "range = {__name = \"Range\",max = 1,min = 0}" ..
     "}" ..
   "}")
 end
