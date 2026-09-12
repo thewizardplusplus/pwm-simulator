@@ -1,25 +1,32 @@
+-- luacheck: no max comment line length
+
 ---
 -- @module iterators
 
-local types = require("luaplot.types")
+local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
+local Vector2D = require("luamath.vector2d")
 local DistanceLimit = require("luaplot.distancelimit")
 
 local iterators = {}
 
 ---
--- It is an analog of the 'next' function but for the 'ipairs' one.
+-- ⚠️. It is an analog of the 'next' function but for the 'ipairs' one.
 -- It is used for iterating in Lua 5.2.
--- @tparam {any,...} items
+-- @tparam tab indexable
 -- @tparam number index [0, ∞)
 -- @treturn[1] number next index
 -- @treturn[1] any next item
 -- @treturn[2] nil when the next index out of range
-function iterators.inext(items, index)
-  assert(type(items) == "table")
-  assert(types.is_number_with_limits(index, 0))
+function iterators.inext(indexable, index)
+  assertions.is_true(
+    checks.is_sequence(indexable)
+      or checks.has_metamethods(indexable, {"__index"})
+  )
+  assertions.is_number(index)
 
   local next_index = index + 1
-  local next_item = items[next_index]
+  local next_item = indexable[next_index]
   if next_item == nil then
     return
   end
@@ -32,16 +39,27 @@ end
 -- @tparam tab indexable_two
 -- @tparam number index [1, ∞)
 -- @tparam[opt=false] bool modulo
--- @treturn number
+-- @treturn number vertical difference for Vector2D items, otherwise item difference
 function iterators.difference(indexable_one, indexable_two, index, modulo)
-  assert(types.is_indexable(indexable_one))
-  assert(types.is_indexable(indexable_two))
-  assert(types.is_number_with_limits(index, 1))
-  assert(modulo == nil or type(modulo) == "boolean")
+  modulo = modulo or false
+
+  assertions.is_true(
+    checks.is_sequence(indexable_one)
+      or checks.has_metamethods(indexable_one, {"__index"})
+  )
+  assertions.is_true(
+    checks.is_sequence(indexable_two)
+      or checks.has_metamethods(indexable_two, {"__index"})
+  )
+  assertions.is_number(index)
+  assertions.is_boolean(modulo)
 
   local item_one = indexable_one[index]
   local item_two = indexable_two[index]
   local difference = item_one - item_two
+  if checks.is_instance(difference, Vector2D) then
+    difference = difference.y
+  end
   if modulo then
     difference = math.abs(difference)
   end
@@ -63,23 +81,29 @@ function iterators.select_by_distance(
   modulo,
   limits
 )
+  -- handle the call form with the optional `modulo` argument omitted
   if limits == nil then
-    limits = modulo
-    modulo = nil
+    modulo, limits = nil, modulo
   end
 
-  assert(types.is_indexable(indexable_one))
-  assert(types.is_indexable(indexable_two))
-  assert(types.is_number_with_limits(index, 1))
-  assert(modulo == nil or modulo == limits or type(modulo) == "boolean")
-  assert(type(limits) == "table")
+  modulo = modulo or false
+
+  assertions.is_true(
+    checks.is_sequence(indexable_one)
+      or checks.has_metamethods(indexable_one, {"__index"})
+  )
+  assertions.is_true(
+    checks.is_sequence(indexable_two)
+      or checks.has_metamethods(indexable_two, {"__index"})
+  )
+  assertions.is_number(index)
+  assertions.is_boolean(modulo)
+  assertions.is_sequence(limits, checks.make_instance_checker(DistanceLimit))
 
   local suitable_value
   local distance =
     iterators.difference(indexable_one, indexable_two, index, modulo)
   for _, limit in ipairs(limits) do
-    assert(types.is_instance(limit, DistanceLimit))
-
     if distance <= limit.maximal_distance then
       suitable_value = limit.suitable_value
       break
