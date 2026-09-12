@@ -4,6 +4,7 @@
 local assertions = require("luatypechecks.assertions")
 local iterators = require("luaplot.iterators")
 local colors = require("constants.colors")
+local Vector2D = require("luamath.vector2d")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local DistanceLimit = require("luaplot.distancelimit")
@@ -102,13 +103,12 @@ function drawing._draw_plots(settings, screen, plots)
   assertions.is_instance(screen, Rectangle)
   assertions.is_instance(plots, PlotGroup)
 
-  local iterator = PlotIteratorFactory:new(function(index, point)
-    assertions.is_number(index)
-    assertions.is_number(point)
+  local iterator = PlotIteratorFactory:new(function(point)
+    assertions.is_instance(point, Vector2D)
 
     return Point:new(
-      screen.x + (index - 1) * settings:step(screen, "plot"),
-      screen:vertical_offset() + point * screen:plot_height()
+      screen.x + (point.x - 1) * settings:step(screen, "plot"),
+      screen:vertical_offset() + point.y * screen:plot_height()
     )
   end)
 
