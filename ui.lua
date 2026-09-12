@@ -2,7 +2,6 @@
 -- @module ui
 
 local suit = require("suit")
-local cpml = require("cpml")
 local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
 local colors = require("constants.colors")
@@ -234,7 +233,7 @@ end
 ---
 -- @tparam number value [0, 100]
 -- @tparam int grid_step [0, ∞)
--- @treturn int
+-- @treturn number
 function ui._get_label_width(value, grid_step)
   assertions.is_number(value)
   assertions.is_integer(grid_step)
@@ -248,7 +247,7 @@ function ui._get_label_width(value, grid_step)
     label_width = 2.1 * grid_step
   end
 
-  return cpml.utils.round(label_width)
+  return label_width
 end
 
 ---
