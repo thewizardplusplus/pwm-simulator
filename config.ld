@@ -8,10 +8,8 @@ full_description = [[
 ]]
 file = {
   "constants/colors.lua",
-  "models/color.lua",
   "models/gamesettings.lua",
   "models/plotgroup.lua",
-  "models/point.lua",
   "models/rectangle.lua",
   "models/statsgroup.lua",
   "models/stats.lua",

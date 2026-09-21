@@ -7,7 +7,7 @@ local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
 local Nameable = require("luaserialization.nameable")
 local Stringifiable = require("luaserialization.stringifiable")
-local Rectangle = require("models.rectangle")
+local BoundingBox = require("luamath.models.boundingbox")
 
 local GameSettings = middleclass("GameSettings")
 GameSettings:include(Nameable)
@@ -175,14 +175,14 @@ function GameSettings:plot_length(plot)
 end
 
 ---
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 -- @tparam "plot"|"distance" parameter
 -- @treturn number
 function GameSettings:step(screen, parameter)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
   assertions.is_enumeration(parameter, {"plot", "distance"})
 
-  local width = screen.width
+  local width = screen:size().width
   if parameter == "distance" then
     width = width / 2
   end

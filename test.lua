@@ -5,10 +5,8 @@ package.path = table.concat(require_paths, ";")
 local luaunit = require("luaunit")
 
 for _, module in ipairs({
-  "models.color",
   "models.gamesettings",
   "models.plotgroup",
-  "models.point",
   "models.rectangle",
   "models.stats",
   "models.statsgroup",
