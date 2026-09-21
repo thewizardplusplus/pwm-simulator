@@ -2,6 +2,7 @@
 -- @module window
 
 local Rectangle = require("models.rectangle")
+local Vector2D = require("luamath.vector2d")
 
 local window = {}
 
@@ -26,7 +27,8 @@ end
 -- @treturn Rectangle
 function window.create_screen()
   local x, y, width, height = love.window.getSafeArea()
-  return Rectangle:new(x, y, width, height)
+  local position = Vector2D:new(x, y)
+  return Rectangle:new(position, position + Vector2D:new(width, height))
 end
 
 return window
