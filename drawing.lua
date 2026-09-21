@@ -5,13 +5,15 @@ local assertions = require("luatypechecks.assertions")
 local iterators = require("luaplot.iterators")
 local colors = require("constants.colors")
 local Vector2D = require("luamath.vector2d")
+local Matrix3x3 = require("luamath.matrix3x3")
+local Size = require("luamath.models.size")
+local BoundingBox = require("luamath.models.boundingbox")
+local Color = require("luamath.models.color")
 local Plot = require("luaplot.plot")
 local PlotIteratorFactory = require("luaplot.plotiteratorfactory")
 local DistanceLimit = require("luaplot.distancelimit")
 local PlotGroup = require("models.plotgroup")
-local Color = require("models.color")
 local Rectangle = require("models.rectangle")
-local Point = require("models.point")
 local GameSettings = require("models.gamesettings")
 setfenv(1, require("compat53.module"))
 
@@ -45,11 +47,14 @@ function drawing._draw_distance(settings, screen, plots)
   assertions.is_instance(screen, Rectangle)
   assertions.is_instance(plots, PlotGroup)
 
-  local x = 0
+  local plot_area = screen:plot_area()
+  local plot_step, distance_step =
+    settings:step(screen, "plot"), settings:step(screen, "distance")
+  local offset = Vector2D:new(0, 0)
   for _ = 1, settings.distance_sampling_rate do
-    x = x + settings:step(screen, "distance")
+    offset = offset + Vector2D:new(distance_step, 0)
 
-    local index = math.floor(x / settings:step(screen, "plot") + 1)
+    local index = math.floor(offset.x / plot_step + 1)
     local suitable_color =
       iterators.select_by_distance(plots.random, plots.custom, index, true, {
         DistanceLimit:new(
@@ -64,13 +69,10 @@ function drawing._draw_distance(settings, screen, plots)
       })
     love.graphics.setColor(suitable_color:channels())
 
-    love.graphics.rectangle(
-      "fill",
-      screen.x + x - settings:step(screen, "distance"),
-      screen:vertical_offset(),
-      settings:step(screen, "distance"),
-      screen:plot_height()
-    )
+    drawing._draw_rectangle("fill", BoundingBox.from_position_and_size(
+      plot_area.min + offset - Vector2D:new(distance_step, 0),
+      Size:new(distance_step, plot_area:size().height)
+    ))
   end
 end
 
@@ -79,17 +81,18 @@ end
 function drawing._draw_boundaries(screen)
   assertions.is_instance(screen, Rectangle)
 
-  local boundary_line_width = screen.height / 320
+  local screen_size = screen:size()
+  local boundary_line_width = screen_size.height / 320
   love.graphics.setColor(0.5, 0.5, 0.5)
   love.graphics.setLineWidth(boundary_line_width)
 
-  local boundary_step = screen.width / 40
-  for x = 0, screen.width, 1.5 * boundary_step do
-    for _, y in ipairs({0, screen:plot_height()}) do
-      love.graphics.line(
-        screen.x + x, screen:vertical_offset() + y,
-        screen.x + x + boundary_step, screen:vertical_offset() + y
-      )
+  local boundary_step = screen_size.width / 40
+  local plot_area = screen:plot_area()
+  for x = 0, screen_size.width, 1.5 * boundary_step do
+    for _, y in ipairs({plot_area.min.y, plot_area.max.y}) do
+      local start = Vector2D:new(plot_area.min.x + x, y)
+      local finish = start + Vector2D:new(boundary_step, 0)
+      love.graphics.line(start.x, start.y, finish.x, finish.y)
     end
   end
 end
@@ -103,16 +106,18 @@ function drawing._draw_plots(settings, screen, plots)
   assertions.is_instance(screen, Rectangle)
   assertions.is_instance(plots, PlotGroup)
 
+  local plot_area = screen:plot_area()
+  local plot_step = settings:step(screen, "plot")
+  local transform =
+    Matrix3x3.translate(plot_area.min - Vector2D:new(plot_step, 0))
+    * Matrix3x3.scale(Vector2D:new(plot_step, plot_area:size().height))
   local iterator = PlotIteratorFactory:new(function(point)
     assertions.is_instance(point, Vector2D)
 
-    return Point:new(
-      screen.x + (point.x - 1) * settings:step(screen, "plot"),
-      screen:vertical_offset() + point.y * screen:plot_height()
-    )
+    return point * transform
   end)
 
-  local plot_line_width = math.floor(screen.height / 80)
+  local plot_line_width = math.floor(screen:size().height / 80)
   drawing._draw_plot(
     plots.random,
     iterator,
@@ -157,17 +162,29 @@ function drawing._draw_plot(plot, iterator, color, width)
 end
 
 ---
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 function drawing._draw_pause_background(screen)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
 
-  love.graphics.setColor(0, 0, 0, 0.75)
+  love.graphics.setColor(Color.BLACK:with_alpha(0.75):channels())
+  drawing._draw_rectangle("fill", screen)
+end
+
+---
+-- @tparam "fill"|"line" mode
+-- @tparam BoundingBox rectangle
+function drawing._draw_rectangle(mode, rectangle)
+  assertions.is_enumeration(mode, {"fill", "line"})
+  assertions.is_instance(rectangle, BoundingBox)
+
+  local position = rectangle:position()
+  local size = rectangle:size()
   love.graphics.rectangle(
-    "fill",
-    screen.x,
-    screen.y,
-    screen.width,
-    screen.height
+    mode,
+    position.x,
+    position.y,
+    size.width,
+    size.height
   )
 end
 
