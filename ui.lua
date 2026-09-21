@@ -6,9 +6,11 @@ local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
 local colors = require("constants.colors")
 local icons = require("constants.icons")
+local Vector2D = require("luamath.vector2d")
+local BoundingBox = require("luamath.models.boundingbox")
+local Color = require("luamath.models.color")
 local Stats = require("models.stats")
 local StatsGroup = require("models.statsgroup")
-local Color = require("models.color")
 local Rectangle = require("models.rectangle")
 local UiUpdate = require("models.uiupdate")
 
@@ -18,12 +20,12 @@ local _ICONS_FONT_PATH =
 local ui = {}
 
 ---
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 -- @treturn {[string]=Font,...}
 function ui.load_fonts(screen)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
 
-  local font_size = screen.height / 20
+  local font_size = screen:size().height / 20
   return {
     default = love.graphics.newFont(font_size),
     icons = love.graphics.newFont(_ICONS_FONT_PATH, font_size),
@@ -50,7 +52,7 @@ function ui.update(screen, fonts, stats, pause)
   assertions.is_instance(stats, StatsGroup)
   assertions.is_boolean(pause)
 
-  local grid_step = math.floor(screen.height / 12)
+  local grid_step = math.floor(screen:size().height / 12)
   ui._update_labels(screen, fonts, grid_step, stats)
   return ui._update_buttons(screen, fonts, grid_step, pause)
 end
@@ -68,16 +70,21 @@ function ui._update_labels(screen, fonts, grid_step, stats)
   assertions.is_integer(grid_step)
   assertions.is_instance(stats, StatsGroup)
 
+  local plot_area = screen:plot_area()
   ui._update_label_row(fonts, "Best:", stats.best, ui._create_label_layout(
-    math.floor(screen.x + grid_step / 2),
-    math.floor(screen:vertical_offset() - 1.75 * grid_step),
+    Vector2D:new(
+      math.floor(screen.min.x + grid_step / 2),
+      math.floor(plot_area.min.y - 1.75 * grid_step)
+    ),
     grid_step,
     stats
   ))
 
   ui._update_label_row(fonts, "Now:", stats.current, ui._create_label_layout(
-    math.floor(screen.x + grid_step / 2),
-    math.floor(screen:vertical_offset() - grid_step),
+    Vector2D:new(
+      math.floor(screen.min.x + grid_step / 2),
+      math.floor(plot_area.min.y - grid_step)
+    ),
     grid_step,
     stats
   ))
@@ -179,8 +186,8 @@ function ui._update_buttons(screen, fonts, grid_step, pause)
   assertions.is_boolean(pause)
 
   suit.layout:reset(
-    screen.x + screen.width - 1.5 * grid_step,
-    screen:vertical_offset() - 1.5 * grid_step
+    screen.max.x - 1.5 * grid_step,
+    screen:plot_area().min.y - 1.5 * grid_step
   )
 
   local pause_button = suit.Button(
@@ -192,14 +199,12 @@ function ui._update_buttons(screen, fonts, grid_step, pause)
 end
 
 ---
--- @tparam int x [0, ∞)
--- @tparam int y [0, ∞)
+-- @tparam Vector2D position
 -- @tparam int grid_step [0, ∞)
 -- @tparam StatsGroup stats
 -- @treturn tab SUIT precomputed layout
-function ui._create_label_layout(x, y, grid_step, stats)
-  assertions.is_integer(x)
-  assertions.is_integer(y)
+function ui._create_label_layout(position, grid_step, stats)
+  assertions.is_instance(position, Vector2D)
   assertions.is_integer(grid_step)
   assertions.is_instance(stats, StatsGroup)
 
@@ -212,7 +217,7 @@ function ui._create_label_layout(x, y, grid_step, stats)
 
   local padding = grid_step / 2
   return suit.layout:cols({
-    pos = {x, y},
+    pos = {position.x, position.y},
 
     {1.7 * grid_step, grid_step},
     {padding, nil},
