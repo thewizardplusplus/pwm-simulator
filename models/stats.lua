@@ -50,12 +50,6 @@ function Stats.static.from_options(options)
 end
 
 ---
--- @table instance
--- @tfield number normal_time
--- @tfield number soft_limit_time
--- @tfield number hard_limit_time
-
----
 -- @function is_parameter
 -- @static
 -- @tparam any parameter
@@ -67,6 +61,12 @@ function Stats.static.is_parameter(parameter)
     "hard_limit",
   })
 end
+
+---
+-- @table instance
+-- @tfield number normal_time
+-- @tfield number soft_limit_time
+-- @tfield number hard_limit_time
 
 ---
 -- @function new
