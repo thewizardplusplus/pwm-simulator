@@ -1,6 +1,24 @@
 # Change Log
 
+## [v1.5.5](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.5) (2026-09-22)
+
+Improving icon rendering; using the `luatypechecks`, `luaserialization`, and `luamath` libraries for type validation, model serialization, and mathematical primitives.
+
+- improve icon rendering and font handling:
+  - use the [Font Awesome](https://fontawesome.com/) font for icons;
+  - cache the loaded fonts;
+- refactoring:
+  - replacing the internal `typeutils` package with the [luatypechecks](https://github.com/thewizardplusplus/luatypechecks) library;
+  - adding the [luamath](https://github.com/thewizardplusplus/luamath) library;
+  - adding the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library;
+- misc.:
+  - adding GitHub Actions workflows for tests, linting, and documentation deployment;
+  - supporting Lua 5.1, 5.2, 5.3, 5.4, 5.5, and LuaJIT;
+  - improving the generated documentation.
+
 ## [v1.5.4](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.4) (2021-07-09)
+
+Add the summary to the game documentation.
 
 - describe the game documentation:
   - contents:
@@ -12,6 +30,8 @@
 
 ## [v1.5.3](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.3) (2021-07-04)
 
+Support the building of the game for platforms Windows, macOS, and Linux (via the AppImage format).
+
 - misc. improvements:
   - adding the configuration of the [makelove](https://github.com/pfirsich/makelove) tool:
     - supporting the building of the game for the following platforms:
@@ -20,6 +40,8 @@
       - Linux (via the [AppImage](https://appimage.org/) format).
 
 ## [v1.5.2](https://github.com/thewizardplusplus/pwm-simulator/tree/v1.5.2) (2021-06-29)
+
+Describe the game documentation.
 
 - describe the game documentation:
   - contents:
