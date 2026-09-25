@@ -25,7 +25,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
       - custom shift can be negative (the plot shrinks);
     - it takes up half of the screen width;
   - custom source plot:
-    - it is updated by either the minimal or maximal value;
+    - it displays the selected direction and rate of change of the custom plot;
     - it takes up half of the screen width;
   - configuration:
     - options:

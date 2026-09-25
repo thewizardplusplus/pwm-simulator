@@ -60,9 +60,21 @@ function PlotGroup:update(settings, custom_plot)
     "active_custom",
   })
 
+  local custom_plot_factor = settings:plot_factor(custom_plot)
+  local maximum_factor = math.max(
+    math.abs(settings:plot_factor("active_custom")),
+    math.abs(settings:plot_factor("inactive_custom")),
+    math.abs(settings:plot_factor("fast_inactive_custom"))
+  )
+  -- Center zero movement at 0.5; screen y increases downward.
+  local source_value = 0.5
+  if maximum_factor > 0 then
+    source_value = 0.5 + custom_plot_factor / (2 * maximum_factor)
+  end
+
   self.random:update(settings:plot_factor("random"))
-  self.custom:update(settings:plot_factor(custom_plot))
-  self.custom_source:update(custom_plot == "active_custom" and 0 or 1)
+  self.custom:update(custom_plot_factor)
+  self.custom_source:update(source_value)
 end
 
 return PlotGroup

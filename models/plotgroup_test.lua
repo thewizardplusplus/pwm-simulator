@@ -87,7 +87,7 @@ function TestPlotGroup.test_update_in_inactive_mode()
 
   luaunit.assert_almost_equals(plots.random[2].y, last_random_point, 1e-6)
   luaunit.assert_almost_equals(plots.custom[2].y, 0.6, 1e-6)
-  luaunit.assert_equals(plots.custom_source[2].y, 1)
+  luaunit.assert_almost_equals(plots.custom_source[2].y, 2 / 3, 1e-6)
 end
 
 function TestPlotGroup.test_update_in_active_mode()
@@ -113,5 +113,20 @@ function TestPlotGroup.test_update_in_active_mode()
 
   luaunit.assert_almost_equals(plots.random[2].y, last_random_point, 1e-6)
   luaunit.assert_almost_equals(plots.custom[2].y, 0.3, 1e-6)
-  luaunit.assert_equals(plots.custom_source[2].y, 0)
+  luaunit.assert_almost_equals(plots.custom_source[2].y, 1 / 6, 1e-6)
+end
+
+function TestPlotGroup.test_source_levels_with_game_settings()
+  local settings =
+    GameSettings:new(0.2, 50, 50, 0.33, 0.66, 2, 1, 0.5, -1, 1)
+  local plots = PlotGroup:new(settings)
+
+  plots:update(settings, "active_custom")
+  luaunit.assert_equals(plots.custom_source[26].y, 0)
+
+  plots:update(settings, "inactive_custom")
+  luaunit.assert_equals(plots.custom_source[26].y, 0.75)
+
+  plots:update(settings, "fast_inactive_custom")
+  luaunit.assert_equals(plots.custom_source[26].y, 1)
 end
