@@ -10,6 +10,12 @@ local Stringifiable = require("luaserialization.stringifiable")
 local GameSettings = require("models.gamesettings")
 local Oscillogram = require("luaplot.oscillogram")
 
+local _CUSTOM_SOURCE_VALUES = {
+  fast_inactive_custom = 1,
+  inactive_custom = 0.5,
+  active_custom = 0,
+}
+
 local PlotGroup = middleclass("PlotGroup")
 PlotGroup:include(Nameable)
 PlotGroup:include(Stringifiable)
@@ -62,7 +68,7 @@ function PlotGroup:update(settings, custom_plot)
 
   self.random:update(settings:plot_factor("random"))
   self.custom:update(settings:plot_factor(custom_plot))
-  self.custom_source:update(custom_plot == "active_custom" and 0 or 1)
+  self.custom_source:update(_CUSTOM_SOURCE_VALUES[custom_plot])
 end
 
 return PlotGroup
