@@ -15,16 +15,23 @@ require("luatable")
 
 local _LEFT_MOUSE_BUTTON = 1
 local _RIGHT_MOUSE_BUTTON = 2
+local _TOUCH_RIGHT_HALF_MOVES_UP = true
 
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local fonts = nil -- {[string]=Font,...}
 local plots = nil -- models.PlotGroup
 local pressed_mouse_buttons = table() -- luatable
+local pressed_touches = table() -- {[userdata]="left"|"right"}
 local stats_storage = nil -- StatsStorage
 local stats = StatsGroup:new()
 local update_count = 0
 local pause = false
+
+local function _is_pressed(button)
+  return pressed_mouse_buttons:has(button)
+    or pressed_touches:valueList():has(button)
+end
 
 local function _update_plots()
   if pause then
@@ -33,9 +40,9 @@ local function _update_plots()
 
   local custom_plot_mode = "inactive_custom"
   -- right mouse button takes precedence
-  if pressed_mouse_buttons:has("right") then
+  if _is_pressed("right") then
     custom_plot_mode = "fast_inactive_custom"
-  elseif pressed_mouse_buttons:has("left") then
+  elseif _is_pressed("left") then
     custom_plot_mode = "active_custom"
   end
 
@@ -106,8 +113,13 @@ function love.keypressed(key)
   end
 end
 
-function love.mousepressed(_, _, button)
+function love.mousepressed(_, _, button, is_touch)
   assertions.is_integer(button)
+  assertions.is_boolean(is_touch)
+
+  if is_touch then
+    return
+  end
 
   if button == _LEFT_MOUSE_BUTTON then
     pressed_mouse_buttons = pressed_mouse_buttons:union({"left"})
@@ -116,12 +128,32 @@ function love.mousepressed(_, _, button)
   end
 end
 
-function love.mousereleased(_, _, button)
+function love.mousereleased(_, _, button, is_touch)
   assertions.is_integer(button)
+  assertions.is_boolean(is_touch)
+
+  if is_touch then
+    return
+  end
 
   if button == _LEFT_MOUSE_BUTTON then
     pressed_mouse_buttons = pressed_mouse_buttons:negation({"left"})
   elseif button == _RIGHT_MOUSE_BUTTON then
     pressed_mouse_buttons = pressed_mouse_buttons:negation({"right"})
   end
+end
+
+function love.touchpressed(id, x)
+  assertions.is_true(type(id) == "userdata")
+  assertions.is_number(x)
+
+  local is_right_half = x >= screen:center().x
+  local moves_up = is_right_half == _TOUCH_RIGHT_HALF_MOVES_UP
+  pressed_touches[id] = moves_up and "left" or "right"
+end
+
+function love.touchreleased(id)
+  assertions.is_true(type(id) == "userdata")
+
+  pressed_touches[id] = nil
 end
