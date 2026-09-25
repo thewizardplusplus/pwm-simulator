@@ -41,10 +41,11 @@ The points added to the custom plot have the constant offset from the last point
 - if **inactive**, the offset is **negative** (the plot is **decreasing**);
 - if **fast inactive**, the offset is **negative and doubled** (the plot is **decreasing twice as fast**).
 
-The points added to the custom plot source can have only the two values and also depend on the plot state:
+The points added to the custom plot source can have three values and also depend on the plot state:
 
 - if **active**, the value is the specified **maximum**;
-- if **inactive** or **fast inactive**, the value is the specified **minimum**.
+- if **inactive**, it is the **middle** value;
+- if **fast inactive**, the value is the specified **minimum**, which represents reversed polarity.
 
 ### Meaning of the plots
 
