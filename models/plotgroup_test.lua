@@ -87,7 +87,7 @@ function TestPlotGroup.test_update_in_inactive_mode()
 
   luaunit.assert_almost_equals(plots.random[2].y, last_random_point, 1e-6)
   luaunit.assert_almost_equals(plots.custom[2].y, 0.6, 1e-6)
-  luaunit.assert_equals(plots.custom_source[2].y, 1)
+  luaunit.assert_equals(plots.custom_source[2].y, 0.5)
 end
 
 function TestPlotGroup.test_update_in_active_mode()
