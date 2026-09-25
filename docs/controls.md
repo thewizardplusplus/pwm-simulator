@@ -4,6 +4,6 @@
 
 ![](screenshot.png)
 
-Activate the custom plot by clicking the mouse or tapping on the touch screen. The plot remains active only during the interaction.
+Hold the left mouse button (or touch the screen) to move the custom plot upward. Hold the right mouse button to move it downward at twice the normal speed. The right mouse button takes priority if both buttons are held.
 
 Pause by clicking the <kbd>||</kbd> button. To resume, click the <kbd>|></kbd> button.
