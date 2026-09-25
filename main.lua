@@ -106,6 +106,10 @@ end
 function love.keypressed(key)
   assertions.is_string(key)
 
+  if key == "space" then
+    pause = not pause
+  end
+
   if key == "escape" then
     love.event.quit()
   end
