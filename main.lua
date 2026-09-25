@@ -13,11 +13,14 @@ local window = require("window")
 local StatsStorage = require("statsstorage")
 require("luatable")
 
+local _LEFT_MOUSE_BUTTON = 1
+local _RIGHT_MOUSE_BUTTON = 2
+
 local settings = nil -- models.GameSettings
 local screen = nil -- models.Rectangle
 local fonts = nil -- {[string]=Font,...}
 local plots = nil -- models.PlotGroup
-local custom_plot_activity = false
+local pressed_mouse_buttons = table() -- luatable
 local stats_storage = nil -- StatsStorage
 local stats = StatsGroup:new()
 local update_count = 0
@@ -28,7 +31,15 @@ local function _update_plots()
     return
   end
 
-  plots:update(settings, custom_plot_activity)
+  local custom_plot_mode = "inactive_custom"
+  -- right mouse button takes precedence
+  if pressed_mouse_buttons:has("right") then
+    custom_plot_mode = "fast_inactive_custom"
+  elseif pressed_mouse_buttons:has("left") then
+    custom_plot_mode = "active_custom"
+  end
+
+  plots:update(settings, custom_plot_mode)
 
   if update_count < settings:plot_length("custom") then
     update_count = update_count + 1
@@ -95,10 +106,22 @@ function love.keypressed(key)
   end
 end
 
-function love.mousepressed()
-  custom_plot_activity = true
+function love.mousepressed(_, _, button)
+  assertions.is_integer(button)
+
+  if button == _LEFT_MOUSE_BUTTON then
+    pressed_mouse_buttons = pressed_mouse_buttons:union({"left"})
+  elseif button == _RIGHT_MOUSE_BUTTON then
+    pressed_mouse_buttons = pressed_mouse_buttons:union({"right"})
+  end
 end
 
-function love.mousereleased()
-  custom_plot_activity = false
+function love.mousereleased(_, _, button)
+  assertions.is_integer(button)
+
+  if button == _LEFT_MOUSE_BUTTON then
+    pressed_mouse_buttons = pressed_mouse_buttons:negation({"left"})
+  elseif button == _RIGHT_MOUSE_BUTTON then
+    pressed_mouse_buttons = pressed_mouse_buttons:negation({"right"})
+  end
 end

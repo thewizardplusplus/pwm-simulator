@@ -33,17 +33,18 @@ All three plots display how signals change as a function of time (just like an o
 
 The points added to the random plot have a random offset from the last point on that plot.
 
-The custom plot and the custom plot source can have two states: **active** and **inactive**.
+The custom plot and the custom plot source can have three states: **active**, **inactive**, and **fast inactive**.
 
 The points added to the custom plot have the constant offset from the last point of that plot. The offset sign depends on the plot state:
 
 - if **active**, the offset is **positive** (the plot is **increasing**);
-- if **inactive**, the offset is **negative** (the plot is **decreasing**).
+- if **inactive**, the offset is **negative** (the plot is **decreasing**);
+- if **fast inactive**, the offset is **negative and doubled** (the plot is **decreasing twice as fast**).
 
 The points added to the custom plot source can have only the two values and also depend on the plot state:
 
 - if **active**, the value is the specified **maximum**;
-- if **inactive**, the value is the specified **minimum**.
+- if **inactive** or **fast inactive**, the value is the specified **minimum**.
 
 ### Meaning of the plots
 

@@ -16,6 +16,7 @@ function TestGameSettings.test_from_json_success()
       "soft_distance_limit": 0.25,
       "hard_distance_limit": 0.5,
       "random_plot_factor": 1,
+      "fast_inactive_custom_plot_factor": 5,
       "inactive_custom_plot_factor": 2,
       "active_custom_plot_factor": 3,
       "stats_storing_delay": 4
@@ -45,6 +46,9 @@ function TestGameSettings.test_from_json_success()
   luaunit.assert_is_number(settings.random_plot_factor)
   luaunit.assert_equals(settings.random_plot_factor, 1)
 
+  luaunit.assert_is_number(settings.fast_inactive_custom_plot_factor)
+  luaunit.assert_equals(settings.fast_inactive_custom_plot_factor, 5)
+
   luaunit.assert_is_number(settings.inactive_custom_plot_factor)
   luaunit.assert_equals(settings.inactive_custom_plot_factor, 2)
 
@@ -67,6 +71,7 @@ function TestGameSettings.test_from_json_error()
       "soft_distance_limit": 0.25,
       "hard_distance_limit": 0.5,
       "random_plot_factor": 1,
+      "fast_inactive_custom_plot_factor": 5,
       "inactive_custom_plot_factor": 2,
       "active_custom_plot_factor": 3,
       "stats_storing_delay": 4
@@ -88,7 +93,7 @@ function TestGameSettings.test_from_json_error()
 end
 
 function TestGameSettings.test_tostring()
-  local settings = GameSettings:new(1, 4, 2, 0.25, 0.5, 1, 2, 3, 4)
+  local settings = GameSettings:new(1, 4, 2, 0.25, 0.5, 1, 5, 2, 3, 4)
   local text = tostring(settings)
 
   luaunit.assert_is_string(text)
@@ -96,6 +101,7 @@ function TestGameSettings.test_tostring()
     "__name = \"GameSettings\"," ..
     "active_custom_plot_factor = 3," ..
     "distance_sampling_rate = 2," ..
+    "fast_inactive_custom_plot_factor = 5," ..
     "hard_distance_limit = 0.5," ..
     "inactive_custom_plot_factor = 2," ..
     "plot_sampling_rate = 4," ..
