@@ -34,6 +34,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
       - coefficients:
         - of updation of the random plot;
         - of updation of the custom plot:
+          - in the fast inactive mode;
           - in the inactive mode;
           - in the active mode;
 - game stats:

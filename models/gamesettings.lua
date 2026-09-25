@@ -33,6 +33,7 @@ function GameSettings.static.schema()
       "soft_distance_limit",
       "hard_distance_limit",
       "random_plot_factor",
+      "fast_inactive_custom_plot_factor",
       "inactive_custom_plot_factor",
       "active_custom_plot_factor",
       "stats_storing_delay",
@@ -44,6 +45,7 @@ function GameSettings.static.schema()
       soft_distance_limit = percents,
       hard_distance_limit = percents,
       random_plot_factor = positive_number,
+      fast_inactive_custom_plot_factor = number,
       inactive_custom_plot_factor = number,
       active_custom_plot_factor = number,
       stats_storing_delay = positive_number,
@@ -68,6 +70,7 @@ function GameSettings.static.from_options(options)
     options.soft_distance_limit,
     options.hard_distance_limit,
     options.random_plot_factor,
+    options.fast_inactive_custom_plot_factor,
     options.inactive_custom_plot_factor,
     options.active_custom_plot_factor,
     options.stats_storing_delay
@@ -82,6 +85,7 @@ end
 -- @tfield number soft_distance_limit
 -- @tfield number hard_distance_limit
 -- @tfield number random_plot_factor
+-- @tfield number fast_inactive_custom_plot_factor
 -- @tfield number inactive_custom_plot_factor
 -- @tfield number active_custom_plot_factor
 -- @tfield number stats_storing_delay
@@ -94,6 +98,7 @@ end
 -- @tparam number soft_distance_limit [0, 1]
 -- @tparam number hard_distance_limit [soft\_distance\_limit, 1]
 -- @tparam number random_plot_factor [0, ∞)
+-- @tparam number fast_inactive_custom_plot_factor
 -- @tparam number inactive_custom_plot_factor
 -- @tparam number active_custom_plot_factor
 -- @tparam number stats_storing_delay [0, ∞)
@@ -105,6 +110,7 @@ function GameSettings:initialize(
   soft_distance_limit,
   hard_distance_limit,
   random_plot_factor,
+  fast_inactive_custom_plot_factor,
   inactive_custom_plot_factor,
   active_custom_plot_factor,
   stats_storing_delay
@@ -115,6 +121,7 @@ function GameSettings:initialize(
   assertions.is_number(soft_distance_limit)
   assertions.is_number(hard_distance_limit)
   assertions.is_number(random_plot_factor)
+  assertions.is_number(fast_inactive_custom_plot_factor)
   assertions.is_number(inactive_custom_plot_factor)
   assertions.is_number(active_custom_plot_factor)
   assertions.is_number(stats_storing_delay)
@@ -125,6 +132,7 @@ function GameSettings:initialize(
   self.soft_distance_limit = soft_distance_limit
   self.hard_distance_limit = hard_distance_limit
   self.random_plot_factor = random_plot_factor
+  self.fast_inactive_custom_plot_factor = fast_inactive_custom_plot_factor
   self.inactive_custom_plot_factor = inactive_custom_plot_factor
   self.active_custom_plot_factor = active_custom_plot_factor
   self.stats_storing_delay = stats_storing_delay
@@ -141,6 +149,7 @@ function GameSettings:__data()
     soft_distance_limit = self.soft_distance_limit,
     hard_distance_limit = self.hard_distance_limit,
     random_plot_factor = self.random_plot_factor,
+    fast_inactive_custom_plot_factor = self.fast_inactive_custom_plot_factor,
     inactive_custom_plot_factor = self.inactive_custom_plot_factor,
     active_custom_plot_factor = self.active_custom_plot_factor,
     stats_storing_delay = self.stats_storing_delay,
@@ -191,11 +200,12 @@ function GameSettings:step(screen, parameter)
 end
 
 ---
--- @tparam "random"|"inactive_custom"|"active_custom" plot
+-- @tparam "random"|"fast_inactive_custom"|"inactive_custom"|"active_custom" plot
 -- @treturn number
 function GameSettings:plot_factor(plot)
   assertions.is_enumeration(plot, {
     "random",
+    "fast_inactive_custom",
     "inactive_custom",
     "active_custom",
   })
