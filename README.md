@@ -60,7 +60,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
     - of the plots;
     - of the game stats;
 - drawing:
-  - drawing of plot boundaries;
+  - drawing of plot boundaries, including the middle level;
   - drawing of plots;
   - drawing of a type of distance between the random and custom plots:
     - normal distance;
