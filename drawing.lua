@@ -84,14 +84,18 @@ function drawing._draw_boundaries(screen)
   local screen_size = screen:size()
   local boundary_line_width = screen_size.height / 320
   love.graphics.setColor(0.5, 0.5, 0.5)
-  love.graphics.setLineWidth(boundary_line_width)
 
   local boundary_step = screen_size.width / 40
   local plot_area = screen:plot_area()
   for x = 0, screen_size.width, 1.5 * boundary_step do
-    for _, y in ipairs({plot_area.min.y, plot_area.max.y}) do
-      local start = Vector2D:new(plot_area.min.x + x, y)
+    for _, boundary in ipairs({
+      { y = plot_area.min.y, width = boundary_line_width },
+      { y = plot_area:center().y, width = boundary_line_width / 2 },
+      { y = plot_area.max.y, width = boundary_line_width },
+    }) do
+      local start = Vector2D:new(plot_area.min.x + x, boundary.y)
       local finish = start + Vector2D:new(boundary_step, 0)
+      love.graphics.setLineWidth(boundary.width)
       love.graphics.line(start.x, start.y, finish.x, finish.y)
     end
   end
